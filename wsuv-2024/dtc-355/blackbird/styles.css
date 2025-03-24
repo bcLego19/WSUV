@@ -1,0 +1,109 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: "Arial", sans-serif;
+	background-color: #4bc8eb;
+	height: 130vh;
+}
+
+h1 {
+	font-family: "Verdana", "Arial";
+	font-size: 48px;
+}
+
+a {
+	text-decoration: none;
+	border-radius: 0.3em;
+	background-color: none;
+	color: #000000;
+	transition: 0.5s;
+}
+
+a:hover {
+	background-color: #99afeb;
+	color: #000;
+}
+
+div #main-content{
+	margin: 5px;
+	padding: 5px;
+}
+
+div.stanza {
+	padding: 0;
+	margin: 0;
+	font-size: 20px;
+}
+
+section.stanza {
+	background-color: inherit;
+	padding: 0;
+	margin: 0;
+	font-size: 1.5em;
+}
+
+section.stanza h3 {
+	background-color: inherit;
+	font-size: 1.5em;
+}
+
+.tab {
+	float: left;
+	border-left: 1px solid #874beb;
+	border-top: 1px solid #874beb;
+	border-bottom: 1px solid #874beb;
+	background-color: #f1f1f1;
+	border-radius: 1em 0 0 1em;
+	width: 20%;
+	height: 121vh;
+}
+
+.tab button {
+	display: block;
+	background-color: inherit;
+	border-radius: inherit;
+	color: black;
+	padding: 14px 15px;
+	width: 100%;
+	border: none;
+	outline: none;
+	text-align: left;
+	cursor: pointer;
+	transition: 0.3s;
+	font-size: 2.5vh;
+	font-weight: bold;
+}
+
+.tab button:hover {
+	background-color: #ddd;
+	padding: 20px 21px;
+}
+
+.tab button.active {
+	padding: 14px 15px;
+}
+
+.tabcontent {
+	float: left;
+	padding: 0px 12px;
+	border: 1px solid #874beb;
+	border-radius: 0 1em 1em 0;
+	width: 80%;
+	border-left: none;
+	height: 121vh;
+	overflow: scroll;
+}
+
+.tabcontent p {
+	color: #000;
+}
+
+.tabimage {
+	background-image: url("img/blackbird.png");
+	background-repeat: no-repeat;
+	background-position: right;
+	background-size: 450px;
+	background-position-y: 250px;
+}

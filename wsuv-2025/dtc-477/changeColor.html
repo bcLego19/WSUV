@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Background Color</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Random Background Color</h1>
+  <p>Click the button to change the background color!</p>
+  <button onclick="changeColor()" id="colorButton">Change Color</button>
+
+  <script>
+  	const colors = ['blue', 'pink', 'brown', 'lime', 'orange'];
+  	const paragraph = document.querySelector('p');
+
+   	function changeColor(){
+   		let randomIndex = colors[Math.floor(Math.random() * colors.length)];
+
+   		if (document.body.style.backgroundColor  == randomIndex){
+   			paragraph.innerHTML = "Same Color Selected!";
+   		} else {
+   			paragraph.innerHTML = "New Color Selected!";
+   			document.body.style.backgroundColor = randomIndex;
+   		}
+
+   	}
+   
+  </script>
+</body>
+</html>

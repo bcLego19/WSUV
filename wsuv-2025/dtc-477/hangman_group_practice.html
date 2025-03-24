@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman</title>
+    <style>
+        #hangman-canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hangman</h1>
+    <canvas id="hangman-canvas" width="200" height="200"></canvas>
+    <p id="displayed-word"></p>
+    <p id="message"></p>
+    <input type="text" id="guess-input" maxlength="1">
+    <button id="guess-button">Guess Letter</button>
+    <input type="text" id="word-guess-input">
+    <button id="word-guess-button">Guess Word</button>
+    <button id="reset-button">Reset Game</button>
+
+    <script>
+        // Get references to HTML elements
+        var canvas = document.getElementById('hangman-canvas');
+        var ctx = canvas.getContext('2d');
+        var displayedWordElement = document.getElementById('displayed-word');
+        var messageElement = document.getElementById('message');
+        var guessInput = document.getElementById('guess-input');
+        var guessButton = document.getElementById('guess-button');
+        var wordGuessInput = document.getElementById('word-guess-input');
+        var wordGuessButton = document.getElementById('word-guess-button');
+        var resetButton = document.getElementById('reset-button');
+
+        // Game variables
+        var secretWord = "";
+        var displayedWord = "";
+        var incorrectGuesses = 0;
+
+        // Function to start a new game
+        function startGame() {
+            // Reset canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Reset game variables
+            incorrectGuesses = 0;
+            // Get a random word (replace with a proper word list/API for a real game)
+            var words = ["apple", "banana", "orange", "grape", "kiwi"];
+            secretWord = words[Math.floor(Math.random() * words.length)];
+            displayedWord = "";
+            for (var i = 0; i < secretWord.length; i++) {
+                displayedWord += "_";
+            }
+            displayedWordElement.textContent = displayedWord;
+            messageElement.textContent = "It's your turn!";
+            guessInput.value = "";
+            wordGuessInput.value = "";
+        }
+
+        // Function to draw hangman parts
+        function drawHangman() {
+            if (incorrectGuesses === 1) { // Head
+                ctx.beginPath();
+                ctx.arc(100, 50, 20, 0, Math.PI * 2);
+                ctx.stroke();
+            } else if (incorrectGuesses === 2) { // Body
+                ctx.beginPath();
+                ctx.moveTo(100, 70);
+                ctx.lineTo(100, 120);
+                ctx.stroke();
+            } else if (incorrectGuesses === 3) { // Left Arm
+                ctx.beginPath();
+                ctx.moveTo(100, 90);
+                ctx.lineTo(70, 80);
+                ctx.stroke();
+            } else if (incorrectGuesses === 4) { // Right Arm
+                ctx.beginPath();
+                ctx.moveTo(100, 90);
+                ctx.lineTo(130, 80);
+                ctx.stroke();
+            } else if (incorrectGuesses === 5) { // Left Leg
+                ctx.beginPath();
+                ctx.moveTo(100, 120);
+                ctx.lineTo(80, 150);
+                ctx.stroke();
+            } else if (incorrectGuesses === 6) { // Right Leg
+                ctx.beginPath();
+                ctx.moveTo(100, 120);
+                ctx.lineTo(120, 150);
+                ctx.stroke();
+            }
+        }
+
+        // Event listener for guess button
+        guessButton.addEventListener('click', function() {
+            var guess = guessInput.value.toLowerCase();
+            if (guess.length !== 1 || !/[a-z]/.test(guess)) {
+                messageElement.textContent = "Please enter a single letter.";
+                return;
+            }
+
+            var found = false;
+            for (var i = 0; i < secretWord.length; i++) {
+                if (secretWord[i] === guess) {
+                    displayedWord = displayedWord.substring(0, i) + guess + displayedWord.substring(i + 1);
+                    found = true;
+                }
+            }
+
+            displayedWordElement.textContent = displayedWord;
+
+            if (!found) {
+                incorrectGuesses++;
+                drawHangman();
+                if (incorrectGuesses === 6) {
+                    messageElement.textContent = "You lose! The word was: " + secretWord;
+                    guessButton.disabled = true;
+                    wordGuessButton.disabled = true;
+                }
+            } else if (displayedWord === secretWord) {
+                messageElement.textContent = "You win!";
+                guessButton.disabled = true;
+                wordGuessButton.disabled = true;
+            }
+            guessInput.value = "";
+        });
+
+        wordGuessButton.addEventListener('click', function(){
+            var wordGuess = wordGuessInput.value.toLowerCase();
+            if(wordGuess === secretWord){
+                messageElement.textContent = "You win!";
+                guessButton.disabled = true;
+                wordGuessButton.disabled = true;
+            } else {
+                messageElement.textContent = "You lose! The word was: " + secretWord;
+                guessButton.disabled = true;
+                wordGuessButton.disabled = true;
+            }
+            wordGuessInput.value = "";
+        });
+
+        // Event listener for reset button
+        resetButton.addEventListener('click', function() {
+            startGame();
+            guessButton.disabled = false;
+            wordGuessButton.disabled = false;
+        });
+
+        // Start the first game
+        startGame();
+    </script>
+</body>
+</html>

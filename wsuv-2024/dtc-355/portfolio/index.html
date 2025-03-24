@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conner Batson - Portfolio</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <span>Conner Batson</span>
+            <button class="nav-toggle">&#9776;</button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="pages/skills.html">Skills</a></li>
+                <li><a href="pages/works.html">Work</a></li>
+                <li><a href="pages/contact.html">Contact</a></li>
+                <li><a href="pages/about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <div id="index-page" class="wrapper">
+            
+            <section id="statement">
+                <h1>I'm Conner Batson</h1>
+                <p>I'm a software developer aspiring to be a video game developer.</p><br>
+                <div class="page-link-wrapper">
+                    <a class="page-link" href="pages/about.html"><span>Learn More</span></a>
+                </div>
+            </section>
+
+            <section id="skills">
+                <h2>Skills</h2>
+                <ul>
+                    <li>HTML</li>
+                    <li>CSS</li>
+                    <li>JavaScript</li>
+                </ul>
+                <a class="page-link" href="pages/skills.html"><span>Other Skills</span></a>
+            </section>
+
+            <section id="works">
+
+                <h2>Featured Works</h2>
+
+                <div class="carousel-container">
+                    <button class="prev"></button>
+
+                    <div class="carousel">
+                        <div class="slide active">
+                            <img src="image/blackbird.png" alt="Blackbird Project Thumbnail">
+                            <p>Blackbird Project</p>
+                        </div>
+                        <div class="slide">
+                            <img src="image/info-card.png" alt="Info Card Thumbnail">
+                            <p>Info Card Project</p>
+                        </div>
+                        <div class="slide">
+                            <img src="image/narrative.png" alt="Narrative Project Thumbnail">
+                            <p>Narrative Project</p>
+                        </div>
+                        
+                    </div>
+
+                    <button class="next"></button>
+                </div>
+
+                <a class="page-link" href="pages/works.html"><span>See All Works</span></a>
+
+            </section>
+
+            <section id="contact">
+                <h2>Contact</h2>
+                <p>Email: cjbatson2(at)gmail.com</p>
+                <p>Phone Number: (360) 842-4748</p>
+
+                <div id="contact-link">
+                    <a class="page-link" href="pages/contact.html"><span>Let's Talk!</span></a>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Conner Batson</p>
+    </footer>
+
+    <script src="source/carousel-script.js"></script>
+    <script src="source/nav-script.js"></script>
+
+</body>
+</html>

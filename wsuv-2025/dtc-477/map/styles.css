@@ -1,0 +1,326 @@
+/*
+	JOSH W COMEAU MODERN CSS RESET
+*/
+
+/* 1. Use a more-intuitive box-sizing model */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+* {
+  margin: 0;
+}
+
+body {
+  /* 3. Add accessible line-height */
+  line-height: 1.5;
+  /* 4. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 5. Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 6. Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 7. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* 8. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+  padding-left: 10px;
+}
+
+/*
+  9. Create a root stacking context
+*/
+#root, #__next {
+  isolation: isolate;
+}
+
+/*
+	END OF RESET
+*/
+
+:root {
+  --color3: rgba(255, 191, 0, 1);
+  --translucentColor3: rgba(255, 191, 0, 0.5);
+  --tab-radius: 50px;
+  --transition-time: 0.5s;
+}
+
+/* ID Styles */
+
+#wrapper {
+	display: grid;
+	width: 100%;
+	height: 700px;
+}
+
+#map {
+	width: 100%;
+	height: 700px;
+}
+
+#category-container {
+	left: -20%;
+	position: absolute;
+	min-width: 100px;
+	width: 190px;
+  min-height: 300px;
+  display: grid;
+  transition: left 0.5s;
+}
+
+#sidebar {
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    padding: 0 5%;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    right: -45%; /* Initially off-screen */
+    width: 35%;
+    height: 100%;
+    background: #f4f1de;
+    z-index: 2;
+    overflow-y: auto;
+    transition: right 0.5s; /* Smooth transition for sliding in */
+    overflow-y: auto; /* Ensures content is scrollable */
+}
+
+#closeSidebar {
+		border-radius: 25%;
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    right: 5px;
+    top: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    background: #ffbf00;
+    color: #111;
+    transition: background 0.3s; /* Smooth background transition */
+}
+
+#closeSidebar:hover {
+    background: #ffef00; /* Change color on hover for better interactivity */
+}
+
+#ham-1 {
+	display: grid;
+	grid-template-columns: auto auto;
+}
+
+#ham-2 {
+	display: grid;
+	grid-template-columns: auto;
+	padding-left: 5px;
+}
+
+#hamburger {
+	width: 60px;
+	transition: width 0.3s, height 0.3s, margin 0.3s, border-radius 0.3s;
+}
+
+#hamburger:hover {
+	border-radius: 0;
+	margin: 0;
+	width: 100px;
+	height: 60px;
+}
+
+/* Class Styles */
+.category-item {
+	margin-left: 10px;
+	margin-top: 5px;
+	width: var(--tab-radius);
+  height: var(--tab-radius);
+  background: rgba(0,0,0,0);
+  border-radius: 50%;
+  border: 2px solid var(--color3);
+  display: inline-block;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  transition: background var(--transition-time), border var(--transition-time);
+}
+
+.category-item:hover {
+  background: var(--translucentColor3);
+}
+
+.clicked-tab {
+  background: var(--color3);
+}
+
+.active-tab {
+  background: var(--color3);
+}
+
+.tab-text {
+	border-radius: 10px;
+	box-shadow: inset 0px 0px 2px 2px #000000;
+	background-color: rgba(255, 191, 0, 0.95);
+	color: black;
+	min-width: 50px;
+	width: auto;
+	align-content: center;
+	justify-content: center;
+	text-align: center;
+	text-wrap: wrap;
+  transition: opacity var(--transition-time) ease, transform var(--transition-time) ease;
+}
+
+.active-text{
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.inactive-text{
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.play-symbol::before {
+  content: "▶"; /* Play symbol */
+}
+
+.pause-symbol::before {
+  content: "⏸"; /* Pause symbol */
+}
+
+.point {
+	display: block;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+
+.sidebar-entry {
+    border-bottom: 1px solid #ccc; /* Separates entries visually */
+    padding-top: 30px;
+    padding-bottom: 30px; /* Adds spacing at the bottom of each entry */
+}
+
+.hamburger-menu {
+  display: none;
+}
+
+/* 
+colors picked by filtering queries of 
+Google Gemini through Adobe Kuler's color
+picker and accessibility applications
+*/
+
+/*
+	30% in context of 60-30-10 rule,
+	used in map background, headers,
+	and large text blocks for contrast 
+	against color-2
+*/
+.color-1 { 
+	color: whitesmoke;
+	background-color: #2e4053;
+}
+
+/*
+	60% in context of 60-30-10 rule; 
+	used for overall background of the
+	website for soft, inviting canvas
+*/
+.color-2 {
+	color: black;
+	background-color: #f4f1de;
+}
+
+/*
+	10% in context of 60-30-10 rule;
+	goldenrod yellow useful in 
+	interactive elements to draw 
+	attention.
+*/
+.color-3 {
+	color: black;
+	background-color: #ffbf00;
+}
+
+/*
+	color-4 (slate gray) and color-5 
+	(forest green) are extra accent 
+	colors to be used in smaller 
+	percentages than color-3. Useful 
+	for adding detail, defining 
+	content sections, or categorical 
+	information.
+*/
+
+.color-4 {
+	color: black;
+	background-color: #708090;
+}
+
+.color-5 {
+	color: black;
+	background-color: #228b22;
+}
+
+/* General Styles */
+
+button {
+	z-index: 1;
+	min-width: 50px;
+	width: clamp(50px, 30%, 70px);
+	height: 50px;
+	border: none;
+	border-radius: 25%;
+	text-align: center;
+	cursor: pointer;
+	margin: 5px;
+	padding-right: 10px;
+	transition: background-color 0.3s;
+}
+
+button:hover {
+	background-color: #ffef00;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Lato", sans-serif;
+}
+
+header{
+	display: grid;
+	grid-template-columns: 100px auto;
+}
+
+li, p {
+	font-family: "Merriweather", serif;
+}
+
+/* Desktop styles */
+
+@media only screen and (min-width: 716px) {
+
+	#wrapper {
+		height: 800px;
+	}
+
+	#map {
+		height: 800px;
+	}
+
+}

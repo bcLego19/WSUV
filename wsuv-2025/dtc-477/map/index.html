@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Conner Batson - Engineering Achievements</title>
+	<!-- fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+	<!-- icons -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!-- mapbox stylesheet -->
+	<link rel="stylesheet" type="text/css" href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css">
+	<!-- project stylesheet -->
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body class="color-2">
+
+	<header class="color-1">
+		<button id="hamburger" class="color-3">&#9776;</button>
+		<h1>
+			Engineering Achievements Across History
+		</h1>
+	</header>
+
+	<div id="wrapper">
+
+		<!-- Map elements -->
+		<div id="map"></div>
+
+		<div id="category-container" class="hamburger-menu" style="display: none">
+			<div id="ham-1">
+				<div class="category-item active-tab" data-category="0"></div>
+				<div class="tab-text inactive-text">Show All Points</div>
+
+				<div class="category-item" data-category="1"></div>
+				<div class="tab-text inactive-text">Infrastructure & Transportation</div>
+
+				<div class="category-item" data-category="2"></div>
+				<div class="tab-text inactive-text">Monumental & Defensive Structures</div>
+
+				<div class="category-item" data-category="3"></div>
+				<div class="tab-text inactive-text">Water & Resource Management</div>
+
+				<div class="category-item" data-category="4"></div>
+				<div class="tab-text inactive-text">Energy & Communication</div>
+
+				<div class="category-item" data-category="5"></div>
+				<div class="tab-text inactive-text">Industrial & Technological Innovation</div>
+			</div>
+			<div id="ham-2">
+				<button id="resource-links" class="color-3">Credits</button>
+				<button id="playPauseButton" class="color-3 pause-symbol"></button>
+				<button id="resetMap" class="color-3">Reset</button>
+			</div>
+		</div>
+
+		<div id="sidebar"></div>
+
+	</div>
+
+	<script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script>
+	<script src="script.js"></script>
+
+</body>
+</html>

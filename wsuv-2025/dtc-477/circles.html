@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+body {
+  padding: 0%;
+  margin: 0%;
+  overflow: hidden;
+}
+
+#wrapper {
+  margin: 0 auto;
+  height: 2000px;
+  /* Added transition for smooth animation */
+  transition: background-color 1s ease-in-out;
+}
+
+.circle {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  margin: 1%;
+  float: left;
+  border: 2px solid black;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  text-align: center; /* Center text horizontally */
+  line-height: 60px; /* Match the circle height */
+
+  /* Added transition for smooth animation */
+  transition: top 1s ease-in-out, left 1s ease-in-out, background-color 1s ease-in-out;
+}
+
+.circle-text{
+  position: relative;
+  font-size: 20px;
+  display: inline-block; /* Make the text element take up space */
+  vertical-align: middle; /* Center vertically */
+}
+
+button {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<button onclick="setCircles()">Run Function</button>
+
+<div id="wrapper">
+  <div class="circle">
+    <div class="circle-text">0</div>
+  </div>
+</div>
+
+<script>
+  // create a variable for #wrapper
+  let wrapper = document.getElementById('wrapper');
+
+  // create a function to multiply circles x 200 and run a function inside it to change colors
+  function setCircles() {
+    for (let i = 0; i < 199; i++) {
+      // Create a div for the circle and a span for the text
+      let circleDiv = document.createElement('div');
+      circleDiv.className = 'circle';
+
+      let textSpan = document.createElement('span');
+      textSpan.className = 'circle-text'; // Add a class for styling
+      textSpan.textContent = i + 1; // Or any other text you want
+
+      circleDiv.appendChild(textSpan);
+      wrapper.appendChild(circleDiv);
+    }
+    changeColors();
+  }
+
+  // create variables 
+  let colorcount = -1;
+  let circles = document.getElementsByClassName('circle');
+
+  // create an array to store a list of colors
+  const colors = [
+    "#FF0000", // Red
+    "#00FF00", // Green
+    "#0000FF", // Blue
+    "#FFFF00", // Yellow
+    "#FF00FF", // Magenta
+    "#00FFFF", // Cyan
+    "#FFA500", // Orange
+    "#800080", // Purple
+    "#A0522D", // Sienna
+    "#D2691E", // Chocolate
+    "#8FBC8F", // DarkSeaGreen
+    "#4682B4", // SteelBlue
+    "#B0E0E6", // PowderBlue
+    "#ADD8E6", // LightBlue
+    "#E0FFFF", // LightCyan
+    "#FAF0E6"  // Linen
+  ];
+
+  // create function to change color of circles, background and circle position
+  function changeColors() {
+    colorcount++;
+    if (colorcount >= colors.length) {
+      colorcount = 0;
+    }
+    wrapper.style.backgroundColor = colors[colorcount];
+
+    for (let i = 0; i < circles.length; i++) {
+      let randmcolor = `#${Math.random().toString(16).substr(2, 6)}`;
+      let num1 = Math.round(Math.random() * 200);
+      let num2 = Math.round(Math.random() * 200);
+      let num3 = Math.round(Math.random() * 200);
+
+      let thisCircle = circles[i];
+
+      thisCircle.style.backgroundColor = randmcolor; // getRandomPastelColor();
+      thisCircle.style.top = `${num1}px`;
+      thisCircle.style.left = `${num2}px`;
+      /*thisCircle.style.zIndex = `${num3}`;*/
+    }
+    
+    // create animation of change with setTimeout
+    setTimeout(changeColors, 1000);
+
+  }
+
+
+ /* const getRandomPastelColor = () => {
+    const hue = Math.floor(Math.random() * 360); 
+    const saturation = Math.floor(Math.random() * 70); 
+    const lightness = 85; 
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  };
+*/
+
+
+  // create animation of change with setinterval
+  //setInterval(changeColors, 1000);
+  
+</script>
+</body>
+</html>

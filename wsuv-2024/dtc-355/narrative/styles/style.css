@@ -1,0 +1,355 @@
+/*
+	Begin Reset
+*/
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/*
+	End Reset
+*/
+
+
+
+/*
+	Begin styling
+	Mobile first
+*/
+
+/* General Styles */
+
+@font-face {
+	font-family: 'Playfair Display';
+	src: url('../fonts/Playfair_Display/PlayfairDisplay-VariableFont_wght.ttf');
+}
+
+@font-face {
+	font-family: 'Roboto Serif';
+	src: url('../fonts/Roboto_Serif/RobotoSerif-VariableFont_GRAD,opsz,wdth,wght.ttf');
+}
+
+* {
+/*	border: 1px solid red;*/
+}
+
+a {
+	color: white;
+}
+
+body {
+	background-color: #364f6b;
+	color: #fff;
+	display: grid;
+	grid-gap: 10px;
+}
+
+footer {
+	margin: 1% 0;
+	text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Playfair Display', 'Times New Roman';
+	font-size: 56px;
+	margin-bottom: 10px;
+}
+
+h1 {
+	font-weight: bold;
+	text-align: center;
+	padding: 1%;
+}
+
+h3 {
+	color: #87cefa;
+	font-size: 32px;
+	font-weight: bold;
+	text-align: center;
+	padding: 1%;
+	margin-top: 4%;
+}
+
+header {
+	margin-bottom: 5%;
+}
+
+img {
+	display: none;
+	width: 100%;
+}
+
+figcaption, li, p {
+	font-family: 'Poppins', 'Arial';
+	font-size: 24px;
+}
+
+figcaption {
+	margin-top: 10px;
+}
+
+/* End general styles */
+
+/* Begin class styles */
+
+.active {
+	background-color: #00ebcf;
+	color: black;
+	cursor: auto;
+}
+
+.content div {
+	margin: 2% 10px;
+}
+
+.content p {
+	margin: 2% 10px;
+	line-height: 1.5;
+}
+
+.content ul {
+	list-style: square;
+	margin-left: 30px;
+}
+
+.content li {
+	padding: 5px;
+	line-height: 1.5;
+}
+
+.content ul span{
+	font-weight: bold;
+}
+
+.timeline {
+	display: grid;
+	grid-template-columns: 1fr;
+}
+
+/* End class styles */
+
+/* Begin ID styles */
+
+#about-content, #about-summary {
+	padding: 5px 0px;
+}
+
+#about-content figcaption, #about-content li, #about-content p {
+	font-size: 25px;
+}
+
+#about-content p {
+	padding: 1%;
+	margin-top: 1em;
+}
+
+#about-content img {
+	display: none;
+	width: fit-content;
+	margin: 0px auto;
+}
+
+#about-content figcaption {
+	display: none;
+	text-align: center;
+}
+
+#navbar ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #1f79db;
+	color: #000;
+}
+
+#navbar li {
+	float: left;
+}
+
+#navbar li a {
+	display: block;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
+
+#navbar li a:hover:not(.active) {
+	background-color: #00ebcf;
+	color: black;
+}
+
+#references-content li {
+	font-size: 25px;
+	text-align: center;
+	padding: 5px;
+	line-height: 1.2;
+}
+
+#references-content a {
+	color: black;
+}
+
+#references-content a:link, #references-content a:visited {
+	background-color: #008bc5;
+	color: #000;
+	border-radius: 10%;
+	text-decoration: none;
+	transition: 0.3s;
+}
+
+#references-content a:hover, #references-content a:active {
+	background-color: #87cefa;
+}
+
+#source-list ul {
+	list-style: none;
+	margin-left: 0px;
+}
+
+#wrapper {
+	width: 95%;
+	max-width: 1400px;
+	margin: 2% auto;
+}
+
+/* End ID styles */
+
+/* Tablet Styling */
+
+@media only screen and (min-width: 600px) and (max-width: 900px) {
+
+/* Begin general styles */
+
+	img {
+		display: none;
+	}
+
+/* Begin class styles */
+
+	
+
+/* Begin ID Styles */
+
+	#about-content p {
+		padding: 2%;
+	}
+
+	#navbar {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	#navbar ul {
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+
+/* End ID Styles */
+
+}
+
+/* Laptop style */
+
+@media only screen and (min-width: 901px) {
+
+/* Begin general styles */
+
+	img {
+		display: block;
+	}
+
+/* End general styles */
+
+/* Begin class styles */
+
+	.content {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-gap: 5px;
+		margin: 10px 0;
+	}
+
+	.image {
+		display: block;
+		justify-content: right;
+		padding-right: 5%;
+	}
+
+	.content img:first-child {
+		width: 100%;
+	}
+
+/* End class styles */
+
+/* Begin id styles */
+
+	#about-content p {
+		padding: 5px 10%;
+		line-height: 1.5;
+	}
+
+	#about-content img {
+		display: block;
+		border-radius: 4%;
+	}
+
+	#about-content figcaption {
+		display: block;
+		text-align: center;
+	}
+
+	#navbar {
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	}
+
+	#navbar ul {
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	}
+
+/* End id styles */
+
+}
+

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman</title>
+<!--  
+  This is a student project planned by Conner Batson and implemented using Google Gemini. The following is the prompt provided to Google Gemini at the time of generation, and is not guaranteed to produce the same results as the code below. Any changes made outside the scope of the original prompt were made by the author with suggestions provided by Google Gemini. See line 78 for the generated code:
+
+// Start of Prompt: //
+
+Based on the detailed outline below, code a complete one-page HTML5 website using JavaScript inside a script tag at the bottom of the page. Add comments for the main steps in the script to help a beginner understand the programming concepts used. Code the JavaScript with ES6 syntax but avoid arrow functions, ternary operators, and advanced array methods. 
+Outline for the game:
+
+Hangman Game:
+
+1\ Create a host
+
+2\ Create a player
+
+3\ Create a count of incorrect guesses
+
+4\ Assign the host a secret word that is at least three characters long and is in English
+
+5\ Create a displayed word as long as the secret word where each character is “_”
+
+6\ Create a container that contains the hangman and is white with a solid black border
+
+7\ Create a container that is tan and contains the displayed word and the inputs for the player
+
+8\ Show the player the displayed word so that it clearly shows how many “_” there are; for example, if the secret word is “apple”, then the displayed word looks like “_ _ _ _ _”
+
+9\ Put some inputs for entering letters and words inside the container under the displayed word
+
+10\ Tell the player that it is their turn
+
+11\ Let the player choose a letter from the English language or guess the word itself
+
+12\ Let the player submit their choice to the host
+
+13\ Let the host check the input to see if it is a valid input; a valid input is a single letter or a word consisting of three or more letters
+
+14\ Let the host choose from the following options:
+
+14a\ If the player choses a letter, then check if the letter is in the secret word
+14b\ If the player guesses the word, then check if the guess is the secret word
+
+15\ If the player guesses a word that is not the secret word, the player loses and the correct word is displayed
+
+16\ If the letter is in the secret word, then for each occurrence of that letter in the word, change the character in the displayed word from “_” to the letter at each respective position
+
+17\ If the letter is not in the secret word, then increment the count of incorrect guesses and display part of the hangman based on the following guidelines:
+
+17a\ First incorrect guess: Draw a solid black circle that represents the “head”
+17b\ Second: Draw a solid black 60px long line with one endpoint at the bottom of the head; this represents the “body”
+17c\ Third: Draw a solid black 40px long straight line off of the body for the “arm”; this “arm will be 10px below the head and have one endpoint on the body
+17d\ Fourth: Draw another “arm” on the opposite side of the body across from the first “arm”
+17e\ Fifth: Draw a solid black diagonal line from the bottom of the body for the “leg”; this “leg” will be 40 px long and have one endpoint on the bottom of the body.
+17f\ Sixth: Draw another leg on the opposite side of the body; after this the hangman is completed and the game ends
+
+18\ Each part of the hangman will be hidden initially, and will only be revealed with each incorrect guess; each part of the hangman should be seamlessly touching each relevant part and should not have white space between parts that should be touching each other
+
+19\ The area where the hangman is displayed is a container that has a solid black border
+
+20\ After the host is done, play returns to the player
+
+21\ Play repeats from line 7 until the displayed word does not have any “_” characters or the player makes six incorrect guesses.
+
+22\ If the player makes six incorrect guesses, then the player loses and the correct word is displayed
+
+23\ If the player changes every character in the displayed word to a letter, then the player wins
+
+24\ A message should display below the controls telling them whether its a win or loss; this message should be in its own container that has a color depending on the winning or losing status.
+
+25\ If the player wants to play again, then the player can reset the game; this should be also contained in the same space as the displayed word
+
+26\ Each valid input button should be clearly identifiable, and use unambiguous language
+
+// End of prompt //
+
+-->
+
+    <!-- CSS Styles -->
+    <style>
+
+* {
+    font-family: "Patrick Hand", sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: lightgray;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#hangman-container {
+    width: 200px;
+    height: 200px;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: white;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+#word-container {
+    background-color: tan;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#displayed-word {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.hangman-part {
+    position: absolute;
+    background-color: black;
+    display: none;
+}
+
+#head {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    top: 20px;
+    left: 85px;
+}
+
+#body {
+    width: 4px;
+    height: 60px;
+    top: 50px;
+    left: 98px;
+}
+
+#arm1 {
+    width: 40px;
+    height: 4px;
+    top: 60px;
+    left: 58px;
+}
+
+#arm2 {
+    width: 40px;
+    height: 4px;
+    top: 60px;
+    left: 100px;
+}
+
+#leg1 {
+    width: 4px;
+    height: 50px;
+    top: 106px;
+    left: 98px; /* Adjusted left value */
+    transform: rotate(-30deg);
+    transform-origin: top center;
+}
+
+#leg2 {
+    width: 4px;
+    height: 50px;
+    top: 106px;
+    left: 98px;
+    transform: rotate(30deg);
+    transform-origin: top center;
+}
+
+#message-container {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.input-field {
+  border: 2px solid #888;
+  border-radius: 20px;
+  padding: 5px 15px;
+  outline: none;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease; /* Smooth transitions */
+}
+
+.input-field:focus {
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue focus highlight */
+  border-color: #80bdff; /* Slightly darker border on focus */
+}
+
+button {
+  background-color: #2222ff;
+  color: white;
+}
+
+button:disabled,
+button[disabled] {
+  background-color: #2222aa;
+  color: grey;
+}
+
+    </style>
+
+</head>
+<body>
+    <div id="game-container">
+        <div id="hangman-container">
+            <div id="head" class="hangman-part"></div>
+            <div id="body" class="hangman-part"></div>
+            <div id="arm1" class="hangman-part"></div>
+            <div id="arm2" class="hangman-part"></div>
+            <div id="leg1" class="hangman-part"></div>
+            <div id="leg2" class="hangman-part"></div>
+        </div>
+        <div id="word-container">
+            <div id="displayed-word"></div>
+            <input type="text" id="letter-input" class="input-field" maxlength="1" placeholder="Enter a letter">
+            <button id="guess-letter" class="input-field">Guess Letter</button><br><br>
+            <input type="text" id="word-input" class="input-field" placeholder="Guess the word">
+            <button id="guess-word" class="input-field">Guess Word</button>
+            <button id="reset-button" class="input-field">Reset Game</button>
+        </div>
+        <div id="message-container"></div>
+    </div>
+
+    <script>
+        
+// Get elements from the DOM
+var displayedWordElement = document.getElementById('displayed-word');
+var letterInput = document.getElementById('letter-input');
+var wordInput = document.getElementById('word-input');
+var guessLetterButton = document.getElementById('guess-letter');
+var guessWordButton = document.getElementById('guess-word');
+var resetButton = document.getElementById('reset-button');
+var messageContainer = document.getElementById('message-container');
+var hangmanParts = document.querySelectorAll('.hangman-part');
+
+// Game variables
+var secretWord = '';
+var displayedWord = '';
+var incorrectGuesses = 0;
+
+// Function to start a new game
+function startGame() {
+  // Reset game state
+  incorrectGuesses = 0;
+  displayedWordElement.textContent = '';
+  messageContainer.textContent = '';
+  messageContainer.style.backgroundColor = '';
+  for (var i = 0; i < hangmanParts.length; i++)   {
+    hangmanParts[i].style.display = 'none';
+  }
+  //Choose a random word
+  var words = ["apple", "banana", "orange", "grape", "kiwi", "mango", "lemon", "melon", "peach", "berry"];
+  secretWord = words[Math.floor(Math.random() * words.length)];
+  displayedWord = '_'.repeat(secretWord.length);
+  displayedWordElement.textContent = displayedWord.split('').join(' ');
+}
+
+// Function to check the player's guess
+function checkGuess(guess, isWordGuess) {
+  if (isWordGuess) {
+    if (guess === secretWord) {
+      endGame(true);
+    } else {
+      endGame(false);
+    }
+  } else {
+    var letterFound = false;
+    var newDisplayedWord = '';
+    for (var i = 0; i < secretWord.length; i++)     {
+      if (secretWord[i] === guess) {
+        newDisplayedWord += guess;
+        letterFound = true;
+      } else if (displayedWord[i] !== '_'){
+        newDisplayedWord += displayedWord[i];
+      }
+      else {
+        newDisplayedWord += '_';
+      }
+    }
+    displayedWord = newDisplayedWord;
+    displayedWordElement.textContent = displayedWord.split('').join(' ');
+    if (!letterFound) {
+      incorrectGuesses++;
+      showHangmanPart();
+      if (incorrectGuesses >= 6) {
+        endGame(false);
+      }
+    }
+    if (!displayedWord.includes('_')) {
+      endGame(true);
+    }
+  }
+}
+
+// Function to show hangman parts
+function showHangmanPart() {
+  if (incorrectGuesses <= 6) {
+    hangmanParts[incorrectGuesses - 1].style.display = 'block';
+  }
+}
+
+// Function to end the game
+function endGame(isWin) {
+  if (isWin) {
+    messageContainer.textContent = "You Win!";
+    messageContainer.style.backgroundColor = "lightgreen";
+    if (confirm("You Win! The word was "+secretWord+". Play again?")) {
+      resetGame();
+      return;
+    }
+  } else {
+    messageContainer.textContent = "You Lose! The word was " + secretWord + ".";
+    messageContainer.style.backgroundColor = "lightcoral";
+    if (confirm("You Lose! The word was "+secretWord+". Play again?")) {
+      resetGame();
+      return;
+    }
+  }
+  letterInput.disabled = true;
+  wordInput.disabled = true;
+  guessLetterButton.disabled = true;
+  guessWordButton.disabled = true;
+}
+
+// Event listeners
+letterInput.addEventListener('keydown', function(event) {
+  // Check if the Enter key was pressed
+  if (event.key === "Enter" || event.keyCode === 13) {
+    event.preventDefault(); // Prevent form submission or newline
+    guessLetterButton.click(); // Trigger the button click
+  }
+});
+
+wordInput.addEventListener('keydown', function(event) {
+  // check if the Enter key was pressed
+  if (event.key === "Enter" || event.keyCode === 13) {
+    event.preventDefault();
+    guessWordButton.click();
+  }
+});
+
+guessLetterButton.addEventListener('click', function() {
+  var letter = letterInput.value.toLowerCase();
+  
+  if (letter === "") {
+    if (confirm("You have entered an empty input. This will be considered an incorrect guess. Continue?")) {
+      incorrectGuesses++;
+      showHangmanPart();
+      if (incorrectGuesses >= 6) {
+        endGame(false);
+      }
+    }
+    
+    letterInput.value = ''; // Clear the input field regardless of confirmation
+    return;
+  }
+  
+  if (letter.length === 1 && letter.match(/[a-z]/i)) {
+    checkGuess(letter, false);
+    letterInput.value = '';
+  }
+});
+
+guessWordButton.addEventListener('click', function() {
+  var word = wordInput.value.toLowerCase();
+  
+  // Check for empty input
+  if (word === "") {
+    if (!confirm("You have entered an empty input. This will be considered an incorrect guess. Continue?")) {
+      wordInput.value = ''; //Clear input field regardless of confirmation
+      return;
+    } else {
+      checkGuess(word, true);
+      wordInput.value = '';
+    }
+  }
+  
+  if (word.length >= 3 && word.match(/^[a-z]+$/i)){
+    checkGuess(word, true);
+    wordInput.value = '';
+  }
+});
+
+function resetGame() {
+  letterInput.disabled = false;
+  wordInput.disabled = false;
+  guessLetterButton.disabled = false;
+  guessWordButton.disabled = false;
+  startGame();
+}
+
+resetButton.addEventListener('click', function() {
+  resetGame();
+});
+
+// Start the game when the page loads
+startGame();
+
+    </script>
+
+</body>
+</html>

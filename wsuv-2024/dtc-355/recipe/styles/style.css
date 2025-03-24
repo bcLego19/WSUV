@@ -1,0 +1,460 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+/*	border: 0;*/
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* end meyers reset */
+
+
+
+/* main styles */
+
+* {
+/*	border: 1px solid red;*/
+}
+
+body {
+	background-color: #eeeeee;
+	font-size: 22px;
+}
+
+header {
+	display: grid;
+	grid-gap: 15px;
+}
+
+header p {
+	text-align: center;
+	padding: 0px 2%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Brush Script MT', 'Times New Roman';
+}
+
+p, li {
+	font-family: 'verdana', 'sans-serif';
+	margin-bottom: 10px;
+}
+
+#wrapper {
+	width: 90%;
+	max-width: 1000px;
+	margin: 7% auto;;
+	padding: 3%;
+}
+
+details[open] {
+	background-color: rgba(180, 180, 180, 0.4);
+	margin-bottom: 5px;
+}
+
+footer {
+	text-align: center;
+}
+
+h1 {
+	font-size: 3em;
+	font-weight: bold;
+	text-align: center;
+}
+
+img {
+	margin: 2% auto;
+}
+
+footer a:link, footer a:visited {
+	color: #fff;
+	text-decoration: none;
+	transition: color 0.25s ease-out, background-color 0.25s ease-out;
+}
+
+footer a:active, footer a:hover {
+	background-color: #eeeeee;
+	color: #000;
+	transition: color 0.25s ease-in, background-color 0.25s ease-in;
+}
+
+.image {
+	text-align: center;
+}
+
+.image1 {
+	background-image: url("../img/pizza-dough.jpeg");
+	background-repeat: no-repeat;
+	background-size: contain;
+	text-align: center;
+	margin: 1em auto;
+	width: 302px;
+	height: 201px;
+	border-radius: 50%;
+}
+
+.image2 {
+	background-image: url("../img/preparing-pizza.jpeg");
+	background-repeat: no-repeat;
+	background-size: contain;
+	text-align: center;
+	margin: 1em auto;
+	width: 221.1px;
+	height: 276.1px;
+	border-radius: 10%;
+	box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.3);
+}
+
+.image3 {
+	background-image: url("../img/cooked-pizza.jpeg");
+	background-repeat: no-repeat;
+	background-size: contain;
+	text-align: center;
+	margin: 1em auto;
+	width: 330px;
+	height: 219.6px;
+	border-radius: 0%;
+	box-shadow: inset 0px 0px 10px 10px #eeeeee;
+}
+
+#data, #ingredients, #steps, #footer {
+	margin: 2% auto;
+	padding: 1% 0px;
+}
+
+#data ul, #ingredients ul, #steps ul, #footer ul {
+	list-style-type: none;
+}
+
+#data {
+	font-size: .9em;
+}
+
+#data ul {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-gap: 10px;
+}
+
+#data li {
+	text-align: center;
+}
+
+#data span {
+	font-weight: bold;
+	color: var(--adobe-color-3a);
+	text-transform: uppercase;
+}
+
+#ingredients {
+	font-size: 1.2em;
+}
+
+#ingredients ul {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-gap: 10px;
+}
+
+#ingredients li {
+	text-align: center;
+	margin: 0.25% auto;
+}
+
+#ingredients span {
+	font-weight: bold;
+	color: var(--adobe-color-3a);
+}
+
+#steps {
+	font-size: 1.2em;
+}
+
+#steps ul {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-gap: 10px;
+}
+
+#steps li {
+	text-align: left;
+}
+
+#footer {
+	background-color: var(--adobe-color-1a);
+	color: #ffffff;
+	font-size: 1.2em;
+}
+
+#footer ul {
+	display: grid;
+	grid-template-columns: 1fr;
+}
+
+#footer li {
+	line-height: 1.16em;
+	text-align: center;
+	margin: 1% auto;
+}
+
+/* tablet size */
+
+@media only screen and (min-width: 600px) and (max-width: 900px) {
+
+	header p {
+		text-align: center;
+		padding: 0px 5%;
+	}
+
+	#data ul {
+		grid-template-columns: 1fr 1fr;
+		grid-gap: 10px;
+	}
+
+	#steps ul {
+		grid-template-columns: 1fr 1fr;
+		grid-gap: 10px;
+	}
+
+	#footer ul {
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-gap: 10px;
+	}
+
+}
+
+/* desktop size */
+
+@media only screen and (min-width: 901px) {
+
+	header p {
+		text-align: center;
+		padding: 0px 8%;
+	}
+
+	#data ul {
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-gap: 10px;
+	}
+
+	#steps ul {
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		grid-gap: 10px;
+	}
+
+	#footer ul {
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-gap: 10px;
+	}
+
+}
+
+/* class declaration begin */
+
+.text-shadow1 {
+	text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff,
+               1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+}
+
+.text-shadow2 {
+	text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000,
+               1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000;
+}
+
+.inverted-color {
+	color: #fff;
+}
+
+.color-1a {
+	color: var(--adobe-color-1a);
+}
+
+.color-2a {
+	color: var(--adobe-color-2a);
+}
+
+.color-3a {
+	color: var(--adobe-color-3a);
+}
+
+.color-4a {
+	color: var(--adobe-color-4a);
+}
+
+.color-5a {
+	color: var(--adobe-color-5a);
+}
+
+.color-1b {
+	color: var(--adobe-color-1b);
+}
+
+.color-2b {
+	color: var(--adobe-color-2b);
+}
+
+.color-3b {
+	color: var(--adobe-color-3b);
+}
+
+.color-4b {
+	color: var(--adobe-color-4b);
+}
+
+.color-5b {
+	color: var(--adobe-color-5b);
+}
+
+.background-color-1a {
+	background-color: var(--adobe-color-1a);
+}
+
+.background-color-2a {
+	background-color: var(--adobe-color-2a);
+}
+
+.background-color-3a {
+	background-color: var(--adobe-color-3a);
+}
+
+.background-color-4a {
+	background-color: var(--adobe-color-4a);
+}
+
+.background-color-5a {
+	background-color: var(--adobe-color-5a);
+}
+
+.background-color-1b {
+	background-color: var(--adobe-color-1b);
+}
+
+.background-color-2b {
+	background-color: var(--adobe-color-2b);
+}
+
+.background-color-3b {
+	background-color: var(--adobe-color-3b);
+}
+
+.background-color-4b {
+	background-color: var(--adobe-color-4b);
+}
+
+.background-color-5b {
+	background-color: var(--adobe-color-5b);
+}
+
+.background-shadow-color-1a {
+	background-color: var(--adobe-color-1a);
+	box-shadow: inset 0px 0px 2px 2px;
+}
+
+.background-shadow-color-2a {
+	box-shadow: 0px 0px 20px 20px var(--adobe-color-2a);
+}
+
+.background-shadow-color-3a {
+	background-color: var(--adobe-color-3a);
+	box-shadow: inset 0px 0px 2px 2px;
+}
+
+.background-shadow-color-4a {
+	background-color: var(--adobe-color-4a);
+	box-shadow: inset 0px 0px 2px 2px;
+}
+
+.background-shadow-color-5a {
+	background-color: var(--adobe-color-5a);
+	box-shadow: inset 0px 0px 2px 2px;
+}
+
+.background-shadow-color-1b {
+	background-color: var(--adobe-color-1b);
+	box-shadow: inset 0px 0px 4px 4px;
+}
+
+.background-shadow-color-2b {
+	background-color: var(--adobe-color-2b);
+	box-shadow: inset 0px 0px 4px 4px;
+}
+
+.background-shadow-color-3b {
+	background-color: var(--adobe-color-3b);
+	box-shadow: inset 0px 0px 4px 4px;
+}
+
+.background-shadow-color-4b {
+	background-color: var(--adobe-color-4b);
+	box-shadow: inset 0px 0px 4px 4px;
+}
+
+.background-shadow-color-5b {
+	background-color: var(--adobe-color-5b);
+	box-shadow: inset 0px 0px 4px 4px;
+}
+
+/* class declaration end */
+
+/* root start */
+
+:root {
+	/* color set a */
+
+	--adobe-color-1a: #3765a1;
+	--adobe-color-2a: #8ca137;
+	--adobe-color-3a: #a14137;
+	--adobe-color-4a: #4c3533;
+	--adobe-color-5a: #2b2e33;
+
+	/* color set b */
+
+	--adobe-color-1b: #4137a1;
+	--adobe-color-2b: #37a169;
+	--adobe-color-3b: #a14137;
+	--adobe-color-4b: #a19137;
+	--adobe-color-5b: #4c3533;
+
+}
+

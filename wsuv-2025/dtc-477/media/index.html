@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Video Quiz Blocks</title>
+
+	<style>
+
+* {
+	border: solid red 1px;
+}
+
+#scene-two, #scene-three, #scene-four {
+	display: none;
+}
+
+#wrapper {
+
+}
+
+	</style>
+
+</head>
+<body>
+
+	<header>
+		
+	</header>
+
+	<div id="wrapper">
+
+		<div id="scene-one">
+			<input id="quizButton" type="button" name="quizStart" value="Start the Quiz!" onclick="startVideo()">
+		</div>
+
+		<div id="scene-two">
+			<video id="video" src="blocks.mp4"></video>
+		</div>
+
+		<div id="scene-three">
+			<form id="quizForm">  
+				<h2>Quiz Time!</h2>
+
+				  <div class="question">
+				    <p>1. How many blue shaded cubes appear?</p>
+				    <label>
+				      <input type="radio" name="q1" value="5"> 5
+				    </label>
+				    <label>
+				      <input type="radio" name="q1" value="7"> 7
+				    </label>
+				    <label>
+				      <input type="radio" name="q1" value="9"> 9
+				    </label>
+				  </div>
+
+				  <div class="question">
+				    <p>2. How many red spheres appear?</p>
+				    <label>
+				      <input type="radio" name="q2" value="3"> 3
+				    </label>
+				    <label>
+				      <input type="radio" name="q2" value="5"> 5
+				    </label>
+				    <label>
+				      <input type="radio" name="q2" value="8"> 8
+				    </label>
+				  </div>
+
+				  <div class="question">
+				    <p>3. How many yellow pyramids appear?</p>
+				    <label>
+				      <input type="radio" name="q3" value="1"> 1
+				    </label>
+				    <label>
+				      <input type="radio" name="q3" value="2"> 2
+				    </label>
+				    <label>
+				      <input type="radio" name="q3" value="4"> 4
+				    </label>
+				  </div>
+
+				  <button type="button" onclick="checkAnswers()">Submit Quiz</
+				  </button>
+			</form>
+		</div>
+
+		<div id="scene-four"></div>
+		
+	</div>
+
+	<footer>
+		
+	</footer>
+
+	<script>
+// variable declarations
+const scene1 = document.getElementById("scene-one");
+const scene2 = document.getElementById("scene-two");
+const scene3 = document.getElementById("scene-three");
+const scene4 = document.getElementById("scene-four");
+
+const button = document.getElementById("quizButton");
+
+// function declarations
+
+// switch from scene one to scene two
+function startVideo() {
+	const scene1 = document.getElementById("scene-one");
+	const scene2 = document.getElementById("scene-two");
+	const scene3 = document.getElementById("scene-three");
+	const video = document.getElementById("video");
+
+	let time = 11;
+
+	console.log(scene1);
+	scene1.style.display = "none";
+	scene2.style.display = "grid";
+	video.play();
+
+	video.addEventListener('timeupdate',  function() {
+		const time = 11;
+
+		if (video.ended) {
+			scene2.style.display = "none";
+			scene3.style.display = "grid";
+		}
+
+	}); // end addeventListener
+}
+
+function checkAnswers() {
+    var q1Answer = document.querySelector('input[name="q1"]:checked').value;
+    var q2Answer = document.querySelector('input[name="q2"]:checked').value;
+    var q3Answer = document.querySelector('input[name="q3"]:checked').value;
+
+    var correctAnswers = {
+        q1: "7",
+        q2: "5",
+        q3: "2"
+    };
+
+    var numCorrect = 0;
+
+    if (q1Answer === correctAnswers.q1) {
+        numCorrect++;
+    }
+    if (q2Answer === correctAnswers.q2) {
+        numCorrect++;
+    }
+    if (q3Answer === correctAnswers.q3) {
+        numCorrect++;
+    }
+
+    var resultsMessage = "You got " + numCorrect + " out of 3 questions correct.";
+    alert(resultsMessage);
+}
+
+	</script>
+
+</body>
+</html>
