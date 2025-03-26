@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Canvas Smiley Face</title>
+    <style>
+        #myCanvas {
+            border: 1px solid black;
+            display: block;
+            margin: 5% auto;
+            /*width: 600px;*/ 
+            /*height: 600px;*/
+        }
+        /* 
+         Important: The CSS width & height only affect the display size, NOT the actual drawing size of the canvas.
+           - The drawing area is controlled by the DOM properties: 
+             <canvas width="400" height="400">
+           - Even though CSS stretches the canvas to 600px × 600px, the drawing commands still treat it as 400px × 400px.
+      */
+
+        /* Fixed coordinates display in top-right */
+        #coordinates {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: black;
+            color: white;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+
+        #navbar {
+            width: 100%;
+            height: 50px;
+        }
+
+        #navbar a {
+            width: 100px;
+            height: 50px;
+            background: lightblue;
+            color: black;
+            border-right: 2px solid black;
+            padding: 0 5px;
+            text-decoration: none;
+        }
+
+        #navbar a:hover {
+            background: blue;
+            color: whitesmoke;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar">
+        <a href="./index.html">Home</a>
+        <a href="./bouncing-ball.html">Bouncing Ball</a>
+    </div>
+    <canvas width="600" height="600" id="myCanvas"></canvas>
+    <div id="coordinates">(x, y)</div>
+    <div class="controls">
+        <div class="control-item">
+            <label for="direction">Direction:</label>
+            <input type="range" id="direction" min="-1" max="1" step="2" value="1"> (-1: Left, 1: Right)
+        </div>
+        <div class="control-item">
+            <label for="velocity">Velocity:</label>
+            <input type="range" id="velocity" min="1" max="10" value="5" step="0.5">
+            <span id="velocityValue">5</span>
+        </div>
+        <div class="control-item">
+            <label for="gravity">Gravity:</label>
+            <input type="range" id="gravity" min="0.05" max="0.5" value="0.2" step="0.01">
+            <span id="gravityValue">0.2</span>
+        </div>
+        <div class="control-item">
+            <label for="friction">Friction:</label>
+            <input type="range" id="friction" min="0.1" max="0.99" value="0.95" step="0.01">
+            <span id="frictionValue">0.95</span>
+        </div>
+        <button id="reset">Reset Animation</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Get slider elements
+        const directionSlider = document.getElementById('direction');
+        const velocitySlider = document.getElementById('velocity');
+        const gravitySlider = document.getElementById('gravity');
+        const frictionSlider = document.getElementById('friction');
+        const resetButton = document.getElementById('reset');
+
+        // Update slider values dynamically
+        const velocitySliderElem = document.getElementById('velocity');
+        const gravitySliderElem = document.getElementById('gravity');
+        const frictionSliderElem = document.getElementById('friction');
+        const velocityValueSpan = document.getElementById('velocityValue');
+        const gravityValueSpan = document.getElementById('gravityValue');
+        const frictionValueSpan = document.getElementById('frictionValue');
+
+        let ball;
+        let newDirection = parseInt(directionSlider.value);
+        let newVelocity = parseFloat(velocitySlider.value);
+        let newGravity = parseFloat(gravitySlider.value);
+        let newFriction = parseFloat(frictionSlider.value);
+
+        function resetBall(direction = 1, initialVelocity = 5, gravityValue = 0.2, frictionValue = 0.95) {
+            ball = {
+                x: 10,
+                y: 10,
+                radius: 10,
+                dx: initialVelocity * direction,
+                dy: 0,
+                gravity: gravityValue,
+                bounceFactor: 0.7,
+                friction: frictionValue,
+            };
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function update() {
+            ball.dy += ball.gravity;
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            if (ball.y + ball.radius > canvas.height) {
+                ball.y = canvas.height - ball.radius;
+                ball.dy *= -ball.bounceFactor;
+                ball.dx *= ball.friction;
+            }
+
+            if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+                ball.dx *= -1;
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            update();
+            drawBall();
+            requestAnimationFrame(animate);
+        }
+
+        // Initial reset
+        resetBall();
+        animate();
+
+        // Event listeners for sliders (only update the 'new' variables)
+        directionSlider.addEventListener('input', () => {
+            newDirection = parseInt(directionSlider.value);
+        });
+
+        velocitySlider.addEventListener('input', () => {
+            newVelocity = parseFloat(velocitySlider.value);
+        });
+
+        gravitySlider.addEventListener('input', () => {
+            newGravity = parseFloat(gravitySlider.value);
+        });
+
+        frictionSlider.addEventListener('input', () => {
+            newFriction = parseFloat(frictionSlider.value);
+        });
+
+        velocitySliderElem.addEventListener('input', () => {
+            velocityValueSpan.textContent = velocitySliderElem.value;
+        });
+
+        gravitySliderElem.addEventListener('input', () => {
+            gravityValueSpan.textContent = parseFloat(gravitySliderElem.value).toFixed(2);
+        });
+
+        frictionSliderElem.addEventListener('input', () => {
+            frictionValueSpan.textContent = parseFloat(frictionSliderElem.value).toFixed(2);
+        });
+
+        // Event listener for reset button (apply the 'new' values)
+        resetButton.addEventListener('click', () => {
+            resetBall(newDirection, newVelocity, newGravity, newFriction);
+        });
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Canvas Smiley Face</title>
+    <style>
+        #myCanvas {
+            background: whitesmoke;
+            border: 1px solid black;
+            display: block;
+            margin: 5% auto;
+            /*width: 600px;*/ 
+            /*height: 600px;*/
+        }
+        /* 
+         Important: The CSS width & height only affect the display size, NOT the actual drawing size of the canvas.
+           - The drawing area is controlled by the DOM properties: 
+             <canvas width="400" height="400">
+           - Even though CSS stretches the canvas to 600px × 600px, the drawing commands still treat it as 400px × 400px.
+      */
+
+        /* Fixed coordinates display in top-right */
+        #coordinates {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: black;
+            color: white;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+
+        #navbar {
+            width: 100%;
+            height: 50px;
+        }
+
+        #navbar a {
+            width: 100px;
+            height: 50px;
+            background: lightblue;
+            color: black;
+            border-right: 2px solid black;
+            padding: 0 5px;
+            text-decoration: none;
+        }
+
+        #navbar a:hover {
+            background: blue;
+            color: whitesmoke;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar">
+        <a href="./index.html">Home</a>
+        <a href="./bouncing-ball.html">Bouncing Ball</a>
+    </div>
+    <canvas width="600" height="600" id="myCanvas"></canvas>
+    <div id="coordinates">(x, y)</div>
+    <script>
+        /*
+            Canvas with different shapes
+        */
+        // Get the canvas and 2D drawing context
+        const c = document.getElementById("myCanvas");
+        const ctx = c.getContext("2d");
+        //The getContext("2d") method gives access to a bunch of drawing functions for shapes, text, images, and paths. There's also "webgl" for 3D graphics, but "2d" is the most common.
+        const coordDisplay = document.getElementById("coordinates"); // box to display mouse hover canvas x,y coordinates
+
+        // const array of colors
+        const colors = [
+            "red",
+            "blue",
+            "green",
+            "yellow",
+            "darkblue",
+            "pink",
+            "grey",
+            "orange",
+            "teal",
+            "darkred",
+            "purple",
+            "goldenrod",
+            "black",
+            "darkgreen",
+            "navy",
+            "brown",
+            "chocolate",
+            "indigo",
+            "maroon",
+            "midnightblue"
+        ];
+        let index = 4; // start at the fifth item (js arrays start at zero)
+        let index2 = 6; // start at the seventh item
+        let index3 = 1; // start at the second item
+        let index4 = 5; // start at the sixth item
+        let index5 = 0; // start at the first item
+
+        // constants controlling the min/max speed
+        const MIN_SPEED = 0.5;
+        const MAX_SPEED = 5.0;
+
+        // constant representing the cube being drawn
+        const cube = {
+            x: c.width / 2, // Starting center X
+            y: c.height / 2, // Starting center Y
+            size: 50, // Cube size
+            rotation: 0, // Initial rotation
+            speed: 2, // Movement speed
+            rotationSpeed: 0.02, // Rotation speed (radians)
+            dx: 1, // Direction X
+            dy: 1 // Direction Y
+        };
+
+        // const representing a hexagon
+        const hexagon = createPolygon(
+            c.width / 2, // x position
+            c.height / 2, // y position
+            50, // radius
+            6, // sides
+            0, // rotation
+            2, // speed
+            0.02, // rotationSpeed
+            -1, // dx
+            1, // dy
+            'lightgreen', // fillStyle
+            'lightgreen', // strokeStyle
+            3 // lineWidth
+        );
+
+        // five sided polygon
+        const pentagon = createPolygon(
+            c.width / 2, // x position
+            c.height / 2, // y position
+            30,
+            5,
+            0,
+            1,
+            0.01,
+            -1,
+            -1,
+            'orange',
+            'orange',
+            2
+        );
+
+        // twenty sided polygon (forget the actual name)
+        const twentySided = createPolygon(
+            c.width / 2, // x position
+            c.height / 2, // y position
+            50,
+            20,
+            0,
+            1,
+            0.01, // rotation speed
+            1,
+            -1,
+            'pink',
+            'pink',
+            2
+        );
+
+        // create a triangle using polygon function
+        const triangle = createPolygon(
+            300,
+            300,
+            50,
+            3,
+            0,
+            1,
+            0.01, // rotation speed
+            1,
+            1,
+            'teal',
+            'teal',
+            2
+        );
+
+        // square using polygon function
+        const square = createPolygon(
+            300,
+            300,
+            50,
+            4,
+            0,
+            1,
+            0.01, // rotation speed
+            1,
+            1,
+            'tan',
+            'tan',
+            2
+        );
+
+        // triangle using dedicated triangle function
+        const customTriangle = createTriangle(
+            50, 50,
+            150, 50,
+            50, 150,
+            0, 2, 0.01, 1, 1,
+            'lightcoral', 'darkred', 3
+        );
+
+        // triangle using dedicated triangle function
+        const customTriangle2 = createTriangle(
+            0, 100,
+            100, 0,
+            50, 150,
+            0, 2, 0.01, 1, 1,
+            'blue', 'lightblue', 3
+        );
+
+        // triangle using dedicated triangle function
+        const customTriangle3 = createTriangle(
+            0, 0,
+            100, 0,
+            50, 100,
+            0, 2, 0.01, 1, 1,
+            'lightgreen', 'green', 3
+        );
+
+        // function fo creating an n-sided polygon
+        function createPolygon(x, y, radius, sides, rotation, speed, rotationSpeed, dx, dy, fillStyle, strokeStyle, lineWidth) {
+            return {
+                // object variables
+                x: x,
+                y: y,
+                radius: radius,
+                sides: sides,
+                rotation: rotation,
+                speed: speed,
+                rotationSpeed: rotationSpeed,
+                dx: dx,
+                dy: dy,
+                // optional object variables
+                fillStyle: fillStyle || 'lightblue', // Default fill color
+                strokeStyle: strokeStyle || 'black', // Default stroke color
+                lineWidth: lineWidth || 2, // Default line width
+
+                // function to perform math about where the points are
+                getPoints: function() {
+                    const points = [];
+                    for (let i = 0; i < this.sides; i++) {
+                        const angle = (2 * Math.PI / this.sides) * i;
+                        points.push({
+                            x: this.x + this.radius * Math.cos(angle),
+                            y: this.y + this.radius * Math.sin(angle)
+                        });
+                    }
+                    return points;
+                },
+
+                // function to draw the polygon
+                draw: function(ctx, str = "") {
+                    const points = this.getPoints();
+
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation);
+
+                    ctx.beginPath();
+                    ctx.moveTo(points[0].x - this.x, points[0].y - this.y);
+
+                    for (let i = 1; i < this.sides; i++) {
+                        ctx.lineTo(points[i].x - this.x, points[i].y - this.y);
+                    }
+
+                    ctx.closePath();
+
+                    if (str === "") ctx.fillStyle = this.fillStyle;
+                    else ctx.fillStyle = str;
+                    ctx.fill();
+
+                    if (str === "") ctx.strokeStyle = this.strokeStyle;
+                    else ctx.strokeStyle = str;
+                    ctx.lineWidth = this.lineWidth;
+                    ctx.stroke();
+
+                    ctx.restore();
+                },
+
+                // function to update the polygon
+                update: function(canvas, randomIndex = -1) {
+                    this.x += this.dx * this.speed;
+                    this.y += this.dy * this.speed;
+                    this.rotation += this.rotationSpeed;
+
+                    if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
+                        this.dx *= -1 * getRandomFloat(0.75, 1.25);
+
+                        if(randomIndex >= 0) randomIndex = getRandomInt(0, colors.length-1);
+                    }
+                    if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
+                        this.dy *= -1 * getRandomFloat(0.75, 1.25);
+
+                        if(randomIndex >= 0) randomIndex = getRandomInt(0, colors.length-1);
+                    }
+
+                    if (Math.abs(this.dx) > MAX_SPEED || Math.abs(this.dx) < MIN_SPEED) {
+                        if (this.dx >= 0) {
+                            this.dx = 1;
+                        } else {
+                            this.dx = -1;
+                        }
+                    }
+                    if (Math.abs(this.dy) > MAX_SPEED || Math.abs(this.dy) < MIN_SPEED) {
+                        if (this.dy >= 0) {
+                            this.dy = 1;
+                        } else {
+                            this.dy = -1;
+                        }
+                    }
+
+                    return randomIndex;
+                }
+            };
+        }
+
+        function createTriangle(x1, y1, x2, y2, x3, y3, rotation, speed, rotationSpeed, dx, dy, fillStyle, strokeStyle, lineWidth) {
+            return {
+                points: [{ x: x1, y: y1 }, { x: x2, y: y2 }, { x: x3, y: y3 }],
+                rotation: rotation,
+                speed: speed,
+                rotationSpeed: rotationSpeed,
+                dx: dx,
+                dy: dy,
+                fillStyle: fillStyle || 'yellow',
+                strokeStyle: strokeStyle || 'orange',
+                lineWidth: lineWidth || 2,
+                draw: function(ctx) {
+                    ctx.save();
+                    ctx.translate((this.points[0].x + this.points[1].x + this.points[2].x) / 3, (this.points[0].y + this.points[1].y + this.points[2].y) / 3);
+                    ctx.rotate(this.rotation);
+
+                    ctx.beginPath();
+                    ctx.moveTo(this.points[0].x - (this.points[0].x + this.points[1].x + this.points[2].x) / 3, this.points[0].y - (this.points[0].y + this.points[1].y + this.points[2].y) / 3);
+                    ctx.lineTo(this.points[1].x - (this.points[0].x + this.points[1].x + this.points[2].x) / 3, this.points[1].y - (this.points[0].y + this.points[1].y + this.points[2].y) / 3);
+                    ctx.lineTo(this.points[2].x - (this.points[0].x + this.points[1].x + this.points[2].x) / 3, this.points[2].y - (this.points[0].y + this.points[1].y + this.points[2].y) / 3);
+                    ctx.closePath();
+
+                    ctx.fillStyle = this.fillStyle;
+                    ctx.fill();
+
+                    ctx.strokeStyle = this.strokeStyle;
+                    ctx.lineWidth = this.lineWidth;
+                    ctx.stroke();
+
+                    ctx.restore();
+                },
+                update: function(canvas) {
+                    let centerX = (this.points[0].x + this.points[1].x + this.points[2].x) / 3;
+                    let centerY = (this.points[0].y + this.points[1].y + this.points[2].y) / 3;
+                    centerX+= this.dx * this.speed;
+                    centerY+= this.dy * this.speed;
+
+                    for(let i = 0; i < this.points.length; i++){
+                        this.points[i].x += this.dx * this.speed;
+                        this.points[i].y += this.dy * this.speed;
+                    }
+
+                    this.rotation += this.rotationSpeed;
+
+                    let maxX = Math.max(this.points[0].x, this.points[1].x, this.points[2].x);
+                    let minX = Math.min(this.points[0].x, this.points[1].x, this.points[2].x);
+                    let maxY = Math.max(this.points[0].y, this.points[1].y, this.points[2].y);
+                    let minY = Math.min(this.points[0].y, this.points[1].y, this.points[2].y);
+
+                    if (maxX > canvas.width || minX < 0) {
+                        this.dx *= -1;
+                    }
+                    if (maxY > canvas.height || minY < 0) {
+                        this.dy *= -1;
+                    }
+                }
+            };
+        }
+
+        // Function to generate a random integer within a range
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Function to generate a random integer within a range
+        function getRandomFloat(min, max) {
+            return (Math.random() * (max - min)) + min;
+        }
+
+        // function to draw the square
+        function drawCube(fillColor) {
+            ctx.save(); // Save the current state
+            ctx.translate(cube.x, cube.y); // Move origin to cube's center
+            ctx.rotate(cube.rotation); // Rotate the cube
+
+            ctx.fillStyle = fillColor;
+            ctx.fillRect(-cube.size / 2, -cube.size / 2, cube.size, cube.size); // Draw the cube
+
+            ctx.strokeStyle = fillColor;
+            ctx.lineWidth = 2;
+            ctx.strokeRect(-cube.size / 2, -cube.size / 2, cube.size, cube.size);
+
+            ctx.restore(); // Restore the saved state
+        }
+
+        // function that updates the square
+        function update() {
+            // Update cube position
+            cube.x += cube.dx * cube.speed;
+            cube.y += cube.dy * cube.speed;
+            cube.rotation += cube.rotationSpeed;
+
+            // Bounce off edges
+            if (cube.x + cube.size / 2 > c.width || cube.x - cube.size / 2 < 0) {
+                cube.dx *= -1 * getRandomFloat(0.75, 1.25);
+                index = getRandomInt(0, colors.length - 1);
+
+                // increases the cube size by 2
+                if (cube.size < 101) cube.size += 2;
+                else cube.size = 40;
+            }
+            if (cube.y + cube.size / 2 > c.height || cube.y - cube.size / 2 < 0) {
+                cube.dy *= -1 * getRandomFloat(0.75, 1.25);
+                index = getRandomInt(0, colors.length - 1);
+
+                // increases the cube size by 2
+                if (cube.size < 101) cube.size += 2;
+                else cube.size = 40;
+            }
+
+            // if dx speed too high or low, it gets set to 1 or -1
+            // based on direction of travel
+            if (Math.abs(cube.dx) > MAX_SPEED || Math.abs(cube.dx < MIN_SPEED)) {
+                if (cube.dx > 0) {
+                    cube.dx = 1;
+                } else {
+                    cube.dx = -1;
+                }
+
+            }
+
+            // Same as dx, dy changes to 1 or -1 if speed too high/low
+            if (Math.abs(cube.dy) > MAX_SPEED || Math.abs(cube.dy < MIN_SPEED)) {
+                if (cube.dy >= 0) {
+                    cube.dy = 1;
+                } else {
+                    cube.dy = -1;
+                }
+
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, c.width, c.height); // Clear the canvas
+            index2 = hexagon.update(c, index2);
+            hexagon.draw(ctx, colors[index2]);
+
+            index3 = pentagon.update(c, index3);
+            pentagon.draw(ctx, colors[index3]);
+
+            index4 = twentySided.update(c); // stays the same color
+            twentySided.draw(ctx, colors[index4]);
+
+            index5 = triangle.update(c, index5);
+            triangle.draw(ctx, colors[index5]);
+
+            // polygon square
+            index5 = square.update(c, index5);
+            square.draw(ctx, colors[index5]);
+
+            customTriangle.update(c);
+            customTriangle.draw(ctx);
+
+            customTriangle2.update(c);
+            customTriangle2.draw(ctx);
+
+            customTriangle3.update(c);
+            customTriangle3.draw(ctx);
+
+            update();
+            drawCube(colors[index]);
+            requestAnimationFrame(animate); // Schedule the next frame
+        }
+
+        animate(); // Start the animation loop
+
+    </script>
+</body>
+</html>
