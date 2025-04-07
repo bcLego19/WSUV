@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Conner Batson - Build-a-Computer</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+	<!-- DISCLAIMER ABOUT AI USE:
+		The author, by admission, has collaborated with generative AI in the following ways:
+		>> Analysis of historical references to the physical exhibit
+		>> Suggestions for getting started on recreation in js
+		>> Constructive feedback on specific coding challenges
+		>> Recommendations for resolving javascript errors
+	-->
+
+	<style>
+		/* id styles */
+
+		#wrapper {
+		  min-width: 1200px;
+		  width: auto;
+		  height: 800px;
+		}
+
+		#drag-canvas{
+		  border: 1px solid black;
+		  margin: 10px 5%;
+		}
+
+		/* general styles */
+    body {
+      background-color: lightblue;
+    }
+    
+		header, h1, h2, h3, h4, h5 {
+		  font-family: "Play", sans-serif;
+		}
+
+		header div {
+		  padding: 5px;
+		  width: auto;
+		  height: 120px;
+		  background-color: lightgrey;
+		  font-size: 30px;
+		}
+
+		header span{
+		  font-size: 24px;
+		  float: right;
+		}
+	</style>
+</head>
+<body>
+	<div id="wrapper">
+		<header>
+			<div>
+				<h1>Build-A-Computer
+					<span>Conner Batson 4-7-2025</span>
+				</h1>
+			</div>
+		</header>
+
+		<div>
+			<canvas id="drag-canvas" width="1200" height="600"></canvas>
+		</div>
+	</div>
+
+	<script>
+// get elements from the HTML document using their IDs or selectors
+const canvas = document.querySelector("#drag-canvas");
+const context = canvas.getContext("2d");
+const FONT_FAMILY = "Raleway, Arial";
+/* 
+const coordDisplay = document.querySelector("#coordinates");
+const overlapDisplay = document.querySelector("#isOver");
+ */
+let currentlyDragging = null;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let isDragging = false;
+
+// Class definition for creating the monitor viewport
+class Monitor {
+  // a monitor needs x, y, width, height, and a highlight color
+  constructor (positionX, positionY, width = 100, height = 200, highlightColor = "orange") {
+    this.posX = positionX;
+    this.posY = positionY;
+    this.width = width;
+    this.height = height;
+    this.highlight = highlightColor;
+    this.title = "";
+    this.text = "";
+    this.description = "";
+    this.buffer = 100;
+    this.isHover = false;
+  }
+  
+  // set text and description
+  setMonitorValues(text, description) {
+    this.text = text;
+    this.description = description;
+  }
+  
+  /* Solution courtesy of https://stackoverflow.com/questions/2936112/text-wrap-in-a-canvas-element */
+  getLines(ctx, text, maxWidth) {
+    let words = text.split(" ");
+    let lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      let word = words[i];
+      let width = ctx.measureText(currentLine + " " + word).width;
+      if (width < maxWidth) {
+        currentLine += " " + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    lines.push(currentLine);
+    return lines;
+  }
+  
+  // draw the entire monitor, starting with outer board and going to inner board
+  drawBoard(ctx, title, text) {
+    this.drawBoardOuter(ctx);
+    this.drawBoardInner(ctx, title, text);
+  }
+  
+  // draw the inner rectangle for the monitor
+  drawBoardInner(ctx, title = null, text = null, fillColor = "") {
+    // console.log("ctx: "+ctx);
+    // console.log("title: "+title+"; text: "+text);
+    // set title and text if not null
+    if (title != null) this.title = title;
+    if (text != null) this.text = text;
+    // set a buffer for the inner rectangle of the monitor
+    let buffer = 15;
+    let innerX = this.posX + buffer;
+    let innerY = this.posY + buffer;
+    let innerWidth = this.width - (2*buffer);
+    let textX = innerX + 10;
+    let textY = innerY + 25;
+    // inner rectangle
+    if(fillColor) ctx.fillStyle = fillColor;
+    else ctx.fillStyle = "black";
+    ctx.strokeRect(innerX, innerY, innerWidth, this.height - (2*buffer));
+    ctx.fillRect(innerX, innerY, innerWidth, this.height - (2*buffer));
+    ctx.strokeRect(this.posX, this.posY + this.height, this.width, this.buffer);
+    // initialize variables for generating text
+    let textFont = 20;
+    let defaultTitle = "Welcome!";
+    let defaultText = "Add or remove a component to get started! Once you are done, you can click the system check button to see if your computer works! Don't worry about the power, its already installed!";
+    let formattedText = null;
+    let screenLength = innerWidth - 15;
+    
+    if (title == null) this.title = defaultTitle;
+    if (text == null) this.text = defaultText;
+    
+    // set the ctx fill style and font
+    ctx.fillStyle = "lime";
+    ctx.font = `${textFont}px ` + FONT_FAMILY;
+    textFont = 36;
+    textY += 20;
+    ctx.font = `${textFont}px ` + FONT_FAMILY;
+
+    // add title if exists
+    if (this.title != "") {
+      ctx.fillText(this.title, textX, textY, screenLength);
+      textY += textFont;
+    } else if(title != null) {
+      ctx.fillText(title, textX, textY, screenLength);
+      textY += textFont;
+    } else {
+      
+    }
+    
+    // set the ctx fill style and font for regular text
+    textFont = 20;
+    ctx.fillStyle = "lime";
+    ctx.font = `${textFont}px `+FONT_FAMILY;
+    
+    // display the normal text field if exists. Else, display default text.
+    if (this.text != "") {
+      formattedText = this.getLines(ctx, this.text, screenLength);
+    } else if (text != null && text.isArray == false) {
+      formattedText = this.getLines(ctx, text, screenLength);
+    } else {
+      formattedText = this.getLines(ctx, defaultText, screenLength);
+    }
+    
+    for ( i = 0; i < formattedText.length; i++ ) {
+      if(formattedText.length == 1) {
+        ctx.fillText(formattedText[i], textX, textY + textFont*i, screenLength);
+      } else {
+        ctx.fillText(formattedText[i], textX, textY + textFont*i, screenLength);
+      }
+    }
+  }
+  
+  // draw the outside of the monitor
+  drawBoardOuter(ctx) {
+    // outer rectangle
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "tan";
+    ctx.fillRect(this.posX, this.posY, this.width, this.height);
+    ctx.strokeRect(this.posX, this.posY, this.width, this.height);
+  }
+  
+  // draw the system check button
+  drawButton(ctx) {
+    let circleX = this.posX + this.width * 2 / 3;
+    let circleY = this.posY + this.height + this.buffer/2;
+    let radius = (this.buffer / 2) - 10;
+    ctx.fillColor = this.highlight;
+    ctx.beginPath();
+    ctx.arc(circleX, circleY, radius, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.closePath();
+    ctx.stroke();
+  }
+  
+  // draw the highlights for the system check button
+  drawHighlight(ctx) {
+    if(this.isHover) {
+      // variables to hold starting positions
+      let startX1 = this.posX + this.width * 2 / 3 - this.buffer / 2;
+      let startY1 = this.posY + this.height + this.buffer / 2;
+      let startX2 = this.posX + this.width * 2 / 3 + this.buffer / 2;
+      let diagY = 5;
+      
+      ctx.strokeStyle = this.highlight;
+      
+      // draw the first line
+      ctx.beginPath();
+      ctx.fillColor = "";
+      ctx.strokeColor = this.highlight;
+      ctx.moveTo(startX1, startY1);
+      ctx.lineTo(startX1 - 20, startY1);
+      ctx.closePath();
+      ctx.stroke();
+      
+      // draw the second line
+      ctx.beginPath();
+      ctx.fillColor = "";
+      ctx.strokeColor = this.highlight;
+      ctx.moveTo(startX1, startY1 + (4*diagY));
+      ctx.lineTo(startX1 - 20, startY1 + (6*diagY));
+      ctx.closePath();
+      ctx.stroke();
+      
+      // draw the third line
+      ctx.beginPath();
+      ctx.fillColor = "";
+      ctx.strokeColor = this.highlight;
+      ctx.moveTo(startX1, startY1 - (4*diagY));
+      ctx.lineTo(startX1 - 20, startY1 - (6*diagY));
+      ctx.closePath();
+      ctx.stroke();
+      
+      // draw the first line on the other side
+      ctx.beginPath();
+      ctx.fillColor = "";
+      ctx.strokeColor = this.highlight;
+      ctx.moveTo(startX2, startY1);
+      ctx.lineTo(startX2 + 20, startY1);
+      ctx.closePath();
+      ctx.stroke();
+      
+      // draw the sedond opposite line
+      ctx.beginPath();
+      ctx.fillColor = "";
+      ctx.strokeColor = this.highlight;
+      ctx.moveTo(startX2, startY1 + (4*diagY));
+      ctx.lineTo(startX2 + 20, startY1 + (6*diagY));
+      ctx.closePath();
+      ctx.stroke();
+      
+      // draw the third opposite line
+      ctx.beginPath();
+      ctx.fillColor = "";
+      ctx.strokeColor = this.highlight;
+      ctx.moveTo(startX2, startY1 - (4*diagY));
+      ctx.lineTo(startX2 + 20, startY1 - (6*diagY));
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+  
+  drawButtonLabel(ctx) {
+    // variables for x and y of text
+    let textX = this.posX + this.buffer / 2;
+    let textY = this.posY + this.height + this.buffer / 2 + 10;
+    // change stroke color and stroke style
+    ctx.strokeColor = "black";
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "black";
+    // add the text in 30px Arial;
+    ctx.font = "30px "+FONT_FAMILY;
+    ctx.fillText("System Check", textX, textY);
+  }
+  
+  drawArrowToButton(ctx) {
+    // variables to determine start of arrow
+    let startX = this.posX + this.width / 2 - 20;
+    let startY = this.posY + this.height + this.buffer / 2 - 5;
+    // set colors to highlight color
+    ctx.strokeColor = this.highlight;
+    ctx.strokeStyle = this.highlight;
+    ctx.fillStyle = this.highlight;
+    // starting position
+    ctx.moveTo(startX, startY);
+    // start drawing shape
+    ctx.lineTo(startX + 20, startY);
+    ctx.lineTo(startX + 20, startY - 10);
+    ctx.lineTo(startX + 35, startY + 5);
+    ctx.lineTo(startX + 20, startY + 20);
+    ctx.lineTo(startX + 20, startY + 10);
+    ctx.lineTo(startX, startY + 10);
+    ctx.lineTo(startX, startY);
+    ctx.closePath();
+    ctx.fill();
+    // stroke the shape
+    ctx.stroke();
+  }
+  
+  // main driver code that handles drawing the monitor
+  draw(ctx, title, text) {
+    this.drawButtonLabel(ctx);
+    this.drawArrowToButton(ctx);
+    this.drawButton(ctx);
+    this.drawHighlight(ctx);
+    this.drawBoard(ctx, title, text);
+  }
+  
+  // Method to check if a given mouse coordinate is inside the bounds of the button
+  isOverButton(mouseX, mouseY) {
+    // get circle position x and y
+    let circleX = this.posX + this.width * 2 / 3;
+    let circleY = this.posY + this.height + this.buffer/2;
+    // get circle radius
+    let radius = (this.buffer / 2) - 10;
+    // get distance x and y using mouse and circle position
+    let distX = mouseX - circleX;
+    let distY = mouseY - circleY;
+    // calculate the hypotenuse via pythagorean theorem
+    // (h*h) = (a*a) + (b*b) OR h = square root of ((a*a) + (b*b))
+    let h = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
+    // return whether hypotenuse is smaller than circle radius
+    return (
+      h <= radius
+    );
+  }
+}
+
+// Class definition for creating rectangle objects
+class Rectangle {
+  constructor(width, height, posX, posY, fillColor, text="") {
+    this.width = width;
+    this.height = height;
+    this.currX = posX;
+    this.currY = posY;
+    this.fillColor = fillColor;
+    this.textValue = text;
+    this.originalX = posX; // Store original X position
+    this.originalY = posY; // Store original Y position
+    this.inPort = null; // Keep track of which port it is in, null if not in a port
+  }
+
+  // Method to draw the rectangle on the canvas
+  draw(ctx) {
+    ctx.fillStyle = this.fillColor;
+    ctx.fillRect(this.currX, this.currY, this.width, this.height);
+    if (this.textValue) {
+      ctx.fillStyle = "black";
+      ctx.font = "12px "+FONT_FAMILY;
+      ctx.fillText(this.textValue, this.currX + this.width/6, this.currY + this.height/2 + 5);
+    }
+  }
+
+  // Method to reset the position of the rectangle to its original coordinates
+  resetPosition() {
+    this.currX = this.originalX;
+    this.currY = this.originalY;
+    this.inPort = null; // Clear the inPort property when resetting
+  }
+}
+
+// Class definition for creating "Port" objects
+class Port {
+  // Removed currStrokeStyle, keep the style consistent
+  isActive = false;
+  occupiedShape = null; // Keep track of what's in the port
+  constructor(width, height, posX, posY, strokeColor) {
+    this.width = width;
+    this.height = height;
+    this.currX = posX;
+    this.currY = posY;
+    this.strokeColor = strokeColor; // This is the *fixed* stroke color
+  }
+  
+  getPortShapeID() {
+    if (this.occupiedShape != null) return this.occupiedShape.textValue;
+    else return null;
+  }
+
+  // Method to draw the port on the canvas
+  draw(ctx) {
+    ctx.strokeStyle = this.strokeColor; // Use the fixed stroke color
+    ctx.strokeRect(this.currX, this.currY, this.width, this.height);
+    this.drawIndicator(ctx);
+  }
+
+  // Method to draw a color indicator next to the port
+  drawIndicator(ctx) {
+    let indicatorColor = 'red'; // Default color
+    if (this.occupiedShape !== null)
+    {
+      indicatorColor = 'green';
+    }
+    if (this.isActive) {
+      indicatorColor = "yellow";
+    }
+    ctx.fillStyle = indicatorColor;
+    ctx.fillRect(this.currX + this.width + 10, this.currY, 10, 10);
+  }
+
+  // Method to check if a given mouse coordinate is inside the bounds of the port
+  isOver(mouseX, mouseY) {
+    return (
+      mouseX >= this.currX &&
+      mouseX <= this.currX + this.width &&
+      mouseY >= this.currY &&
+      mouseY <= this.currY + this.height
+    );
+  }
+}
+
+// Function to check if a given mouse coordinate is inside a given rectangle object
+function isOverlap(mouseX, mouseY, rectangle) {
+  return (
+    mouseX >= rectangle.currX &&
+    mouseX <= rectangle.currX + rectangle.width &&
+    mouseY >= rectangle.currY &&
+    mouseY <= rectangle.currY + rectangle.height
+  );
+}
+
+///////////////////////////////
+/* Primary driver code block */
+///////////////////////////////
+
+/*
+Define constant for potential error/success states
+Unless otherwise noted, most responses have been gathered using generative AI feedback */
+const states = {
+  "cpu": {
+    "success": "We are now capable of reading instructions in our computer.",
+    "error": "The CPU is the brain. We cannot read instructions without it."
+  },
+  /* Details on rom found at https://www.geeksforgeeks.org/read-only-memory-rom/ */
+  "rom": {
+    "success": "This is a recipe book that your computer cannot lose, storing important system instructions within.",
+    "error": "Without rom, the computer will never wake up. It holds important instructions on how to do so."
+  },
+  "ram": {
+    "success": "Ram helps the computer quickly remember items. Adding more can help the computer do jobs faster.",
+    "surplus": "Adding extra ram helps the computer do things faster!",
+    "warning": "Removing ram reduces a computer's ability to think and multitask. It will be slower when using more than one function.",
+    "error": "Without ram, the computer will not work. At least one is needed to help read the instructions on how to boot up."
+  },
+  "gpu": {
+    "success": "This is the computer's artist! It helps the computer make images, videos, and games look good.",
+    "error": "Without the GPU, pictures and videos might look blurry or choppy, and games might not work well."
+  },
+  "storage": {
+    "success": "Putting in the storage drive lets you save all your work and games so you can use them again later.",
+    "surplus": "Adding more storage lets the computer remember more.",
+    "warning": "Removing memory can cause the computer to remember less. The stuff on the removed component could still be seen.",
+    "error": "Without the storage drive, you can't save anything, and the computer won't remember anything when you turn it off."
+  },
+  "sound": {
+    "success": "Putting in the sound card lets you hear all the sounds the computer makes.",
+    "error": "Without the sound card, the computer will be silent – you won't hear any music or sounds."
+  },
+  "network": {
+    "success": "Putting in the network card lets you connect to the internet and talk to other computers.",
+    "error": "Without the network card, you can't go online or play games with friends on the internet."
+  },
+  "system": {
+    "success": "Success! Your computer is functional. This is a very basic computer that you would find in the early days of computer technology. It may not have everything, but it works!",
+    "surplus": "Success! This computer will do most things that you can find on most computers nowadays. Not only does it work, your computer is better than before!",
+    "complete": "Wow! This is the kind of computer that you would pay a lot of money for! Your computer has all the best components available, including extra ram and storage space. You should try building one yourself!",
+    "error": "Oops! Something is missing from the computer that is needed to function. Try adding more components."
+  },
+}
+
+// Define monitor for the canvas
+const monitor = new Monitor((canvas.width / 2) + 20, 60, (canvas.width / 2) - 40, 400, "Red");
+// Define the initial properties for the rectangles (draggable components)
+const shapes = [[80, 20, 20, 80, 3, "RAM"], // [width, height, startX, startY, count, text]
+                [220, 40, 20, 200, 1, "GPU"],
+                [80, 20, 200, 80, 3, "Storage"],
+                [80, 20, 110, 120, 1, "Network"],
+                [80, 20, 110, 160, 1, "Sound"],
+                [60, 60, 20, 260, 1, "CPU"],
+                [60, 60, 100, 260, 1, "ROM"]];
+// Define the initial properties for the ports (component slots)
+const portShapes = [[80, 20, 340, 60, 3],   // [width, height, startX, startY, count]
+                    [80, 20, 480, 60, 3],
+                    [80, 20, 340, 180, 1],
+                    [80, 20, 480, 180, 1],
+                    [220, 40, 340, 220, 1],
+                    [60, 60, 340, 280, 1],
+                    [60, 60, 500, 280, 1]];
+// Define an array of colors to be used for components
+const colors = ["pink", "lightblue", "lightgreen", "orange", "cyan", "yellow", "AntiqueWhite", "Beige"];
+
+// define a variable to hold all known component types and their current count and limit
+let componentCount = {
+  "ram": {
+    "count": 0,
+    "limit": 3,
+  },
+  "storage": {
+    "count": 0,
+    "limit": 3,
+  },
+  "gpu": {
+    "count": 0,
+    "limit": 1,
+  },
+  "network": {
+    "count": 0,
+    "limit": 1,
+  },
+  "sound": {
+    "count": 0,
+    "limit": 1,
+  },
+  "cpu": {
+    "count": 0,
+    "limit": 1,
+  },
+  "rom": {
+    "count": 0,
+    "limit": 1,
+  },
+}
+
+// define some preliminary variables
+let rectangles = []; // Array to hold the Rectangle objects (draggable components)
+let ports = []; // Array to hold the Port objects (component slots)
+let i = 0; // Loop counter
+
+// global variables to be used later (if at all);
+let title = ""; // variable to hold the title
+let text = ""; // variable to hold the text
+
+// Loop through the 'shapes' array to create Rectangle objects and add them to the 'rectangles' array
+for (i = 0; i < shapes.length; i++) {
+  for (let j = 0; j < shapes[i][4]; j++ ) { // Create multiple rectangles based on the count in 'shapes'
+    let rect = new Rectangle(shapes[i][0], shapes[i][1], shapes[i][2], shapes[i][3] + (j * 40), colors[i % colors.length], shapes[i][5]);
+    rectangles.push(rect);
+  }
+}
+
+// Loop through the 'portShapes' array to create Port objects and add them to the 'ports' array
+for (i = 0; i < portShapes.length; i++) {
+  for (let j = 0; j < portShapes[i][4]; j++ ) { // Create multiple ports based on the count in 'portShapes'
+    let port = new Port(portShapes[i][0], portShapes[i][1], portShapes[i][2], portShapes[i][3] + (j*40), "black");
+    ports.push(port);
+    // console.log(`${i}, ${j}: (i, j)`);
+  }
+}
+
+// function to run system check
+function systemCheck() {
+  let systemStatus = isSystemOperable();
+  // console.log("System check status return: "+systemStatus);
+  
+  // if system status failed or errored, stop immediately
+  if (systemStatus == "error") {
+    console.log("System check failure detected. Exiting.");
+    return -1;
+  }
+  
+  // assuming no errors, go through each possible result
+  if (systemStatus == null){ // null assumes the computer is non-functional
+    title = "Failed"
+    text = states["system"]["error"];
+    monitor.drawBoardInner(context, title, text, fillColor = "");
+    console.log("system status: failed");
+  } else { // non-null assumes that the system passes the minimum requirements
+    console.log("system status: passed");
+    // set the title to "passed"
+    title = "Passed";
+    // go through status to see if its low, medium,
+    // or high quality computer and get text based
+    // on the result
+    if (systemStatus == "low") {
+      text = states["system"]["success"];
+    } else if (systemStatus == "medium") {
+      text = states["system"]["surplus"];
+    } else if (systemStatus == "high") {
+      text = states["system"]["complete"];
+    }
+    // draw the inner monitor with title and text
+    monitor.drawBoardInner(context, title, text, fillColor = "");
+  }
+  
+  // return success state
+  return 1;
+}
+
+// function to test system functionality
+function isSystemOperable() {
+  let returnValue = null;
+  // check if it is missing minimum requirements
+  // first resource comes from https://www.reddit.com/r/buildapc/comments/12prh5f/the_bare_minimum_for_a_computer_to/?rdt=47653
+  // this states the bare minimum is cpu, ram, and storage (assuming that motherboard and power already represented)
+  // a query from google gemini states the minimum is cpu, rom, and ram
+  // this is technically true, as not all computers need to "remember"
+  // this is just a very basic computer with very limited functionality
+  if (componentCount["cpu"]["count"] == 0 || 
+      componentCount["rom"]["count"] == 0 ||
+      componentCount["ram"]["count"] == 0){
+      return returnValue; // return null if none of essential components available
+      // in this case, the monitor will display the error code for system
+  } else if (componentCount["gpu"]["count"] == 0 || 
+      componentCount["storage"]["count"] == 0 ||
+      componentCount["network"]["count"] == 0 || 
+      componentCount["sound"]["count"] == 0){
+      returnValue = "low"; // if nothing more than bare minimum, return value signifies "low" grade computers
+      return returnValue;
+      // in this case, the monitor will display the success code for system
+  } else if (componentCount["cpu"]["count"] == 1 && 
+      componentCount["rom"]["count"] == 1 &&
+      componentCount["ram"]["count"] == 1 && 
+      componentCount["gpu"]["count"] == 1 && 
+      componentCount["storage"]["count"] == 1 &&
+      componentCount["network"]["count"] == 1 && 
+      componentCount["sound"]["count"] == 1){
+      returnValue = "medium"; // if one of each component, return value signifies "medium" grade computers
+      return returnValue;
+      // in this case, the monitor will display the surplus code for system
+  } else if (componentCount["cpu"]["count"] == componentCount["cpu"]["limit"] && 
+      componentCount["rom"]["count"] == componentCount["rom"]["limit"] &&
+      componentCount["ram"]["count"] == componentCount["ram"]["limit"] && 
+      componentCount["gpu"]["count"] == componentCount["gpu"]["limit"] && 
+      componentCount["storage"]["count"] == componentCount["storage"]["limit"] &&
+      componentCount["network"]["count"] == componentCount["network"]["limit"] && 
+      componentCount["sound"]["count"] == componentCount["sound"]["limit"]){
+      returnValue = "high"; // if one of each component, return value signifies "high" grade computers
+      return returnValue;
+      // in this case, the monitor will display the complete code for the system
+  }
+  // if all of this fails, return error code
+  return -1;
+}
+
+// function to alter component count based on object and value (currently not fully implemented or used)
+function componentModifier(obj, name, mod="") {
+  // check if any of these are null
+  if (mod == "" || obj == null || name == "") return;
+
+  // create comp var to hold lowercase name
+  let comp = name.toLowerCase();
+  // console.log(comp);
+  // console.log(obj);
+  // console.log(obj[`${comp}`]);
+  // if mod is + and within component limit, increment its count and return success message
+  if (mod == "+" && (obj[`${comp}`]["count"] + 1 <= obj[`${comp}`]["limit"])) {
+    obj[`${comp}`]["count"] += 1;
+    return "pos";
+  // if mod is - and greater than zero, decrement its count and return success message
+  } else if (mod == "-" && (obj[`${comp}`]["count"] - 1 >= 0)) {
+    obj[`${comp}`]["count"] -= 1;
+    return "neg";
+  } else {
+    // if all else, return null
+    return null;
+  }
+}
+
+// function to get the state object from the 'states' constant based on the component name
+function stateSwitch(state) {
+  // init variable to hold state object
+  let actualState = null;
+  let str = state.toLowerCase();
+
+  /* get the appropriate state based on the given entry value */
+  if(str == "ram") { // if ram get ram state
+    actualState = states.ram;
+  } else if (str == "storage") { // if storage get storage state
+    actualState = states.storage;
+  } else if (str == "cpu") { // if cpu get cpu state, etc.
+    actualState = states.cpu;
+  } else if (str == "rom") { // get rom state
+    actualState = states.rom;
+  } else if (str == "gpu") { // gpu state
+    actualState = states.gpu;
+  } else if (str == "network") { // network state
+    actualState = states.network;
+  } else if (str == "sound") { // sound state
+    actualState = states.sound;
+  } else if (str == "system") { // system state
+    actualState = states.system;
+  }
+
+  // return the actualState; if no object, it returns null
+  return actualState;
+}
+
+// function to draw the monitor with the given text input
+function drawMonitor(titleInput, textInput) {
+  if(monitor != null) {
+    monitor.draw(context, titleInput, textInput);
+  }
+}
+
+// function to draw the labels for the component, port, and monitor sections
+function drawDividerLabels(ctx, width, height) {
+    // variables for x and y of text
+    let componentX = width * (1/16);
+    let portX = width * (11/32);
+    let monitorX = width * (21/32);
+    let distY = 40;
+    // change stroke color and stroke style (although stroke is not used for fillText)
+    ctx.strokeColor = "black";
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "black";
+    // add the text in 30px Arial;
+    ctx.font = "30px "+FONT_FAMILY;
+    ctx.fillText("Components", componentX, distY);
+    ctx.fillText("Ports", portX, distY);
+    ctx.fillText("System Monitor", monitorX, distY);
+  }
+
+// function to draw the vertical lines that divide the canvas into sections
+function drawDividers() {
+  // create variables to hold canvas width, height, and buffer value
+  let w = canvas.width;
+  let h = canvas.height;
+  let buffer = 10;
+  // set context styles for the background
+  context.fillStyle = "lightgrey";
+  context.strokeStyle = "lightgrey";
+  context.fillRect(0, 0, w, h);
+  // reset context styles for the dividers
+  context.fillStyle = "tan";
+  context.strokeStyle = "tan";
+  context.lineWidth = 10;
+  // draw a rectangle around the entire canvas
+  context.strokeRect(0, 0, w, h);
+  // draw a dividing line between the components area and the ports area
+  context.fillRect(w/4, buffer, 10, h - (buffer * 2));
+  // draw a dividing line between the ports area and the monitor area
+  context.fillRect(w/2, buffer, 10, h - (buffer * 2));
+  // reset line width to default
+  context.lineWidth = 1;
+
+  drawDividerLabels(context, w, h); // Draw the labels for each section
+}
+
+// Function to iterate through and draw all the port and rectangle objects
+function drawRectangles() {
+  ports.forEach(port => {
+    port.draw(context);
+  });
+  rectangles.forEach(rectangle => {
+    rectangle.draw(context);
+  });
+}
+
+// Main function to clear the canvas, draw the dividers, the monitor, and all the components and ports
+function drawCanvas(titleInput, textInput) {
+  if (!titleInput) titleInput = "Welcome!";
+  context.clearRect(0, 0, canvas.width, canvas.height); // Clear the entire canvas
+  drawDividers(); // Draw the dividing lines
+  drawMonitor(titleInput, textInput); // Draw the system monitor
+  drawRectangles(); // Draw all the components and ports
+}
+// Initial call to the drawCanvas function to set up the initial state of the display
+drawCanvas("", "");
+
+// Function to update the coordinates displayed (currently commented out in the mousemove listener)
+function updateCoordinates(event) {
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  // coordDisplay.textContent = `X: ${Math.floor(x)}, Y: ${Math.floor(y)}`;
+}
+
+// Attach an event listener to the canvas for the 'mousemove' event to handle hover effects and dragging
+canvas.addEventListener("mousemove", (e) => {
+  // update coordinates
+  // updateCoordinates(e);
+
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  // Check if the mouse is over the system check button on the monitor
+  if (monitor.isOverButton(mouseX, mouseY)) {
+    monitor.isHover = true; // Set hover flag to true
+  } else {
+    monitor.isHover = false; // Set hover flag to false
+  }
+
+  // If not currently dragging, check for hover over ports to highlight them
+  if (!isDragging) {
+    ports.forEach(port => {
+      if (port.isOver(mouseX, mouseY)) {
+        port.isActive = true; // Set active flag for the hovered port
+      } else {
+        port.isActive = false; // Reset active flag for other ports
+      }
+    });
+    drawCanvas(title, text); // Redraw the canvas to show hover highlights on ports and the monitor button
+  }
+
+  // If a component is being dragged, update its position
+  if (currentlyDragging && isDragging) {
+    currentlyDragging.currX = mouseX - dragOffsetX; // Update the dragged component's X-coordinate
+    currentlyDragging.currY = mouseY - dragOffsetY; // Update the dragged component's Y-coordinate
+    let overPort = null; // Variable to store the port the dragged component is currently over
+    ports.forEach(port => {
+      if (port.isOver(mouseX, mouseY)) {
+        overPort = port; // Assign the hovered port to overPort
+        port.isActive = true; // Highlight the port being hovered over
+      }
+      else{
+        port.isActive = false; // Ensure other ports are not highlighted during drag
+      }
+    });
+
+    // If the dragged component is over a port
+    if (overPort) {
+      // If the port is occupied by a different component, keep it highlighted
+      if (overPort.occupiedShape !== null && overPort.occupiedShape !== currentlyDragging) {
+        overPort.isActive = true;
+      }
+      // If the port is empty, highlight it
+      else if (overPort.occupiedShape === null) {
+        overPort.isActive = true;
+      }
+    }
+    // If the dragged component is not over any port, unhighlight all ports
+    else
+    {
+      ports.forEach(port => {
+        port.isActive = false;
+      });
+    }
+    drawCanvas(title, text); // Redraw the canvas to show the dragged component and port highlights
+  }
+});
+
+// Attach an event listener to the canvas for the 'mouseup' event
+canvas.addEventListener("mouseup", function(e) {
+  // Check if a component was being dragged when the mouse button was released
+  if (currentlyDragging && isDragging) {
+    isDragging = false; // Reset the dragging flag
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left; 
+    // Get the x-coordinate of the mouse click relative to the canvas
+    const mouseY = e.clientY - rect.top;  
+    // Get the y-coordinate of the mouse click relative to the canvas
+
+    let snappedToPort = false; 
+    // Flag to track if the dragged component was successfully dropped into a port
+    let previousPort = null; 
+    // Variable to store the port the component was in before the drag started
+
+    // Iterate through all the ports to find if the currently dragged shape was occupying one
+    ports.forEach(port => {
+      if (port.occupiedShape === currentlyDragging) {
+        previousPort = port; // Store the port the component was previously in
+      }
+    });
+
+    // Iterate through all the ports to check if the mouseup event occurred over one
+    ports.forEach(port => {
+      if (port.isOver(mouseX, mouseY)) {
+        // If the mouse is over a port
+        if (port.occupiedShape !== currentlyDragging)
+        {
+          // If the target port is already occupied by a different component
+          if (port.occupiedShape !== null) {
+            currentlyDragging.resetPosition(); // Return the dragged component to its original starting position
+          }
+          // If the target port is empty
+          else {
+            // If the dragged component was in a port before, clear that port's occupied status
+            if (previousPort)
+            {
+              previousPort.occupiedShape = null;
+            }
+            currentlyDragging.currX = port.currX; 
+            // Set the dragged component's x-coordinate to the port's x-coordinate, effectively snapping it
+            currentlyDragging.currY = port.currY; 
+            // Set the dragged component's y-coordinate to the port's y-coordinate, effectively snapping it
+            port.occupiedShape = currentlyDragging; 
+            // Set the port's 'occupiedShape' property to the currently dragged component
+            snappedToPort = true; 
+            // Set the flag to indicate that the component was snapped to a port
+            currentlyDragging.inPort = port; 
+            // Update the 'inPort' property of the dragged component to reference the port it's now in
+            // start making variables to be used
+            let shapeName = ""; // Variable to store the name of the component
+            let objStates = null;     // Variable to potentially store a related object
+            let prevCount = 0; // variable to hold count of components before edit
+            let currCount = 0; // variable to hold current count of components
+            let objLimit = 0; // variable to hold the max number of components
+            let formattedName = ""; // variable to hold the formatted name of the component
+            if(port.occupiedShape == null) {
+              // if there is no shape in port, log the error and leave
+              // console.log("null port shape id");
+              return;
+            } else { // otherwise, log what is in the port.
+              // console.log(port.occupiedShape);
+            }
+            shapeName = port.occupiedShape.textValue; 
+            formattedName = shapeName.toLowerCase();
+            // Get the identifier (textValue) of the component that was just dropped
+            // console.log(shapeName);
+            // console.log(formattedName);
+            objStates = stateSwitch(shapeName);
+            // Call the function to get the state object based on the component name
+            // console.log(obj);
+            // console.log(componentCount);
+            // console.log(componentCount[`${formattedName}`]);
+            currCount = componentCount[`${formattedName}`]["count"];
+            objLimit = componentCount[`${formattedName}`]["limit"];
+            if(currCount == objLimit){ // if the current count is the limit, log an error
+              console.log(`Error: cannot increase count of ${shapeName}: current count at ${prevCount}, limit is ${objLimit}`);
+            } else if (componentModifier(componentCount, shapeName,"+") == "pos") {
+              // otherwise, if modifying the count succeeds, do the following
+              prevCount = currCount; // set previous count to current count
+              currCount = componentCount[`${formattedName}`]["count"]; // get current count
+              if (prevCount == 0) { // if the previous value was zero, then we are adding a new component
+                // console.log(objStates);
+                // set the title and text based on adding a new component
+                title = `Added: ${shapeName}`;
+                text = `${objStates["success"]}`;
+              } else if (currCount > prevCount) { // if nonzero, check to be sure current count is greater than previous count
+                // if true, then set title and text based on adding existing component
+                title = `Added: ${shapeName}`;
+                text = `${objStates["surplus"]}`;
+              }
+              // render the inner monitor with new title and text
+              monitor.drawBoardInner(context, title, text, fillColor = "");
+            } else {
+              // if failed, console log an error about modifying the component
+              console.log("Error: failed to modify component");
+            }
+
+          }
+        }
+        // If the mouseup occurred over the same port the component was already in, consider it snapped
+        else
+        {
+          snappedToPort = true;
+        }
+      }
+      // If the mouse is not over this port and this port was previously occupied by the currently dragged shape
+      else if (port.occupiedShape === currentlyDragging)
+      {
+        port.isActive = false; // Deactivate the port's hover/active state
+      }
+    });
+
+    // If the component was not snapped to any port after dragging and it was in a port before the drag
+    if (!snappedToPort && previousPort)
+    {
+      previousPort.occupiedShape = null; 
+      // Clear the previous port's occupied status
+      currentlyDragging.inPort = null; 
+      // Clear the 'inPort' property of the dragged component
+    }
+
+    currentlyDragging = null; 
+    // Reset the 'currentlyDragging' variable as the drag operation has ended
+    // Reset the 'isActive' property of all ports to false after the drag operation
+    ports.forEach(port => port.isActive = false);
+    drawCanvas(title, text); 
+    // Redraw the canvas to reflect the changes (component positions, port states)
+  }
+});
+
+// Attach an event listener to the canvas for the 'mousedown' event
+canvas.addEventListener("mousedown", function(e) {
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left; 
+  // Get the x-coordinate of the mouse click relative to the canvas
+  const mouseY = e.clientY - rect.top;  
+  // Get the y-coordinate of the mouse click relative to the canvas
+  let isOverlappingAny = false; 
+  // Flag to check if the mouse click overlapped with any draggable rectangle
+  if (monitor.isOverButton(mouseX, mouseY)) {
+    console.log("click over button, running system check...");
+    systemCheck();
+  }
+
+  // Iterate through the array of rectangles (draggable components)
+  for (let i = 0; i < rectangles.length; i++) {
+    // Check if the mouse click coordinates are within the bounds of the current rectangle
+    if (isOverlap(mouseX, mouseY, rectangles[i])) {
+      // overlapDisplay.innerHTML = "Overlapping"; 
+      // Uncomment this line if you have an element with this ID to display overlap status
+      isOverlappingAny = true; 
+      // Set the flag to true as an overlap occurred
+      currentlyDragging = rectangles[i]; 
+      // Set the 'currentlyDragging' variable to the rectangle that was clicked
+      isDragging = true; 
+      if(rectangles[i].inPort != null) {
+        // console.log("a rectangle is in the port");
+        // start making variables to be used
+        let shapeName = ""; // Variable to store the name of the component
+        let objStates = null;     // Variable to potentially store a related object
+        let prevCount = 0; // variable to hold count of components before edit
+        let currCount = 0; // variable to hold current count of components
+        let objLimit = 0; // variable to hold the max number of components
+        let formattedName = ""; // variable to hold the formatted name of the component
+        shapeName = rectangles[i].textValue; 
+        formattedName = shapeName.toLowerCase();
+        // Get the identifier (textValue) of the component that was just dropped
+        // console.log(shapeName);
+        objStates = stateSwitch(shapeName); 
+        // Call the function to get the state object based on the component name
+        // console.log(obj);
+        currCount = componentCount[`${formattedName}`]["count"];
+        objLimit = componentCount[`${formattedName}`]["limit"];
+        if(currCount == 0){
+          // if the current count is already zero, log an error
+          console.log(`Error: cannot decrease count of ${shapeName}: current count at ${prevCount}, limit is ${objLimit}`);
+        } else if (componentModifier(componentCount, shapeName,"-") == "neg") {
+          // if nonzero, attempt to modify. On success proceed with the following code
+          prevCount = currCount; // set previous to current count
+          currCount = componentCount[`${formattedName}`]["count"]; // get new current count
+          // console.log("prev: " + prevCount);
+          // console.log("curr: " + currCount);
+          if (prevCount == 1) {
+            // if the previous count of components is 1, then we are removing all components
+            // set title and text to error state if true
+            title = `Error: ${shapeName}`;
+            text = `${objStates["error"]}`;
+          } else if (currCount < prevCount) {
+            // else, check that current count is less than previous count
+            // set title and text to warning state if true
+            title = `Warning: ${shapeName}`;
+            text = `${objStates["warning"]}`;
+          }
+          // redraw the inner monitor
+          monitor.drawBoardInner(context, title, text, fillColor = "");
+        } else {
+          // if fail to modify, log the error
+          console.log("Error: failed to modify component");
+        }
+      }
+      // Set the 'isDragging' flag to true to indicate a drag operation has started
+      dragOffsetX = mouseX - currentlyDragging.currX; 
+      // Calculate the horizontal offset between the mouse click and the rectangle's top-left corner
+      dragOffsetY = mouseY - currentlyDragging.currY; 
+      // Calculate the vertical offset between the mouse click and the rectangle's top-left corner
+      break; 
+      // Exit the loop as we have found the rectangle that was clicked and started dragging
+    }
+  }
+
+});
+	</script>
+
+</body>
+</html>
