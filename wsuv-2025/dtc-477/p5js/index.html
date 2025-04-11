@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Conner Batson -Interactive Text</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body {
+      margin: 0;
+    }
+    canvas {
+      display: block;
+      margin: 5% auto;
+    }
+
+        /* General Class Styles */
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            display: block;
+            text-align: center;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .navbar-brand {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar-toggler {
+            display: block;
+            background-color: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .navbar-toggler:hover {
+            background-color: #555;
+        }
+
+        .navbar-menu {
+            display: none;
+            flex-direction: column;
+            background-color: #333;
+            position: fixed;
+            top: 50px;
+            right: 0;
+            left: 0;
+            z-index: 1;
+            overflow-y: auto;
+            max-height: calc(100vh - 50px);
+        }
+
+        .navbar-menu a {
+            padding: 14px 16px;
+            text-align: center;
+        }
+
+        .navbar-menu a:hover {
+            background-color: #555;
+        }
+
+        .main-content {
+            padding: 20px;
+            margin-top: 60px;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* ID Styles */
+        #refreshButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #refreshButton:hover {
+            background-color: #367c39;
+        }
+
+        /* Media Queries */
+        @media screen and (max-width: 600px) {
+            .navbar a {
+                display: none;
+            }
+
+            .navbar-menu {
+                display: none;
+                position: fixed;
+            }
+
+            .navbar-menu.active {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        #resetButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        #resetButton:hover {
+            background-color: #367c39;
+        }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+        <a href="#" class="navbar-brand">Conner Batson 4-11-2025</a>
+        <button class="navbar-toggler" id="navbarToggler">
+            <i class="fa fa-bars"></i>
+        </button>
+        <div class="navbar-menu" id="navbarMenu">
+            <a href="./index.html">Home</a>
+            <a href="./p5js-conner-batson.html">P5js 1</a>
+            <a href="./p5js-2-conner-batson.html">P5js 2</a>
+            <a href="./p5js-3-conner-batson.html">P5js 3</a>
+            <a href="./p5js-4-conner-batson.html">P5js 4</a>
+            <a href="./p5js-5-conner-batson.html">P5js 5</a>
+            <a href="./p5js-6-conner-batson.html">P5js 6</a>
+            <a href="./p5js-7-conner-batson.html">P5js 7</a>
+        </div>
+    </nav>
+
+  <button id="resetButton">Reset</button>
+    <script>
+        //  Navbar Code
+        const navbarToggler = document.getElementById('navbarToggler');
+        const navbarMenu = document.getElementById('navbarMenu');
+        console.log(navbarToggler);
+        console.log(navbarMenu);
+
+        navbarToggler.addEventListener('click', () => {
+          console.log("clicked on navbarToggler");
+            if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
+                navbarMenu.style.display = 'block';
+            } else {
+                navbarMenu.style.display = 'none';
+            }
+        });
+
+        // P5js code
+        let titleText = "P5JS Tests";
+        let letters = [];
+        let font;
+        let fontSize = 80;
+        let resetDistance = 200;
+        let boundaryMargin = 90;
+
+        function preload() {
+            // font = loadFont('path/to/your/font.ttf');
+        }
+
+        function setup() {
+            createCanvas(window.innerWidth, 500);
+            colorMode(RGB, 255);
+            // textFont(font);
+            textSize(fontSize);
+            textAlign(CENTER, CENTER);
+            initializeLetters(); // Call function to set up letters array
+            let button = document.getElementById('resetButton');
+            button.addEventListener('click', resetAnimation);
+        }
+
+        function initializeLetters() {
+            letters = [];
+            for (let i = 0; i < titleText.length; i++) {
+                let x = width / 2 + (i - titleText.length / 2) * (fontSize * 0.7);
+                let y = height / 2;
+                letters.push({
+                    char: titleText[i],
+                    x: x,
+                    y: y,
+                    originalX: x,
+                    originalY: y,
+                    color: getDarkColor(), // Use the new function here
+                    speedX: 0,
+                    speedY: 0,
+                    opacity: 255
+                });
+            }
+        }
+
+        function draw() {
+            background(240);
+
+            for (let i = 0; i < letters.length; i++) {
+                let letter = letters[i];
+                let d = dist(mouseX, mouseY, letter.x, letter.y);
+
+                if (d < 50) {
+                    let angle = atan2(letter.y - mouseY, letter.x - mouseX);
+                    letter.speedX += cos(angle) * 5;
+                    letter.speedY += sin(angle) * 5;
+                    letter.color = getDarkColor(); // Use the new function here
+                }
+
+                letter.x += letter.speedX;
+                letter.y += letter.speedY;
+                letter.speedX *= 0.8;
+                letter.speedY *= 0.8;
+
+                if (letter.x < -boundaryMargin || letter.x > width + boundaryMargin || letter.y < -boundaryMargin || letter.y > height + boundaryMargin) {
+                    resetLetter(letter);
+                }
+                if (d > 100) {
+                    letter.opacity = Math.max(0, letter.opacity - 2);
+                }
+                fill(letter.color, letter.opacity);
+                text(letter.char, letter.x, letter.y);
+            }
+        }
+
+        function resetLetter(letter) {
+            letter.x = letter.originalX;
+            letter.y = letter.originalY;
+            letter.speedX = 0;
+            letter.speedY = 0;
+            letter.opacity = 255;
+        }
+
+        function resetAnimation() {
+            initializeLetters(); // Reset all letter properties
+        }
+
+        function windowResized() {
+            resizeCanvas(window.innerWidth, window.innerHeight);
+            initializeLetters(); // Reset positions on resize as well.
+        }
+
+        function getDarkColor() {
+            // Ensure the color is not brighter than #999999
+            let r = Math.floor(random(0, 153)); // 0-153 (0x00-0x99)
+            let g = Math.floor(random(0, 153)); // 0-153 (0x00-0x99)
+            let b = Math.floor(random(0, 153)); // 0-153 (0x00-0x99)
+            return color(r, g, b);
+        }
+  </script>
+</body>
+</html>

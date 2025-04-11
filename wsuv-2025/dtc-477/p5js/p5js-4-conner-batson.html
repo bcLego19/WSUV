@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Conner Batson - Translucent Circle Spawner</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body {
+      margin: 0;
+    }
+    canvas {
+      display: block;
+      margin: 5% auto;
+    }
+
+        /* General Class Styles */
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            display: block;
+            text-align: center;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .navbar-brand {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar-toggler {
+            display: block;
+            background-color: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .navbar-toggler:hover {
+            background-color: #555;
+        }
+
+        .navbar-menu {
+            display: none;
+            flex-direction: column;
+            background-color: #333;
+            position: fixed;
+            top: 50px;
+            right: 0;
+            left: 0;
+            z-index: 1;
+            overflow-y: auto;
+            max-height: calc(100vh - 50px);
+        }
+
+        .navbar-menu a {
+            padding: 14px 16px;
+            text-align: center;
+        }
+
+        .navbar-menu a:hover {
+            background-color: #555;
+        }
+
+        .main-content {
+            padding: 20px;
+            margin-top: 60px;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* ID Styles */
+        #refreshButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #refreshButton:hover {
+            background-color: #367c39;
+        }
+
+        /* Media Queries */
+        @media screen and (max-width: 600px) {
+            .navbar a {
+                display: none;
+            }
+
+            .navbar-menu {
+                display: none;
+                position: fixed;
+            }
+
+            .navbar-menu.active {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        #refreshButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        #refreshButton:hover {
+            background-color: #367c39;
+        }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+        <a href="#" class="navbar-brand">Conner Batson 4-11-2025</a>
+        <button class="navbar-toggler" id="navbarToggler">
+            <i class="fa fa-bars"></i>
+        </button>
+        <div class="navbar-menu" id="navbarMenu">
+            <a href="./index.html">Home</a>
+            <a href="./p5js-conner-batson.html">P5js 1</a>
+            <a href="./p5js-2-conner-batson.html">P5js 2</a>
+            <a href="./p5js-3-conner-batson.html">P5js 3</a>
+            <a href="./p5js-4-conner-batson.html">P5js 4</a>
+            <a href="./p5js-5-conner-batson.html">P5js 5</a>
+            <a href="./p5js-6-conner-batson.html">P5js 6</a>
+            <a href="./p5js-7-conner-batson.html">P5js 7</a>
+        </div>
+    </nav>
+
+  <script>
+    //  Navbar Code
+const navbarToggler = document.getElementById('navbarToggler');
+const navbarMenu = document.getElementById('navbarMenu');
+console.log(navbarToggler);
+console.log(navbarMenu);
+
+navbarToggler.addEventListener('click', () => {
+  console.log("clicked on navbarToggler");
+    if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
+        navbarMenu.style.display = 'block';
+    } else {
+        navbarMenu.style.display = 'none';
+    }
+});
+
+// P5js code
+let circles = [];
+let spawnInterval = 100; // Spawn a new circle every 0.1 seconds (adjust as needed)
+let lastSpawnTime = 0;
+let circleLifespan = 5000; // Circles disappear after 5 seconds
+let radiusMin = 10; // min radius
+let radiusMax = 20; // max radius
+
+function setup() {
+  createCanvas(600, 400);
+  lastSpawnTime = millis();
+}
+
+function draw() {
+  background(220);
+
+  // Spawn a new circle randomly every spawnInterval
+  let currTime = millis();
+  if (currTime - lastSpawnTime > spawnInterval) {
+    let newCircle = {
+      x: random(width),
+      y: random(height),
+      radius: random(radiusMin, radiusMax),
+      color: color(random(255), random(255), random(255), 100), // Translucent random color
+      startTime: currTime
+    };
+    circles.push(newCircle);
+    lastSpawnTime = currTime;
+  }
+
+  // Draw and update existing circles
+  for (let i = circles.length - 1; i >= 0; i--) {
+    let circle = circles[i];
+    let age = currTime - circle.startTime;
+
+    // Draw the circle
+    noStroke();
+    fill(circle.color);
+    ellipse(circle.x, circle.y, circle.radius * 2, circle.radius * 2);
+
+    // Remove circles that have lived longer than the lifespan
+    if (age > circleLifespan) {
+      circles.splice(i, 1);
+    }
+  }
+}
+  </script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Conner Batson - Touching Hexagon Grid</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body {
+      margin: 0;
+    }
+    canvas {
+      display: block;
+      margin: 5% auto;
+    }
+
+        /* General Class Styles */
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            display: block;
+            text-align: center;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .navbar-brand {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar-toggler {
+            display: block;
+            background-color: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .navbar-toggler:hover {
+            background-color: #555;
+        }
+
+        .navbar-menu {
+            display: none;
+            flex-direction: column;
+            background-color: #333;
+            position: fixed;
+            top: 50px;
+            right: 0;
+            left: 0;
+            z-index: 1;
+            overflow-y: auto;
+            max-height: calc(100vh - 50px);
+        }
+
+        .navbar-menu a {
+            padding: 14px 16px;
+            text-align: center;
+        }
+
+        .navbar-menu a:hover {
+            background-color: #555;
+        }
+
+        .main-content {
+            padding: 20px;
+            margin-top: 60px;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* ID Styles */
+        #refreshButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #refreshButton:hover {
+            background-color: #367c39;
+        }
+
+        /* Media Queries */
+        @media screen and (max-width: 600px) {
+            .navbar a {
+                display: none;
+            }
+
+            .navbar-menu {
+                display: none;
+                position: fixed;
+            }
+
+            .navbar-menu.active {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        #refreshButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        #refreshButton:hover {
+            background-color: #367c39;
+        }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+        <a href="#" class="navbar-brand">Conner Batson 4-11-2025</a>
+        <button class="navbar-toggler" id="navbarToggler">
+            <i class="fa fa-bars"></i>
+        </button>
+        <div class="navbar-menu" id="navbarMenu">
+            <a href="./index.html">Home</a>
+            <a href="./p5js-conner-batson.html">P5js 1</a>
+            <a href="./p5js-2-conner-batson.html">P5js 2</a>
+            <a href="./p5js-3-conner-batson.html">P5js 3</a>
+            <a href="./p5js-4-conner-batson.html">P5js 4</a>
+            <a href="./p5js-5-conner-batson.html">P5js 5</a>
+            <a href="./p5js-6-conner-batson.html">P5js 6</a>
+            <a href="./p5js-7-conner-batson.html">P5js 7</a>
+        </div>
+    </nav>
+
+  <script>
+    //  Navbar Code
+const navbarToggler = document.getElementById('navbarToggler');
+const navbarMenu = document.getElementById('navbarMenu');
+console.log(navbarToggler);
+console.log(navbarMenu);
+
+navbarToggler.addEventListener('click', () => {
+  console.log("clicked on navbarToggler");
+    if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
+        navbarMenu.style.display = 'block';
+    } else {
+        navbarMenu.style.display = 'none';
+    }
+});
+
+// P5js code
+const canvasWidth = 600;
+const hexRadius = 30; // Radius of the circumscribed circle
+let hexGrid = [];
+let cols, rows;
+const transitionDuration = 4000;
+const triggerInterval = 1000;
+let lastTriggerTime = 0;
+let isTriggering = false;
+const neighborActivationDelay = 500;
+
+function setup() {
+  createCanvas(canvasWidth, canvasWidth);
+  colorMode(RGB);
+
+  const hexRadius = 30; // Radius of the circumscribed circle
+  const hexHeight = hexRadius * Math.sqrt(3);
+  const horizontalSpacing = hexRadius * Math.sqrt(3) / 2 * 2; // Corrected horizontal spacing
+  const verticalSpacing = hexHeight * 0.75; // Corrected vertical spacing for tighter packing
+
+  cols = Math.floor(width / (hexRadius * Math.sqrt(3))) + 1;
+  rows = Math.floor(height / (hexHeight * 0.75)) + 1;
+
+  for (let i = 0; i < rows; i++) {
+    hexGrid[i] = [];
+    for (let j = 0; j < cols; j++) {
+      let x = j * horizontalSpacing;
+      let y = i * verticalSpacing;
+      if (j % 2 === 1) {
+        y += hexHeight * 0.375; // Shift odd columns down
+      }
+      hexGrid[i][j] = {
+        x: x + hexRadius * Math.sqrt(3) / 2, // Center the hexagon horizontally
+        y: y + hexHeight / 2, // Center the hexagon vertically
+        radius: hexRadius,
+        color: color(255),
+        targetColor: color(255),
+        transitionStartTime: 0,
+        transitionDuration: transitionDuration,
+        startColor: color(255),
+        isActivated: false,
+      };
+    }
+  }
+  lastTriggerTime = millis();
+}
+
+function drawHexagon(x, y, radius, c) {
+  const angle = TWO_PI / 6;
+  beginShape();
+  fill(c);
+  noStroke();
+  for (let i = 0; i < 6; i++) {
+    const sx = x + cos(angle * i) * radius;
+    const sy = y + sin(angle * i) * radius;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
+}
+
+function activateHex(row, col) {
+  if (row >= 0 && row < rows && col >= 0 && col < cols && !hexGrid[row][col].isActivated) {
+    const hex = hexGrid[row][col];
+    hex.isActivated = true;
+
+    const isWhiteOrTransitioningToWhite =
+      hex.color.toString() === color(255).toString() ||
+      hex.targetColor.toString() === color(255).toString();
+
+    if (isWhiteOrTransitioningToWhite) {
+      const randomColor = color(random(255), random(255), random(255));
+      hex.color = randomColor;
+      hex.startColor = randomColor;
+      hex.targetColor = color(255);
+      hex.transitionStartTime = millis();
+      hex.transitionDuration = transitionDuration;
+
+      setTimeout(() => {
+        activateNeighborsHex(row, col);
+      }, neighborActivationDelay);
+    }
+  }
+}
+
+function activateNeighborsHex(row, col) {
+  const neighbors = getNeighborsHex(row, col);
+  neighbors.forEach(n => activateHex(n[0], n[1]));
+}
+
+function getNeighborsHex(row, col) {
+  const neighbors = [];
+  const parity = row % 2;
+
+  if (parity === 0) { // Even rows
+    neighbors.push([row - 1, col]);
+    neighbors.push([row - 1, col + 1]);
+    neighbors.push([row, col - 1]);
+    neighbors.push([row, col + 1]);
+    neighbors.push([row + 1, col]);
+    neighbors.push([row + 1, col + 1]);
+  } else { // Odd rows
+    neighbors.push([row - 1, col - 1]);
+    neighbors.push([row - 1, col]);
+    neighbors.push([row, col - 1]);
+    neighbors.push([row, col + 1]);
+    neighbors.push([row + 1, col - 1]);
+    neighbors.push([row + 1, col]);
+  }
+
+  return neighbors.filter(n => n[0] >= 0 && n[0] < rows && n[1] >= 0 && n[1] < cols);
+}
+
+function triggerRandomHex() {
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      hexGrid[i][j].isActivated = false;
+    }
+  }
+  const randomRow = Math.floor(random(rows));
+  const randomCol = Math.floor(random(cols));
+  activateHex(randomRow, randomCol);
+}
+
+function draw() {
+  background(220);
+
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      const hex = hexGrid[i][j];
+      const elapsedTime = millis() - hex.transitionStartTime;
+      const progress = Math.min(1, Math.max(0, elapsedTime / hex.transitionDuration));
+
+      if (hex.color.toString() !== hex.targetColor.toString()) {
+        hex.color = lerpColor(hex.startColor, hex.targetColor, progress);
+      }
+      drawHexagon(hex.x, hex.y, hex.radius, hex.color);
+    }
+  }
+
+  const currentTime = millis();
+  if (currentTime - lastTriggerTime > triggerInterval && !isTriggering) {
+    isTriggering = true;
+    triggerRandomHex();
+    lastTriggerTime = currentTime;
+    setTimeout(() => {
+      isTriggering = false;
+    }, 100);
+  } else if (currentTime - lastTriggerTime <= triggerInterval) {
+    isTriggering = false;
+  }
+}
+  </script>
+</body>
+</html>
