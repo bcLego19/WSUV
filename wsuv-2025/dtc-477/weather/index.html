@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Conner Batson - Windy Weather App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- 
+Disclamer on the use of AI in this project:
+
+AI has been used in the following areas:
+
+>> Analysis of the problem described
+>> Descriptions of how to approach the problem
+>> Constructive feedback on how the user has approached the problem
+>> Troubleshooting feedback on problems encountered over the course of this project
+>> Constructive feeback on javascript code comments
+>> Implementation examples of described changes to the javascript
+>> Constructive feedback on styles and typography
+
+     -->
+    <style>
+/*  
+    Josh Comeau Reset 
+    Reference: https://www.joshwcomeau.com/css/custom-css-reset/
+*/
+
+/* 1. Use a more-intuitive box-sizing model */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+* {
+  margin: 0;
+}
+
+/* 3. Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+/*    interpolate-size: allow-keywords;*/
+  }
+}
+
+body {
+  /* 4. Add accessible line-height */
+  line-height: 1.5;
+  /* 5. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 6. Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 7. Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 8. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* 9. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/*
+  10. Create a root stacking context
+*/
+#root, #__next {
+  isolation: isolate;
+}
+
+/* END OF RESET */
+
+/* class styles */
+.highlight-color {
+  padding: 5px;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+  justify-content: center;
+  background-color: #233BE1;
+  color: white;
+  transition: background-color 0.1s ease-in-out, border 0.1s ease-in-out;
+}
+
+.highlight-color:hover {
+  background-color: #28b5DE;
+  border-left: 5px solid white;
+}
+
+.thirty-color {
+  background-color: #E09E24;
+  color: black;
+}
+
+.sixty-color{
+  background-color: #E0CB24;
+  color: black;
+}
+
+/* general styles */
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+header {
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  align-items: center;
+  justify-items: center;
+}
+
+header div {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+  justify-content: center;
+}
+
+footer {
+  font-size: 20px;
+  padding: 0 1em;
+}
+
+footer span {
+  position: absolute;
+  right: 1em;
+}
+
+/* id styles */
+#hamburger {
+  font-size: 40px;
+}
+
+#hamburger-menu {
+  display: none;
+  position: absolute;
+  top: 70px; /* Adjust as needed */
+  left: 0;
+  border: 1px solid #ccc;
+  padding: 5px;
+  width: 300px;
+  height: 300px;
+  z-index: 1;
+}
+
+#hamburger-menu input, #hamburger-menu button, #hamburger-menu select {
+  margin-bottom: 5px;
+  display: block;
+  width: 80%; /* Adjust as needed */
+}
+
+#pauseButton {
+  font-size: 40px;
+}
+    </style>
+</head>
+<body class="sixty-color">
+    <header class="thirty-color">
+        <div id="hamburger" class="highlight-color">&#x2630;</div>
+        <div id="hamburger-menu" style="display: none;" class="thirty-color">
+            <input type="text" id="city" placeholder="City">
+            <input type="text" id="state" placeholder="State">
+            <input type="text" id="country" placeholder="Country">
+            <input type="text" id="lat" placeholder="Latitude (N-S is -90 to 90)">
+            <input type="text" id="lon" placeholder="Longitude (E-W is -180 to 180)">
+            <select id="useMetric">
+                <option value="false">Imperial</option>
+                <option value="true">Metric</option>
+            </select>
+            <button id="searchButton" class="highlight-color">Search</button>
+        </div>
+        <h1>Conner Batson - Windy Weather App</h1>
+        <div id="pauseButton" class="highlight-color">&#x23F8;</div>
+    </header>
+    <main>
+        <div id="myCanvas"></div>
+        <div id="infoCanvas"></div>
+        <div id="js-response-test"></div>
+    </main>
+    <footer class="thirty-color">
+      Conner Batson <span>Updated April 14th, 2025</span>
+    </footer>
+
+    <script>
+// const for debugging
+const debug = false;
+// get necessary elements
+const hamburgerMenuButton = document.querySelector("#hamburger");
+const hamburgerMenu = document.querySelector("#hamburger-menu");
+const menuItems = document.querySelectorAll(".menu-item");
+const cityInput = document.querySelector("#city");
+const stateInput = document.querySelector("#state");
+const countryInput = document.querySelector("#country");
+const latInput = document.querySelector("#lat");
+const lonInput = document.querySelector("#lon");
+const useMetric = document.querySelector("#useMetric");
+const searchButton = document.querySelector("#searchButton");
+const pauseButton = document.querySelector("#pauseButton"); // Get the pause button
+// get element for testing js response
+const jsTest = document.querySelector("#js-response-test");
+
+if(debug) {
+  jsTest.style.display = "block";
+} else {
+  jsTest.style.display = "none";
+}
+
+// constant for openweathermap api key
+const API_KEY = "42e1394b895a074acfc6cadd8a269655";
+const STR = "hello";
+
+// variable for hamburger menu
+let hamburgerToggle = false;
+let weatherData = null; // Store weather data globally
+let isMetricGlobal = false;
+let canvas; // Declare the canvas globally
+let infoCanvas;
+let circles = []; // Declare circles array globally
+
+// --- Weather Visualization Variables ---
+let cloudSpeed = 0.5;
+let weatherDescription = "None"; // Start with None
+let cloudPositions = [];
+let rainDrops = [];
+let snowflakes = [];
+let cloudTopStorm;
+let cloudColorStorm;
+let lightningTimer = 0;
+let lightningInterval = 100; // Milliseconds between flashes
+let cloudTopSnow;
+let cloudColorSnow;
+let cloudTop;
+let cloudColor;
+
+let isPaused = false; // Add a pause state variable
+
+// --- Setup Functions ---
+function setup() {
+  const canvasSize = 500;
+  canvas = createCanvas(canvasSize, canvasSize);
+  canvas.parent("#myCanvas");
+  infoCanvas = createCanvas(canvasSize, canvasSize);
+  infoCanvas.parent("#infoCanvas");
+  textAlign(CENTER, CENTER);
+
+  // Initialize variables that depend on width and height HERE
+  cloudTopStorm = height / 3; // Initial cloud top for storms
+  cloudColorStorm = 50;
+  cloudTopSnow = height / 3; // Initial cloud top for snow
+  cloudColorSnow = 100;
+  cloudTop = height / 3; // Initial cloud top
+  cloudColor = 100;
+
+  setupCloud();
+  setupRain();
+  setupSnow();
+  initializeCircles(); // Initialize circles
+
+  // event listener for search button
+  searchButton.addEventListener("click", () => {
+    fetchWeatherData();
+  });
+
+  // Pause button functionality
+  pauseButton.addEventListener("click", () => {
+    isPaused = !isPaused; // Toggle pause state
+    if (isPaused) {
+      pauseButton.innerHTML = "&#x23F5;"; // Change button text to play
+      noLoop(); // Stop the draw loop
+    } else {
+      pauseButton.innerHTML = "&#x23F8;"; // Change button text to pause
+      loop(); // Restart the draw loop
+    }
+  });
+
+  // Event listener for the useMetric select element
+  useMetric.addEventListener('change', () => {
+    // update isMetricGlobal value
+    if(debug)console.log(useMetric.value);
+    if(useMetric.value == "true") isMetricGlobal = true; 
+    else isMetricGlobal = false;
+    if(debug)console.log(isMetricGlobal);
+    fetchWeatherData(); // Re-fetch data when units change
+  });
+  
+  // event listener for the hamburger menu toggle
+  hamburgerMenuButton.addEventListener("click", () => {
+    hamburgerToggle = !hamburgerToggle;
+    hamburgerSwitch(hamburgerMenu, hamburgerToggle);
+    hamburgerIcon(hamburgerMenuButton);
+  });
+}
+
+/**
+    * Fetches weather data from the OpenWeatherMap API based on user input.
+    * Updates the global weatherData variable and triggers the draw loop.
+    */
+function fetchWeatherData() {
+  const city = cityInput.value;
+  const state = stateInput.value;
+  const country = countryInput.value;
+  const lat = latInput.value;
+  const lon = lonInput.value;
+  let url = "";
+
+  hamburgerToggle = false;
+  hamburgerSwitch(hamburgerMenu, hamburgerToggle);
+  hamburgerIcon(hamburgerMenuButton);
+
+  // check if required fields are filled in
+  if (city && country) {
+    // if city and country, then confirm type and update url
+    if (typeof (city) === typeof (STR) && typeof (country) === typeof (STR)) {
+      url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_KEY}`;
+    } else {
+      alert("The entered city and/or country value is not of type string. Please enter a valid city and country name.");
+      return;
+    }
+  } else if (city && state && country) {
+    // if city, state, and country, then confirm type and update url
+    if (typeof (city) === typeof (STR) && typeof (state) === typeof (STR) && typeof (country) === typeof (STR)) {
+      url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${state},${country}&appid=${API_KEY}`;
+    } else {
+      alert("The entered city, state, and/or country value is not of type string. Please enter a valid city, state, and country name.");
+      return;
+    }
+  } else if (lat && lon) { 
+  // if lat and lon, then confirm type and update url
+    if (typeof (parseFloat(lat)) === 'number' && !isNaN(parseFloat(lat)) && typeof (parseFloat(lon)) === 'number' && !isNaN(parseFloat(lon))) {
+      url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+    } else {
+      alert("The entered latitude and/or longitude is not a valid number. Please enter a numerical value for latitude and longitude.");
+      return;
+    }
+  } else { // if none of these, then alert user
+    alert("Error: please enter a city and country or a latitude and longitude.");
+    return;
+  }
+
+  //console.log("isMetricGlobal value: "+isMetricGlobal);
+
+  // append exact units to url
+  if (isMetricGlobal) { // Corrected variable name here
+    if(debug) console.log("Units are metric");
+    url += '&units=metric';
+  } else {
+    if(debug) console.log("Units are imperial");
+    url += '&units=imperial';
+  }
+
+  fetch(url)
+    .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Error fetching data');
+    }
+  })
+    .then(data => {
+    weatherData = data; // Store fetched data
+    weatherDescription = data.weather[0].description; // Get description
+    if (debug) {
+      if (jsTest.innerHTML) jsTest.innerHTML = null;
+      const keys = Object.keys(weatherData);
+      let strOut = "";
+      for (let i = 0; i < keys.length; i++) {
+        let elem = document.createElement("div");
+        elem.innerHTML += keys[i] + ": ";
+        elem.innerHTML += JSON.stringify(weatherData[keys[i]]);
+        jsTest.appendChild(elem);
+      }
+    }
+    loop(); // Restart the loop to trigger drawing
+  })
+    .catch(error => {
+    console.error('Error fetching data:', error);
+    //noLoop();
+  });
+}
+
+function draw() {
+  background(220); // Default background
+  background(220); // Default background for infoCanvas
+
+  if (!weatherData) {
+    textAlign(CENTER);
+    fill(0);
+    text("Loading...", width / 2, height / 2);
+    return;
+  }
+
+  //console.log("Current weather description: " + weatherDescription);
+
+  // Call the appropriate drawing function based on the weather description
+  if (weatherDescription.toLowerCase().includes("clear")) {
+    drawClearSky();
+  } else if (weatherDescription.toLowerCase().includes("cloud")) {
+    drawCloudy();
+  } else if (weatherDescription.toLowerCase().includes("rain")) {
+    drawRainy();
+  } else if (weatherDescription.toLowerCase().includes("snow")) {
+    drawSnowing();
+  } else if (weatherDescription.toLowerCase().includes("thunder")) {
+    drawThunderstorm();
+  } else {
+    background(220); // Light gray
+    textAlign(CENTER, CENTER);
+    fill(0);
+    text("Weather not visualized: " + weatherDescription, width / 2, height / 2);
+  }
+  drawWeatherInfo(); //drawWeatherInfo is always called to ensure the circles are always drawn
+  if (!isPaused) { // Only update if not paused
+    //  drawWeatherInfo(); // Removed from here to ensure it's always called
+  }
+}
+
+// --- Visualization Functions ---
+
+// function to draw clear sky on canvas
+function drawClearSky() {
+  background(135, 206, 235); // Light blue
+  fill(255, 255, 0);       // Yellow sun
+  noStroke();
+  ellipse(width / 2, height / 2, 100, 100);
+}
+
+// function to setup drawing cloudy weather on canvas
+function setupCloud() {
+    cloudPositions = []; // Clear existing clouds
+    for (let i = 0; i < 5; i++) {
+        cloudPositions.push({
+            x: random(width),
+            y: random(height / 3),
+            size: random(50, 150) // Random size for visual variety
+        });
+    }
+}
+
+// function to draw cloudy weather on canvas
+function drawCloudy() {
+    background(200); // Light gray
+    noStroke();
+    fill(255);         // White clouds
+    for (let cloud of cloudPositions) {
+        ellipse(cloud.x, cloud.y, cloud.size * 1.2, cloud.size * 0.8); // Oval shape
+        ellipse(cloud.x + cloud.size / 2, cloud.y - cloud.size / 4, cloud.size, cloud.size * 0.9);
+        ellipse(cloud.x - cloud.size / 3, cloud.y + cloud.size / 5, cloud.size * 0.9, cloud.size);
+        cloud.x = (cloud.x + cloudSpeed) % width; // Move clouds horizontally
+    }
+}
+
+// function to setup drawing rain on canvas
+function setupRain() {
+    rainDrops = []; // Clear existing rain drops
+    for (let i = 0; i < 100; i++) {
+        rainDrops.push({
+            x: random(width),
+            y: random(height / 3, height), // Start below the cloud level
+            length: random(10, 20), // Varying length for realism
+            speed: random(5, 15) // Varying speed for realism
+        });
+    }
+}
+
+// function to draw rain on canvas
+function drawRainy() {
+  background(150); // Darker gray
+  fill(cloudColor);
+  noStroke();
+  ellipse(width / 3, cloudTop, 150, 100); // cloud shape
+  ellipse(width / 2, cloudTop - 20, 180, 120);
+  ellipse(width * 2 / 3, cloudTop + 10, 160, 110);
+
+  stroke(0, 0, 255); // Blue rain
+  noFill();
+  for (let drop of rainDrops) {
+    line(drop.x, drop.y, drop.x, drop.y + drop.length);
+    drop.y += drop.speed;
+    if (drop.y > height) {
+      drop.y = cloudTop; // reset raindrop to the top
+    }
+  }
+}
+
+// function to setup drawing snow on canvas
+function setupSnow() {
+    snowflakes = []; // Clear existing snowflakes
+    for (let i = 0; i < 150; i++) {
+        snowflakes.push({
+            x: random(width),
+            y: random(height / 3, height), // Start below cloud level
+            size: random(5, 15), // Varying size
+            speedY: random(2, 8), // Varying vertical speed
+            speedX: random(-1, 1) // Slight horizontal drift
+        });
+    }
+}
+
+// function to draw snow on canvas
+function drawSnowing() {
+  background(220); // Light gray background for contrast
+  fill(cloudColorSnow);
+  noStroke();
+  ellipse(width / 3, cloudTopSnow, 150, 100);
+  ellipse(width / 2, cloudTopSnow - 20, 180, 120);
+  ellipse(width * 2 / 3, cloudTopSnow + 10, 160, 110);
+
+  fill(255); // White snowflakes
+  noStroke();
+  for (let flake of snowflakes) {
+    ellipse(flake.x, flake.y, flake.size, flake.size);
+    flake.y += flake.speedY;
+    flake.x += flake.speedX; // Apply horizontal drift
+    if (flake.y > height) {
+      flake.y = cloudTopSnow - flake.size; // Reset snowflake
+    }
+    if (flake.x < 0 || flake.x > width) {
+      flake.x = random(width); // Keep snowflakes within bounds
+    }
+  }
+}
+
+// function to draw thunderstorm on canvas
+function drawThunderstorm() {
+  background(80); // Very dark gray
+  fill(cloudColorStorm);
+  noStroke();
+  ellipse(width / 3, cloudTopStorm, 200, 130);
+  ellipse(width / 2, cloudTopStorm - 30, 220, 150);
+  ellipse(width * 2 / 3, cloudTopStorm + 20, 190, 140);
+
+  if (millis() > lightningTimer) {
+    stroke(255, 255, 0); // Yellow lightning
+    noFill();
+    beginShape();
+    vertex(random(width / 3, width * 2 / 3), cloudTopStorm + random(50, 100));
+    vertex(random(width / 4, width * 3 / 4), cloudTopStorm + random(100, 200));
+    vertex(random(width / 3, width * 2 / 3), cloudTopStorm + random(200, 300));
+    vertex(random(width / 4, width * 3 / 4), cloudTopStorm + random(300, 400));
+    endShape();
+    lightningTimer = millis() + random(500, 2000); // Random next flash time
+  }
+}
+
+// function to return a randomized color
+function getRandomLightColor() {
+  const r = random(150, 255);
+  const g = random(150, 255);
+  const b = random(150, 255);
+  return color(r, g, b);
+}
+
+// function to handle hamburger visibility
+function hamburgerSwitch(menu, toggle) {
+  if (toggle) {
+    menu.style.display = "block";
+  } else {
+    menu.style.display = "none";
+  }
+}
+
+// function to handle hamburger icon change
+function hamburgerIcon(menu) {
+  if (hamburgerToggle) {
+    menu.innerHTML = "&#10005;";
+    menu.fontSize = "30px";
+  } else {
+    menu.innerHTML = "&#9776;";
+    menu.fontSize = "30px";
+  }
+}
+
+/**
+     * Initializes the circles for the weather information display.  Each circle
+     * displays a different aspect of the weather data.
+     */
+function initializeCircles() {
+  const canvasSize = 500;
+  const numCircles = 5;
+  circles = []; // Clear any existing circles
+  for (let i = 0; i < numCircles; i++) {
+    circles[i] = {
+      x: random(canvasSize),
+      y: random(canvasSize),
+      radius: 50,
+      title: ["Weather", "Temperature", "Wind Speed", "Wind Direction", "Location"][i], //added title array
+      description: "",
+      velocityX: 0,
+      velocityY: 0,
+      color: getRandomLightColor()
+    };
+  }
+}
+
+/**
+    * Gets the wind direction string (e.g., "N", "NE", "E") from the wind degree.
+    * @param {number} degrees - The wind direction in degrees (0-360).
+    * @returns {string} The wind direction string.
+    */
+function getWindDirectionString(degrees) {
+  if (degrees >= 337.5 || degrees < 22.5) {
+    return "N";
+  } else if (degrees >= 22.5 && degrees < 67.5) {
+    return "NE";
+  } else if (degrees >= 67.5 && degrees < 112.5) {
+    return "E";
+  } else if (degrees >= 112.5 && degrees < 157.5) {
+    return "SE";
+  } else if (degrees >= 157.5 && degrees < 202.5) {
+    return "S";
+  } else if (degrees >= 202.5 && degrees < 247.5) {
+    return "SW";
+  } else if (degrees >= 247.5 && degrees < 292.5) {
+    return "W";
+  } else if (degrees >= 292.5 && degrees < 337.5) {
+    return "NW";
+  }
+  return "";
+}
+
+/**
+    * Draws the weather information circles, displaying data such as temperature,
+    * wind speed, and location.  The circles move and collide with each other.
+    */
+function drawWeatherInfo() {
+  if (!weatherData) return;
+
+  const canvasSize = 500;
+  const windInfluence = 0.2; // Increased wind influence for better visibility
+  const damping = 0.95; // Slightly reduced damping
+  const collisionDamping = 0.7; // Reduced collision damping
+  const numCircles = 5;
+
+  // Calculate wind direction in radians, adjusting for standard direction (0 degrees = North)
+  const windDirectionRadians = radians(270 - weatherData.wind.deg); // Corrected angle
+  const windVelocityX = weatherData.wind.speed * cos(windDirectionRadians) * windInfluence;
+  const windVelocityY = weatherData.wind.speed * sin(windDirectionRadians) * windInfluence;
+
+  for (const circle of circles) {
+    if (!isPaused) { // Only update positions if not paused
+      circle.velocityX += windVelocityX;
+      circle.velocityY += windVelocityY;
+      circle.velocityX *= damping;
+      circle.velocityY *= damping;
+
+      //apply velocity changes
+      circle.x += circle.velocityX;
+      circle.y += circle.velocityY;
+
+      // collision detection with canvas boundaries
+      if (circle.x - circle.radius < 0) {
+        circle.x = circle.radius;
+        circle.velocityX *= -collisionDamping;
+      }
+      if (circle.x + circle.radius > width) {
+        circle.x = width - circle.radius;
+        circle.velocityX *= -collisionDamping;
+      }
+      if (circle.y - circle.radius < 0) {
+        circle.y = circle.radius;
+        circle.velocityY *= -collisionDamping;
+      }
+      if (circle.y + circle.radius > height) {
+        circle.y = height - circle.radius;
+        circle.velocityY *= -collisionDamping;
+      }
+
+      // Circle-circle collision detection
+      for (let j = circles.indexOf(circle) + 1; j < circles.length; j++) {
+        const otherCircle = circles[j];
+        const d = dist(circle.x, circle.y, otherCircle.x, otherCircle.y);
+        if (d < circle.radius + otherCircle.radius) {
+          // Calculate the collision angle
+          const collisionAngle = atan2(otherCircle.y - circle.y, otherCircle.x - circle.x);
+
+          // Calculate the velocities of the circles after collision
+          const v1 = sqrt(circle.velocityX * circle.velocityX + circle.velocityY * circle.velocityY);
+          const v2 = sqrt(otherCircle.velocityX * otherCircle.velocityX + otherCircle.velocityY * otherCircle.velocityY);
+
+          // Calculate the angles of the velocities
+          const angle1 = atan2(circle.velocityY, circle.velocityX);
+          const angle2 = atan2(otherCircle.velocityY, otherCircle.velocityX);
+
+          // Calculate the new velocities after collision
+          const newVelocityX1 = v2 * cos(angle2 - collisionAngle) * cos(collisionAngle) + v1 * sin(angle1 - collisionAngle) * cos(collisionAngle + PI / 2);
+          const newVelocityY1 = v2 * cos(angle2 - collisionAngle) * sin(collisionAngle) + v1 * sin(angle1 - collisionAngle) * sin(collisionAngle + PI / 2);
+          const newVelocityX2 = v1 * cos(angle1 - collisionAngle) * cos(collisionAngle) + v2 * sin(angle2 - collisionAngle) * cos(collisionAngle + PI / 2);
+          const newVelocityY2 = v1 * cos(angle1 - collisionAngle) * sin(collisionAngle) + v2 * sin(angle2 - collisionAngle) * sin(collisionAngle + PI / 2);
+
+          // Apply damping
+          circle.velocityX = newVelocityX1 * collisionDamping;
+          circle.velocityY = newVelocityY1 * collisionDamping;
+          otherCircle.velocityX = newVelocityX2 * collisionDamping;
+          otherCircle.velocityY = newVelocityY2 * collisionDamping;
+
+          // Resolve overlap
+          const overlap = (circle.radius + otherCircle.radius) - d;
+          circle.x -= cos(collisionAngle) * overlap * 0.5;
+          circle.y -= sin(collisionAngle) * overlap * 0.5;
+          otherCircle.x += cos(collisionAngle) * overlap * 0.5;
+          otherCircle.y += sin(collisionAngle) * overlap * 0.5;
+        }
+      }
+      // circle.x += circle.velocityX;  //moved up
+      // circle.y += circle.velocityY;  //moved up
+    } // End of isPaused check
+
+    fill(circle.color);
+    ellipse(circle.x, circle.y, circle.radius * 2);
+    fill(0);
+
+    //Set the descriptions
+    circles[0].description = weatherDescription;
+    circles[1].description = isMetricGlobal ? `${weatherData.main.temp}\u00B0C` : `${weatherData.main.temp}\u00B0F`;
+    circles[2].description = isMetricGlobal ? `${weatherData.wind.speed} m/s` : `${weatherData.wind.speed} mph`;
+    const windDirString = getWindDirectionString(weatherData.wind.deg);
+    circles[3].description = `${weatherData.wind.deg}\u00B0 (${windDirString})`;
+    circles[4].description = `${weatherData.name}, ${weatherData.sys.country}`;
+
+    text(circle.title, circle.x, circle.y - 10);
+    text(circle.description, circle.x, circle.y + 10);
+  }
+}
+    </script>
+</body>
+</html>
