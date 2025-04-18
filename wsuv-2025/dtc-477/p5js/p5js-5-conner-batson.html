@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <nav class="navbar">
-        <a href="#" class="navbar-brand">Conner Batson 4-14-2025</a>
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">Conner Batson 4-16-2025</a>
         <button class="navbar-toggler" id="navbarToggler">
             <i class="fa fa-bars"></i>
         </button>
@@ -25,72 +25,115 @@
         </div>
     </nav>
 
-  <script>
-//  Navbar Code
-const navbarToggler = document.getElementById('navbarToggler');
-const navbarMenu = document.getElementById('navbarMenu');
-console.log(navbarToggler);
-console.log(navbarMenu);
+    <script>
+        //  Navbar Code
+        // Selects the HTML element with the ID 'navbarToggler' and stores a reference to it in the constant variable 'navbarToggler'.
+        const navbarToggler = document.getElementById('navbarToggler');
+        // Selects the HTML element with the ID 'navbarMenu' and stores a reference to it in the constant variable 'navbarMenu'.
+        const navbarMenu = document.getElementById('navbarMenu');
+        // Logs the 'navbarToggler' element to the browser's console for debugging or inspection.
+        console.log(navbarToggler);
+        // Logs the 'navbarMenu' element to the browser's console for debugging or inspection.
+        console.log(navbarMenu);
 
-navbarToggler.addEventListener('click', () => {
-  console.log("clicked on navbarToggler");
-    if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
-        navbarMenu.style.display = 'block';
-    } else {
-        navbarMenu.style.display = 'none';
-    }
-});
+        // Adds an 'event listener' to the 'navbarToggler' element.
+        // This listener waits for a 'click' event to occur on the button.
+        navbarToggler.addEventListener('click', () => {
+            // This is a callback function that will be executed when the 'click' event is triggered.
+            console.log("clicked on navbarToggler");
+            // Checks if the 'display' style property of the 'navbarMenu' is currently set to 'none' (hidden) or an empty string (its default value).
+            if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
+                // If the menu is hidden, this line sets the 'display' style property to 'block', making the menu visible.
+                navbarMenu.style.display = 'block';
+            } else {
+                // If the menu is currently visible (i.e., 'display' is not 'none' or ''), this line sets the 'display' style property back to 'none', hiding the menu.
+                navbarMenu.style.display = 'none';
+            }
+        });
 
-// P5js code
+        // P5js code
 
-let blobs = [];
-let numBlobs = 50;
-let driftSpeed = 0.5;
-let colorChangeRate = 0.01; // Intended small increment
+        // Declares an empty array named 'blobs'. This array will store objects, each representing a blob.
+        let blobs = [];
+        // Declares a variable 'numBlobs' and initializes it to 50. This determines the number of blobs that will be created and displayed.
+        let numBlobs = 50;
+        // Declares a variable 'driftSpeed' and initializes it to 0.5. This controls the maximum speed at which the blobs will move randomly.
+        let driftSpeed = 0.5;
+        // Declares a variable 'colorChangeRate' and initializes it to 0.01. This variable was intended to control the rate at which the hue of the blobs changes.
+        let colorChangeRate = 0.01; // Intended small increment
 
-function setup() {
-  createCanvas(600, 400);
-  colorMode(HSB, 360, 100, 100, 100); // Use HSB with alpha
+        // setup function is a p5.js lifecycle function that is called once when the script starts.
+        function setup() {
+            // Creates a p5.js canvas with a width of 600 pixels and a height of 400 pixels. This is where the blobs will be drawn.
+            createCanvas(600, 400);
+            // Sets the color mode for p5.js to HSB (Hue, Saturation, Brightness) with an alpha (transparency) component.
+            // Hue ranges from 0-360, Saturation from 0-100, Brightness from 0-100, and Alpha from 0-100.
+            colorMode(HSB, 360, 100, 100, 100); // Use HSB with alpha
 
-  for (let i = 0; i < numBlobs; i++) {
-    blobs.push({
-      x: random(width),
-      y: random(height),
-      radius: random(10, 30),
-      hue: random(360),
-      saturation: 80,
-      brightness: 80,
-      alpha: 80,
-      xVelocity: random(-driftSpeed, driftSpeed),
-      yVelocity: random(-driftSpeed, driftSpeed),
-      // Intentional: A small hue increment based on a flawed idea
-      hueIncrement: random(-colorChangeRate * 0.5, colorChangeRate * 0.5)
-    });
-  }
-  noStroke();
-}
+            // Loops 'numBlobs' times to create the initial set of blobs.
+            for (let i = 0; i < numBlobs; i++) {
+                // For each blob, an object with the following properties is created and pushed into the 'blobs' array:
+                blobs.push({
+                    // 'x': A random horizontal position within the width of the canvas.
+                    x: random(width),
+                    // 'y': A random vertical position within the height of the canvas.
+                    y: random(height),
+                    // 'radius': A random radius between 10 and 30 pixels.
+                    radius: random(10, 30),
+                    // 'hue': A random hue value between 0 and 360.
+                    hue: random(360),
+                    // 'saturation': Sets the saturation of the blob's color to 80.
+                    saturation: 80,
+                    // 'brightness': Sets the brightness of the blob's color to 80.
+                    brightness: 80,
+                    // 'alpha': Sets the initial alpha (transparency) of the blob to 80.
+                    alpha: 80,
+                    // 'xVelocity': A random horizontal velocity between -'driftSpeed' and 'driftSpeed', causing horizontal movement.
+                    xVelocity: random(-driftSpeed, driftSpeed),
+                    // 'yVelocity': A random vertical velocity between -'driftSpeed' and 'driftSpeed', causing vertical movement.
+                    yVelocity: random(-driftSpeed, driftSpeed),
+                    // 'hueIncrement': An initial small random increment for the hue. This was intended for a consistent color change but is modified in 'draw'.
+                    hueIncrement: random(-colorChangeRate * 0.5, colorChangeRate * 0.5)
+                });
+            }
+            // Disables the stroke (border) around the shapes that will be drawn.
+            noStroke();
+        }
 
-function draw() {
-  background(0);
+        // draw function is a p5.js lifecycle function that is called repeatedly in a loop after 'setup' is executed.
+        // It's responsible for rendering each frame of the animation.
+        function draw() {
+            // Sets the background color of the canvas to black (hue 0, saturation 0, brightness 0). This clears the previous frame.
+            background(0);
 
-  for (let blob of blobs) {
-    // Update position
-    blob.x += blob.xVelocity;
-    blob.y += blob.yVelocity;
+            // Loops through each 'blob' object in the 'blobs' array.
+            for (let blob of blobs) {
+                // Update position
+                // Adds the blob's horizontal velocity to its x-coordinate, moving it horizontally.
+                blob.x += blob.xVelocity;
+                // Adds the blob's vertical velocity to its y-coordinate, moving it vertically.
+                blob.y += blob.yVelocity;
 
-    // Bounce off edges
-    if (blob.x < 0 || blob.x > width) blob.xVelocity *= -1;
-    if (blob.y < 0 || blob.y > height) blob.yVelocity *= -1;
+                // Bounce off edges
+                // Checks if the blob's x-coordinate is less than 0 or greater than the canvas width. If so, reverses its horizontal velocity to make it bounce off the left and right edges.
+                if (blob.x < 0 || blob.x > width) blob.xVelocity *= -1;
+                // Checks if the blob's y-coordinate is less than 0 or greater than the canvas height. If so, reverses its vertical velocity to make it bounce off the top and bottom edges.
+                if (blob.y < 0 || blob.y > height) blob.yVelocity *= -1;
 
-    // "Error": Accumulating hue change based on a flawed idea
-    // Instead of a consistent small change, we're slightly modifying the *increment*
-    blob.hueIncrement += random(-0.01, 0.01); // Small random change to the increment
-    blob.hue = (blob.hue + blob.hueIncrement) % 360;
+                // "Error": Accumulating hue change based on a flawed idea
+                // Instead of a consistent small change, we're slightly modifying the *increment*
+                // Adds a small random value between -0.01 and 0.01 to the blob's 'hueIncrement'.
+                // This means the rate at which the hue changes itself changes randomly over time, leading to an inconsistent color shift.
+                blob.hueIncrement += random(-0.01, 0.01); // Small random change to the increment
+                // Updates the blob's hue by adding the 'hueIncrement' and using the modulo operator (%) to wrap the hue value within the 0-360 range.
+                blob.hue = (blob.hue + blob.hueIncrement) % 360;
 
-    fill(blob.hue, blob.saturation, blob.brightness, blob.alpha);
-    ellipse(blob.x, blob.y, blob.radius * 2);
-  }
-}
-  </script>
+                // Sets the fill color using the blob's current hue, saturation, brightness, and alpha.
+                fill(blob.hue, blob.saturation, blob.brightness, blob.alpha);
+                // Draws an ellipse (circle) at the blob's 'x' and 'y' coordinates with a diameter of 'blob.radius * 2'.
+                ellipse(blob.x, blob.y, blob.radius * 2);
+            }
+        }
+    </script>
 </body>
 </html>

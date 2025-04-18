@@ -7,10 +7,19 @@
     <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="./styles.css">
+<!-- 
+Disclamer on the use of AI in this project:
+
+AI has been used in the following areas:
+
+>> Queries about desired p5js creations
+>> Explanations about code blocks
+
+-->
 </head>
 <body>
   <nav class="navbar">
-        <a href="#" class="navbar-brand">Conner Batson 4-14-2025</a>
+        <a href="#" class="navbar-brand">Conner Batson 4-16-2025</a>
         <button class="navbar-toggler" id="navbarToggler">
             <i class="fa fa-bars"></i>
         </button>
@@ -55,186 +64,290 @@
 
   <script>
     //  Navbar Code
-const navbarToggler = document.getElementById('navbarToggler');
-const navbarMenu = document.getElementById('navbarMenu');
-console.log(navbarToggler);
-console.log(navbarMenu);
+    // Selects the HTML element with the ID 'navbarToggler' and stores a reference to it in the constant variable 'navbarToggler'.
+    const navbarToggler = document.getElementById('navbarToggler');
+    // Selects the HTML element with the ID 'navbarMenu' and stores a reference to it in the constant variable 'navbarMenu'.
+    const navbarMenu = document.getElementById('navbarMenu');
+    // Logs the 'navbarToggler' element to the browser's console for debugging or inspection.
+    console.log(navbarToggler);
+    // Logs the 'navbarMenu' element to the browser's console for debugging or inspection.
+    console.log(navbarMenu);
 
-navbarToggler.addEventListener('click', () => {
-  console.log("clicked on navbarToggler");
-    if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
-        navbarMenu.style.display = 'block';
-    } else {
-        navbarMenu.style.display = 'none';
+    // Adds an 'event listener' to the 'navbarToggler' element.
+    // This listener waits for a 'click' event to occur on the button.
+    navbarToggler.addEventListener('click', () => {
+        // This is a callback function that will be executed when the 'click' event is triggered.
+        console.log("clicked on navbarToggler");
+        // Checks if the 'display' style property of the 'navbarMenu' is currently set to 'none' (hidden) or an empty string (its default value).
+        if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
+            // If the menu is hidden, this line sets the 'display' style property to 'block', making the menu visible.
+            navbarMenu.style.display = 'block';
+        } else {
+            // If the menu is currently visible (i.e., 'display' is not 'none' or ''), this line sets the 'display' style property back to 'none', hiding the menu.
+            navbarMenu.style.display = 'none';
+        }
+    });
+
+    // P5js code
+    // Canvas dimensions
+    // Declares a variable 'canvasWidth' and initializes it to 300. This will be the fixed width of the p5.js canvas.
+    var canvasWidth = 300;
+    // Declares a variable 'canvasHeight' and initializes it to 800. This will be the initial height of the p5.js canvas, but it's controlled by user input.
+    var canvasHeight = 800;
+    // Declares a variable 'canvas' which will hold the p5.js canvas object once it's created.
+    var canvas; // To hold the p5.js canvas element
+
+    // Train track properties
+    // Declares a variable 'trackXCenter' which will store the horizontal center position of the train tracks.
+    var trackXCenter;
+    // Declares a variable 'trackSpacing' and sets it to 20. This determines the distance between the two rails.
+    var trackSpacing = 20;
+    // Declares a variable 'trackColor' which will store the color of the train tracks.
+    var trackColor;
+    // Declares a variable 'trackThickness' and sets it to 5. This determines the thickness of the lines drawing the rails.
+    var trackThickness = 5;
+    // Declares a variable 'trackLength' which will store the usable length of the track within the barriers.
+    var trackLength;
+
+    // Rail tie properties
+    // Declares a variable 'tieWidth' and calculates it as twice the 'trackSpacing'. This determines the width of the rail ties.
+    var tieWidth = trackSpacing * 2;
+    // Declares a variable 'tieHeight' and sets it to 3. This determines the height (thickness) of the rail ties.
+    var tieHeight = 3;
+    // Declares a variable 'tieColor' which will store the color of the rail ties.
+    var tieColor;
+    // Declares a variable 'tieSpacing' and sets it to 50. This is the initial spacing between the rail ties, controlled by user input.
+    var tieSpacing = 50;
+
+    // Train station properties
+    // Declares a variable 'stationInterval' and sets it to 150. This is the initial vertical distance between train stations, controlled by user input.
+    var stationInterval = 150;
+    // Declares a variable 'stationWidth' and sets it to 40. This determines the width of the drawn stations.
+    var stationWidth = 40;
+    // Declares a variable 'stationHeight' and sets it to 30. This determines the height of the drawn stations.
+    var stationHeight = 30;
+    // Declares a variable 'stationColor' which will store the color of the train stations.
+    var stationColor;
+    // Declares a variable 'stationOffset' and sets it to 50. This determines the horizontal distance of the stations from the center of the track.
+    var stationOffset = 50;
+
+    // Track barrier properties
+    // Declares a variable 'barrierWidth' and sets it to 50. This determines the width of the barriers at the top and bottom of the track.
+    var barrierWidth = 50;
+    // Declares a variable 'barrierHeight' and sets it to 10. This determines the height of the barriers.
+    var barrierHeight = 10;
+    // Declares a variable 'barrierColor' which will store the color of the track barriers.
+    var barrierColor;
+    // Declares a variable 'barrierOffset' and sets it to 20. This determines the vertical offset of the barriers from the top and bottom of the canvas.
+    var barrierOffset = 20;
+
+    // Scrolling variables
+    // Declares a variable 'scrollSpeed' and initializes it to 1. This controls how many pixels the track moves per frame.
+    var scrollSpeed = 1;
+    // Declares a variable 'scrollOffset' and initializes it to 0. This keeps track of the current vertical offset of the track elements for the scrolling effect.
+    var scrollOffset = 0;
+
+    // HTML control elements
+    // Declares a variable 'canvasHeightInput' which will hold a reference to the HTML input element for canvas height.
+    var canvasHeightInput;
+    // Declares a variable 'scrollSpeedSlider' which will hold a reference to the HTML range slider for scroll speed.
+    var scrollSpeedSlider;
+    // Declares a variable 'scrollSpeedValueSpan' which will hold a reference to the HTML span displaying the scroll speed value.
+    var scrollSpeedValueSpan;
+    // Declares a variable 'tieSpacingInput' which will hold a reference to the HTML input element for tie spacing.
+    var tieSpacingInput;
+    // Declares a variable 'stationIntervalInput' which will hold a reference to the HTML input element for station interval.
+    var stationIntervalInput;
+    // Declares a variable 'resetButton' which will hold a reference to the HTML button for resetting the animation.
+    var resetButton;
+
+    // setup function is a p5.js lifecycle function that is called once when the script starts.
+    function setup() {
+        // Uses the p5.js 'select' function to get a reference to the HTML input element with the ID 'canvasHeightInput' and stores it in the 'canvasHeightInput' variable.
+        canvasHeightInput = select('#canvasHeightInput');
+
+        // Creates a p5.js canvas with a fixed width of 'canvasWidth' and an initial height taken from the value of the 'canvasHeightInput' element (parsed as an integer).
+        // The 'createCanvas' function returns a p5.js canvas object, which is stored in the 'canvas' variable.
+        canvas = createCanvas(canvasWidth, parseInt(canvasHeightInput.value()));
+        // Sets the parent HTML element for the created canvas to the div with the ID 'canvasContainer'. This inserts the canvas into that div in the DOM.
+        canvas.parent('canvasContainer');
+
+        // Calculates the horizontal center of the canvas and stores it in 'trackXCenter'.
+        trackXCenter = canvasWidth / 2;
+        // Sets the color for the train tracks using the p5.js 'color' function with a grayscale value of 100.
+        trackColor = color(100);
+        // Sets the color for the rail ties using the p5.js 'color' function with a grayscale value of 80.
+        tieColor = color(80);
+        // Sets the color for the train stations using the p5.js 'color' function with a grayscale value of 150.
+        stationColor = color(150);
+        // Sets the color for the track barriers using the p5.js 'color' function with red color components.
+        barrierColor = color(200, 0, 0);
+        // Calculates the usable length of the track, which is the canvas height minus twice the 'barrierOffset' to account for the barriers at the top and bottom.
+        trackLength = canvasHeight - 2 * barrierOffset;
+
+        // Uses the p5.js 'select' function to get references to the HTML elements using their IDs.
+        scrollSpeedSlider = select('#scrollSpeedSlider');
+        scrollSpeedValueSpan = select('#scrollSpeedValue');
+        tieSpacingInput = select('#tieSpacingInput');
+        stationIntervalInput = select('#stationIntervalInput');
+        resetButton = select('#resetButton');
+
+        // Adds event listeners to the HTML control elements.
+        // When the value of 'canvasHeightInput' changes, the 'updateCanvasHeight' function is called.
+        canvasHeightInput.changed(updateCanvasHeight);
+        // When the value of 'scrollSpeedSlider' changes, the 'updateScrollSpeed' function is called.
+        scrollSpeedSlider.changed(updateScrollSpeed);
+        // When the value of 'tieSpacingInput' changes, the 'updateTieSpacing' function is called.
+        tieSpacingInput.changed(updateTieSpacing);
+        // When the value of 'stationIntervalInput' changes, the 'updateStationInterval' function is called.
+        stationIntervalInput.changed(updateStationInterval);
+        // When the 'resetButton' is pressed (mouse clicked), the 'resetAnimation' function is called.
+        resetButton.mousePressed(resetAnimation);
+
+        // Initially sets the text content of the 'scrollSpeedValueSpan' to the initial 'scrollSpeed' value.
+        scrollSpeedValueSpan.html(scrollSpeed);
+
+        // Starts the p5.js animation loop, causing the 'draw' function to be called repeatedly.
+        loop();
     }
-});
 
-// P5js code
-// Canvas dimensions
-var canvasWidth = 300;
-var canvasHeight = 800;
-var canvas; // To hold the p5.js canvas element
+    // draw function is a p5.js lifecycle function that is called repeatedly in a loop after 'setup' is executed.
+    // It's responsible for rendering each frame of the animation.
+    function draw() {
+        // Sets the background color of the canvas to a light gray (RGB value 240 for all components).
+        background(240);
 
-// Train track properties
-var trackXCenter;
-var trackSpacing = 20;
-var trackColor;
-var trackThickness = 5;
-var trackLength;
+        // Calculates the starting y-coordinate for drawing based on the 'scrollOffset'. The negative offset makes the elements appear to scroll upwards.
+        var drawStartY = -scrollOffset;
+        // Calculates the ending y-coordinate for drawing based on the 'scrollOffset'.
+        var drawEndY = canvasHeight - scrollOffset;
 
-// Rail tie properties
-var tieWidth = trackSpacing * 2;
-var tieHeight = 3;
-var tieColor;
-var tieSpacing = 50;
+        // Draw the train tracks
+        // Sets the stroke (line) color to 'trackColor'.
+        stroke(trackColor);
+        // Sets the thickness of the stroke to 'trackThickness'.
+        strokeWeight(trackThickness);
+        // Draws the left rail line from the top barrier offset to the bottom barrier offset, centered horizontally with an offset.
+        line(trackXCenter - trackSpacing / 2, barrierOffset, trackXCenter - trackSpacing / 2, canvasHeight - barrierOffset);
+        // Draws the right rail line similarly.
+        line(trackXCenter + trackSpacing / 2, barrierOffset, trackXCenter + trackSpacing / 2, canvasHeight - barrierOffset);
+        // Disables stroke for subsequent drawing.
+        noStroke();
 
-// Train station properties
-var stationInterval = 150;
-var stationWidth = 40;
-var stationHeight = 30;
-var stationColor;
-var stationOffset = 50;
+        // Draw the rail ties
+        // Sets the fill color for the rectangles to 'tieColor'.
+        fill(tieColor);
+        // Initializes the vertical position 'tieY' to the top barrier offset.
+        var tieY = barrierOffset;
+        // Gets the current value of the tie spacing from the input field and parses it as an integer.
+        var currentTieSpacing = parseInt(tieSpacingInput.value());
+        // Loops while 'tieY' is less than the bottom barrier offset.
+        while (tieY < canvasHeight - barrierOffset) {
+            // Draws a rectangle representing a rail tie, centered horizontally between the tracks and vertically at 'tieY'.
+            rect(trackXCenter - tieWidth / 2, tieY - tieHeight / 2, tieWidth, tieHeight);
+            // Increments 'tieY' by the current tie spacing to position the next tie.
+            tieY += currentTieSpacing;
+        }
 
-// Track barrier properties
-var barrierWidth = 50;
-var barrierHeight = 10;
-var barrierColor;
-var barrierOffset = 20;
+        // Draw the train stations
+        // Sets the fill color for the rectangles to 'stationColor'.
+        fill(stationColor);
+        // Initializes the vertical position 'stationY' to the top barrier offset plus the current station interval (parsed as an integer).
+        var stationY = barrierOffset + parseInt(stationIntervalInput.value());
+        // Initializes a counter for the station index.
+        var stationIndex = 0;
 
-// Scrolling variables
-var scrollSpeed = 1;
-var scrollOffset = 0;
-
-// HTML control elements
-var canvasHeightInput;
-var scrollSpeedSlider;
-var scrollSpeedValueSpan;
-var tieSpacingInput;
-var stationIntervalInput;
-var resetButton;
-
-function setup() {
-  // Get reference to the canvas height input
-  canvasHeightInput = select('#canvasHeightInput');
-
-  // Create the canvas with the initial height
-  canvas = createCanvas(canvasWidth, parseInt(canvasHeightInput.value()));
-  canvas.parent('canvasContainer');
-
-  trackXCenter = canvasWidth / 2;
-  trackColor = color(100);
-  tieColor = color(80);
-  stationColor = color(150);
-  barrierColor = color(200, 0, 0);
-  trackLength = canvasHeight - 2 * barrierOffset;
-
-  // Get references to the HTML elements
-  scrollSpeedSlider = select('#scrollSpeedSlider');
-  scrollSpeedValueSpan = select('#scrollSpeedValue');
-  tieSpacingInput = select('#tieSpacingInput');
-  stationIntervalInput = select('#stationIntervalInput');
-  resetButton = select('#resetButton');
-
-  // Add event listeners to the controls
-  canvasHeightInput.changed(updateCanvasHeight);
-  scrollSpeedSlider.changed(updateScrollSpeed);
-  tieSpacingInput.changed(updateTieSpacing);
-  stationIntervalInput.changed(updateStationInterval);
-  resetButton.mousePressed(resetAnimation);
-
-  // Initially display the scroll speed value
-  scrollSpeedValueSpan.html(scrollSpeed);
-
-  // Enable continuous looping for scrolling
-  loop();
-}
-
-function draw() {
-  background(240);
-
-  var drawStartY = -scrollOffset;
-  var drawEndY = canvasHeight - scrollOffset;
-
-  // Draw the train tracks
-  stroke(trackColor);
-  strokeWeight(trackThickness);
-  line(trackXCenter - trackSpacing / 2, barrierOffset, trackXCenter - trackSpacing / 2, canvasHeight - barrierOffset);
-  line(trackXCenter + trackSpacing / 2, barrierOffset, trackXCenter + trackSpacing / 2, canvasHeight - barrierOffset);
-  noStroke();
-
-  // Draw the rail ties
-  fill(tieColor);
-  var tieY = barrierOffset;
-  var currentTieSpacing = parseInt(tieSpacingInput.value()); // Get current value
-  while (tieY < canvasHeight - barrierOffset) {
-    rect(trackXCenter - tieWidth / 2, tieY - tieHeight / 2, tieWidth, tieHeight);
-    tieY += currentTieSpacing;
-  }
-
-  // Draw the train stations
-  fill(stationColor);
-  var stationY = barrierOffset + parseInt(stationIntervalInput.value()); // Get current value
-  var stationIndex = 0;
-
-  while (stationY < canvasHeight - barrierOffset) {
-    var stationX;
-    if (stationIndex % 2 === 0) {
-      stationX = trackXCenter - stationOffset - stationWidth;
-    } else {
-      stationX = trackXCenter + stationOffset;
-    }
-    rect(stationX, stationY - stationHeight / 2, stationWidth, stationHeight);
-    stationY += parseInt(stationIntervalInput.value()); // Use current value
-    stationIndex++;
-  }
-
+        // Loops while 'stationY' is less than the bottom barrier offset.
+        while (stationY < canvasHeight - barrierOffset) {
+            // Declares a variable 'stationX' to store the horizontal position of the station.
+            var stationX;
+            // Alternates the horizontal position of the stations based on whether the 'stationIndex' is even or odd.
+            if (stationIndex % 2 === 0) {
+                stationX = trackXCenter - stationOffset - stationWidth; // Station on the left
+            } else {
+                stationX = trackXCenter + stationOffset; // Station on the right
+            }
+            // Draws a rectangle representing a train station at the calculated 'stationX' and 'stationY'.
+            rect(stationX, stationY - stationHeight / 2, stationWidth, stationHeight);
+            // Increments 'stationY' by the current station interval (parsed as an integer).
+            stationY += parseInt(stationIntervalInput.value());
+            // Increments the station index.
+            stationIndex++;
+        }
   // Draw the track barriers
+  // Sets the fill color for the rectangles to 'barrierColor'.
   fill(barrierColor);
+  // Draws the top track barrier.
   rect(trackXCenter - barrierWidth / 2, barrierOffset - barrierHeight / 2, barrierWidth, barrierHeight);
+  // Draws the bottom track barrier.
   rect(trackXCenter - barrierWidth / 2, canvasHeight - barrierOffset - barrierHeight / 2, barrierWidth, barrierHeight);
 
   // Update the scroll offset for the next frame
-  scrollOffset += scrollSpeed;
-  if (scrollOffset > trackLength + parseInt(stationIntervalInput.value())) {
-    scrollOffset = 0;
-  }
-}
+        // Increases the 'scrollOffset' by the 'scrollSpeed' in each frame, creating the scrolling effect.
+        scrollOffset += scrollSpeed;
+        // Checks if the 'scrollOffset' has exceeded the total length of the track plus one station interval.
+        // This condition determines when to reset the scroll offset to create a continuous loop.
+        if (scrollOffset > trackLength + parseInt(stationIntervalInput.value())) {
+            // If the condition is true, resets the 'scrollOffset' to 0, making the track elements reappear from the top.
+            scrollOffset = 0;
+        }
+    }
 
-function updateCanvasHeight() {
-  var newHeight = parseInt(canvasHeightInput.value());
-  resizeCanvas(canvasWidth, newHeight);
-  canvasHeight = newHeight; // Update the global variable
+    // function to update canvas height based on user input
+    function updateCanvasHeight() {
+        // Gets the new canvas height value from the 'canvasHeightInput' element and parses it as an integer.
+        var newHeight = parseInt(canvasHeightInput.value());
+        // Resizes the p5.js canvas to the current 'canvasWidth' and the newly obtained 'newHeight'.
+        resizeCanvas(canvasWidth, newHeight);
+        // Updates the global 'canvasHeight' variable to the new height.
+        canvasHeight = newHeight; // Update the global variable
 
-  // Recalculate variables that depend on canvas height
-  trackLength = canvasHeight - 2 * barrierOffset;
-  // If you were using trackYCenter for horizontal tracks, you'd update it here too:
-  // trackYCenter = canvasHeight / 2;
+        // Recalculates the 'trackLength' variable based on the new canvas height.
+        trackLength = canvasHeight - 2 * barrierOffset;
+        // If you were using trackYCenter for horizontal tracks, you'd update it here too:
+        // trackYCenter = canvasHeight / 2;
 
-  // Reset scroll offset when height changes to prevent issues
-  scrollOffset = 0;
-}
+        // Resets the 'scrollOffset' to 0 when the canvas height changes to prevent visual glitches due to the change in track length.
+        scrollOffset = 0;
+    }
 
-function updateScrollSpeed() {
-  scrollSpeed = parseFloat(scrollSpeedSlider.value());
-  scrollSpeedValueSpan.html(scrollSpeed);
-}
+    // function to update scroll speed based on slider input
+    function updateScrollSpeed() {
+        // Gets the current value of the 'scrollSpeedSlider' and parses it as a floating-point number.
+        scrollSpeed = parseFloat(scrollSpeedSlider.value());
+        // Updates the text content of the 'scrollSpeedValueSpan' to the current 'scrollSpeed' value, providing visual feedback to the user.
+        scrollSpeedValueSpan.html(scrollSpeed);
+    }
 
-function updateTieSpacing() {
-  // The tie spacing will be read directly from the input in the draw function
-}
+    // function to update tie spacing based on input
+    function updateTieSpacing() {
+        // The 'tieSpacing' variable is directly used in the 'draw' function by reading the current value of the 'tieSpacingInput' in each frame.
+        // Therefore, no explicit update to a global variable is needed here; the 'draw' function will use the latest value from the input.
+        // (Initially, 'tieSpacing' was set to 50, but the drawing logic in 'draw' uses the live value from the input).
+    }
 
-function updateStationInterval() {
-  // The station interval will be read directly from the input in the draw function
-}
+    // function to update station interval based on input
+    function updateStationInterval() {
+        // Similar to 'updateTieSpacing', the 'stationInterval' is directly used in the 'draw' function by reading the current value of 'stationIntervalInput' in each frame.
+        // No explicit update to a global variable is required for the drawing logic to reflect the change.
+        // (Initially, 'stationInterval' was set to 150, but the drawing logic in 'draw' uses the live value from the input).
+    }
 
-function resetAnimation() {
-  scrollSpeedSlider.value('1');
-  scrollSpeed = 1;
-  scrollSpeedValueSpan.html(scrollSpeed);
-  tieSpacingInput.value('50');
-  stationIntervalInput.value('150');
-  scrollOffset = 0;
-}
+    // function to reset the animation to its initial state
+    function resetAnimation() {
+        // Resets the value of the 'scrollSpeedSlider' to '1'.
+        scrollSpeedSlider.value('1');
+        // Sets the 'scrollSpeed' variable back to its initial value of 1.
+        scrollSpeed = 1;
+        // Updates the displayed scroll speed value in the 'scrollSpeedValueSpan' to '1'.
+        scrollSpeedValueSpan.html(scrollSpeed);
+        // Resets the value of the 'tieSpacingInput' to '50'.
+        tieSpacingInput.value('50');
+        // Resets the value of the 'stationIntervalInput' to '150'.
+        stationIntervalInput.value('150');
+        // Sets the 'scrollOffset' back to 0, returning the track elements to their starting position.
+        scrollOffset = 0;
+    }
   </script>
 </body>
 </html>

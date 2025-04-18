@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <nav class="navbar">
-        <a href="#" class="navbar-brand">Conner Batson 4-14-2025</a>
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">Conner Batson 4-16-2025</a>
         <button class="navbar-toggler" id="navbarToggler">
             <i class="fa fa-bars"></i>
         </button>
@@ -25,119 +25,197 @@
         </div>
     </nav>
 
-  <button id="resetButton">Reset</button>
+    <button id="resetButton">Reset</button>
     <script>
         //  Navbar Code
+        // Selects the HTML element with the ID 'navbarToggler' and stores a reference to it in the constant variable 'navbarToggler'.
         const navbarToggler = document.getElementById('navbarToggler');
+        // Selects the HTML element with the ID 'navbarMenu' and stores a reference to it in the constant variable 'navbarMenu'.
         const navbarMenu = document.getElementById('navbarMenu');
+        // Logs the 'navbarToggler' element to the browser's console for debugging or inspection.
         console.log(navbarToggler);
+        // Logs the 'navbarMenu' element to the browser's console for debugging or inspection.
         console.log(navbarMenu);
 
+        // Adds an 'event listener' to the 'navbarToggler' element.
+        // This listener waits for a 'click' event to occur on the button.
         navbarToggler.addEventListener('click', () => {
-          console.log("clicked on navbarToggler");
+            // This is a callback function that will be executed when the 'click' event is triggered.
+            console.log("clicked on navbarToggler");
+            // Checks if the 'display' style property of the 'navbarMenu' is currently set to 'none' (hidden) or an empty string (its default value).
             if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
+                // If the menu is hidden, this line sets the 'display' style property to 'block', making the menu visible.
                 navbarMenu.style.display = 'block';
             } else {
+                // If the menu is currently visible (i.e., 'display' is not 'none' or ''), this line sets the 'display' style property back to 'none', hiding the menu.
                 navbarMenu.style.display = 'none';
             }
         });
 
         // P5js code
+        // variables
+        // Declares a string variable 'titleText' and initializes it with the value "P5JS Tests".
         let titleText = "P5JS Tests";
+        // Declares an empty array variable 'letters'. This array will store objects representing each letter of the 'titleText'.
         let letters = [];
+        // Declares a variable 'font' which is intended to hold a p5.Font object, although it's not currently loaded with a font.
         let font;
+        // Declares a numeric variable 'fontSize' and initializes it to 80. This will control the size of the text.
         let fontSize = 80;
+        // Declares a numeric variable 'resetDistance' and initializes it to 200. This variable's purpose isn't immediately clear from the provided snippet but might be used for some distance-based reset logic that isn't implemented.
         let resetDistance = 200;
+        // Declares a numeric variable 'boundaryMargin' and initializes it to 90. This will likely be used to define a margin around the canvas within which the letters should stay.
         let boundaryMargin = 90;
 
-        function preload() {
-            // font = loadFont('path/to/your/font.ttf');
-        }
-
+        // setup function is a p5.js lifecycle function that is called once when the script starts.
         function setup() {
+            // Creates a drawing canvas with the width of the browser window and a fixed height of 500 pixels.
+            // The canvas is the area where all the p5.js drawing will occur.
             createCanvas(window.innerWidth, 500);
+            // Sets the color mode for p5.js to RGB (Red, Green, Blue) with each color component ranging from 0 to 255.
             colorMode(RGB, 255);
-            // textFont(font);
+            // textFont(font); // This line is commented out, but it's intended to set the font for the text.
+            // Sets the size of the text to the value stored in the 'fontSize' variable (80 pixels).
             textSize(fontSize);
+            // Sets the alignment of the text. CENTER aligns the text horizontally to the center of its bounding box, and CENTER aligns it vertically as well.
             textAlign(CENTER, CENTER);
-            initializeLetters(); // Call function to set up letters array
+            // Calls the 'initializeLetters' function to populate the 'letters' array with objects representing each character of 'titleText'.
+            initializeLetters();
+            // Selects the HTML button element with the ID 'resetButton' and stores a reference to it in the 'button' variable.
             let button = document.getElementById('resetButton');
+            // Adds an event listener to the 'button' element.
+            // When a 'click' event occurs on the button, the 'resetAnimation' function will be executed.
             button.addEventListener('click', resetAnimation);
         }
 
+        // function to set up the letters array
         function initializeLetters() {
+            // Clears the 'letters' array by setting its length to 0. This ensures that when called, it starts with an empty array.
             letters = [];
+            // Loops through each character of the 'titleText' string.
             for (let i = 0; i < titleText.length; i++) {
+                // Calculates the x-coordinate for each letter to be initially positioned in the center of the canvas, spread out horizontally.
+                // It takes half of the canvas width and adds an offset based on the letter's index and the font size.
                 let x = width / 2 + (i - titleText.length / 2) * (fontSize * 0.7);
+                // Sets the initial y-coordinate for all letters to the vertical center of the canvas.
                 let y = height / 2;
+                // Pushes a new JavaScript object into the 'letters' array for each character.
                 letters.push({
-                    char: titleText[i],
+                    char: titleText[i], // Stores the individual character from 'titleText'.
+                    // current x and y positions
                     x: x,
                     y: y,
+                    // initial x and y positions (stored for resetting later)
                     originalX: x,
                     originalY: y,
-                    color: getDarkColor(), // Use the new function here
+                    color: getDarkColor(), // Calls the 'getDarkColor' function to get a random dark color for the letter.
+                    // speed x and y (initially zero)
                     speedX: 0,
                     speedY: 0,
+                    // full opacity set (255 is fully opaque in RGB color mode)
                     opacity: 255
                 });
             }
         }
 
+        // draw the canvas
+        // draw function is a p5.js lifecycle function that is called repeatedly in a loop after 'setup' is executed.
+        // It's responsible for rendering the animation frames.
         function draw() {
+            // Sets the background color of the canvas to a light gray (RGB value 240 for all components).
             background(240);
 
+            // Iterates through each object in the 'letters' array.
             for (let i = 0; i < letters.length; i++) {
+                // Gets the current letter object from the 'letters' array.
                 let letter = letters[i];
+                // Calculates the Euclidean distance between the mouse cursor's current position (mouseX, mouseY) and the current position of the letter (letter.x, letter.y).
                 let d = dist(mouseX, mouseY, letter.x, letter.y);
 
+                // Checks if the calculated distance 'd' is less than 50 pixels.
                 if (d < 50) {
+                    // Calculates the angle in radians between the letter and the mouse cursor using the atan2 function.
+                    // atan2(y, x) returns the angle in the range (-PI, PI) from the positive x-axis to the point (x, y).
                     let angle = atan2(letter.y - mouseY, letter.x - mouseX);
+                    // Adds a component to the letter's horizontal speed ('speedX') based on the cosine of the angle.
+                    // This pushes the letter away from the mouse in the horizontal direction.
                     letter.speedX += cos(angle) * 5;
+                    // Adds a component to the letter's vertical speed ('speedY') based on the sine of the angle.
+                    // This pushes the letter away from the mouse in the vertical direction.
                     letter.speedY += sin(angle) * 5;
-                    letter.color = getDarkColor(); // Use the new function here
+                    letter.color = getDarkColor(); // Assigns a new random dark color to the letter when the mouse is close.
                 }
 
+                // Updates the letter's x-coordinate by adding its horizontal speed.
                 letter.x += letter.speedX;
+                // Updates the letter's y-coordinate by adding its vertical speed.
                 letter.y += letter.speedY;
+                // Applies a damping effect to the horizontal speed, reducing it by 20% in each frame.
                 letter.speedX *= 0.8;
+                // Applies a damping effect to the vertical speed, reducing it by 20% in each frame.
                 letter.speedY *= 0.8;
 
+                // Checks if the letter's current position is outside the defined boundaries (with a margin).
                 if (letter.x < -boundaryMargin || letter.x > width + boundaryMargin || letter.y < -boundaryMargin || letter.y > height + boundaryMargin) {
+                    // If the letter is outside the boundaries, the 'resetLetter' function is called to reset its position and speed.
                     resetLetter(letter);
                 }
+
+                // Checks if the distance 'd' between the mouse and the letter is greater than 100 pixels.
                 if (d > 100) {
+                    // If the mouse is far from the letter, the letter's opacity is gradually reduced.
+                    // Math.max(0, ...) ensures that the opacity never goes below 0.
                     letter.opacity = Math.max(0, letter.opacity - 2);
                 }
+                // Sets the fill color for the text using the letter's current color and opacity.
                 fill(letter.color, letter.opacity);
+                // Draws the letter's character at its current x and y coordinates on the canvas.
                 text(letter.char, letter.x, letter.y);
             }
         }
 
+        // function to reset letter values
         function resetLetter(letter) {
+            // Resets the letter's x-coordinate to its original x-coordinate.
             letter.x = letter.originalX;
+            // Resets the letter's y-coordinate to its original y-coordinate.
             letter.y = letter.originalY;
+            // Sets the letter's horizontal speed to 0.
             letter.speedX = 0;
+            // Sets the letter's vertical speed to 0.
             letter.speedY = 0;
+            // Resets the letter's opacity to fully opaque (255).
             letter.opacity = 255;
         }
 
+        // function to reset the animation via function call
         function resetAnimation() {
-            initializeLetters(); // Reset all letter properties
+            // Calls the 'initializeLetters' function, which re-initializes the 'letters' array with the original positions and properties.
+            // This effectively resets the animation to its starting state.
+            initializeLetters();
         }
 
+        // function to resize canvas based on window change
+        // windowResized function is a p5.js lifecycle function that is called automatically when the browser window is resized.
         function windowResized() {
+            // Resizes the p5.js canvas to the new width and height of the browser window.
             resizeCanvas(window.innerWidth, window.innerHeight);
-            initializeLetters(); // Reset positions on resize as well.
+            // Calls 'initializeLetters' again to reposition the letters in the center of the newly resized canvas.
+            initializeLetters();
         }
 
+        // function to get a typography friendly color.
         function getDarkColor() {
-            // Ensure the color is not brighter than #999999
+            // Generates a random integer between 0 and 152 (inclusive) for the red color component.
             let r = Math.floor(random(0, 153)); // 0-153 (0x00-0x99)
+            // Generates a random integer between 0 and 152 (inclusive) for the green color component.
             let g = Math.floor(random(0, 153)); // 0-153 (0x00-0x99)
+            // Generates a random integer between 0 and 152 (inclusive) for the blue color component.
             let b = Math.floor(random(0, 153)); // 0-153 (0x00-0x99)
+            // Returns a p5.Color object created with the randomly generated dark red, green, and blue values.
+            // This ensures that the colors are generally on the darker side.
             return color(r, g, b);
         }
-  </script>
+    </script>
 </body>
 </html>

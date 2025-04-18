@@ -43,8 +43,8 @@
         });
 
       // P5js code
-        let levelLimit = 5;
-        let lines = [];
+        let levelLimit = 5; // levels of tree
+        let lines = []; // array of lines
         let lineLength = 50;
         let lineWeight = 2;
         let lineOpacity = 80;
@@ -54,6 +54,7 @@
         let canvasElement;
         let refreshButton;
 
+        // call setup to create canvas
         function setup() {
             canvasElement = createCanvas(window.innerWidth, window.innerHeight);
             colorMode(RGB, 255);
@@ -62,6 +63,7 @@
             button.addEventListener('click', generateInitialLines);
         }
 
+        // functions to generate lines for tree
         function generateInitialLines() {
             lines = [];
             let startX = width / 2;
@@ -69,6 +71,7 @@
             let angle = -Math.PI / 2;
             let endX = startX + cos(angle) * lineLength;
             let endY = startY + sin(angle) * lineLength;
+            // add new line object to array
             lines.push({
                 startX: startX,
                 startY: startY,
@@ -80,17 +83,24 @@
                 level: 0,
                 shape: 0 // 0: line, 1: ellipse, 2: rect, 3: triangle
             });
+            // call function to redraw canvas
             redraw();
         }
 
+        // function to generate new branches for tree
         function generateBranches(startX, startY, parentAngle, level) {
+            // if level limit reached, exit immediately
             if (level > levelLimit) return;
+            // get the number of branches to generate
             const numNewBranches = Math.floor(random(1, numBranches + 1));
+            // for each new branch
             for (let i = 0; i < numNewBranches; i++) {
+                // give branch new values
                 const angleOffset = random(-branchingAngle, branchingAngle);
                 const newAngle = parentAngle + angleOffset;
                 const endX = startX + cos(newAngle) * lineLength;
                 const endY = startY + sin(newAngle) * lineLength;
+                // add line to lines array
                 lines.push({
                     startX: startX,
                     startY: startY,
@@ -106,30 +116,39 @@
             }
         }
 
+        // draw the canvas
         function draw() {
             background(240);
+            // for each line in lines array, draw each line
             for (let i = 0; i < lines.length; i++) {
                 const lineData = lines[i];
                 stroke(lineData.color);
                 strokeWeight(lineData.weight);
                 line(lineData.startX, lineData.startY, lineData.endX, lineData.endY);
             }
+            // for each line in lines array
             for (let i = 0; i < lines.length; i++) {
                 const lineData = lines[i];
+                // if branching, then generate new branches
                 if (lineData.branching) {
                     generateBranches(lineData.endX, lineData.endY, atan2(lineData.endY - lineData.startY, lineData.endX - lineData.startX), lineData.level + 1);
                     lines[i].branching = false;
                 }
+                // if reach level limit, draw a random shape at end x and y with line color and shape
                 if (lineData.level === levelLimit) {
                     drawShape(lineData.endX, lineData.endY, lineData.color, lineData.shape);
                 }
             }
         }
 
+        // function to draw shape at end of tree
         function drawShape(x, y, shapeColor, shapeType) {
+            // add color to shape
             fill(shapeColor);
             noStroke();
+            // give constant shape size
             const shapeSize = 10;
+            // draw shape based on shape type and break
             switch (shapeType) {
                 case 1: // Ellipse
                     ellipse(x, y, shapeSize, shapeSize);
@@ -144,13 +163,16 @@
             }
         }
 
+        // function to resize canvas on window resize
         function windowResized() {
             resizeCanvas(window.innerWidth, window.innerHeight);
             generateInitialLines();
         }
 
         window.onload = () => {
+            // get refresh button
             refreshButton = document.getElementById('refreshButton');
+            // if button exists, add event listener to generate initial lines
             if (refreshButton) {
                 refreshButton.addEventListener('click', generateInitialLines);
             } else {

@@ -9,7 +9,7 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="#" class="navbar-brand">Conner Batson 4-14-2025</a>
+        <a href="#" class="navbar-brand">Conner Batson 4-16-2025</a>
         <button class="navbar-toggler" id="navbarToggler">
             <i class="fa fa-bars"></i>
         </button>
@@ -28,48 +28,84 @@
     <button id="refreshButton">Refresh</button>
     <script>
         //  Navbar Code
+        // Selects the HTML element with the ID 'navbarToggler' and stores a reference to it in the constant variable 'navbarToggler'.
         const navbarToggler = document.getElementById('navbarToggler');
+        // Selects the HTML element with the ID 'navbarMenu' and stores a reference to it in the constant variable 'navbarMenu'.
         const navbarMenu = document.getElementById('navbarMenu');
+        // Logs the 'navbarToggler' element to the browser's console for debugging or inspection.
         console.log(navbarToggler);
+        // Logs the 'navbarMenu' element to the browser's console for debugging or inspection.
         console.log(navbarMenu);
 
+        // Adds an 'event listener' to the 'navbarToggler' element.
+        // This listener waits for a 'click' event to occur on the button.
         navbarToggler.addEventListener('click', () => {
-          console.log("clicked on navbarToggler");
+            // This is a callback function that will be executed when the 'click' event is triggered.
+            console.log("clicked on navbarToggler");
+            // Checks if the 'display' style property of the 'navbarMenu' is currently set to 'none' (hidden) or an empty string (its default value).
             if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
+                // If the menu is hidden, this line sets the 'display' style property to 'block', making the menu visible.
                 navbarMenu.style.display = 'block';
             } else {
+                // If the menu is currently visible (i.e., 'display' is not 'none' or ''), this line sets the 'display' style property back to 'none', hiding the menu.
                 navbarMenu.style.display = 'none';
             }
         });
-        
+
+        // P5js code
+        // Declares a variable 'numLines' and initializes it to 100. This determines the number of random lines that will be drawn.
         let numLines = 100;
+        // Declares a variable 'minLength' and initializes it to 10. This sets the minimum possible length for a randomly generated line.
         let minLength = 10;
+        // Declares a variable 'maxLength' and initializes it to 50. This sets the maximum possible length for a randomly generated line.
         let maxLength = 50;
+        // Declares a variable 'lineWeight' which will store the weight (thickness) of each line. It will be randomly assigned.
         let lineWeight;
+        // Declares a variable 'lineOpacity' and initializes it to 80. This sets the alpha (transparency) value for the color of the lines.
         let lineOpacity = 80;
+        // Declares an empty array named 'lines'. This array will store objects, each representing a line with its start and end points, color, and weight.
         let lines = [];
+        // Declares a variable 'canvasElement' which will hold the p5.js canvas object once it's created.
         let canvasElement;
 
+        // setup function is a p5.js lifecycle function that is called once when the script starts.
         function setup() {
+            // Creates a p5.js canvas with the width and height set to the inner width and inner height of the browser window, making it responsive to window size.
             canvasElement = createCanvas(window.innerWidth, window.innerHeight);
+            // Sets the color mode for p5.js to RGB (Red, Green, Blue) with each color component ranging from 0 to 255.
             colorMode(RGB, 255);
+            // Calls the 'generateLines' function to populate the 'lines' array with random line data.
             generateLines();
+            // Selects the HTML button element with the ID 'refreshButton' and stores a reference to it in the 'button' variable.
             let button = document.getElementById('refreshButton');
+            // Adds an event listener to the 'button' element.
+            // When a 'click' event occurs on the button, the 'generateLines' function will be executed, creating a new set of random lines.
             button.addEventListener('click', generateLines);
         }
 
+        // function to generate the array of random lines
         function generateLines() {
+            // Clears the 'lines' array by setting its length to 0. This ensures that when called, it starts with an empty array.
             lines = [];
+            // Loops 'numLines' times to create the specified number of random lines.
             for (let i = 0; i < numLines; i++) {
+                // Generates a random starting x-coordinate for the line within the width of the canvas.
                 let startX = random(width);
+                // Generates a random starting y-coordinate for the line within the height of the canvas.
                 let startY = random(height);
+                // Generates a random length for the line between 'minLength' and 'maxLength'.
                 let length = random(minLength, maxLength);
+                // Generates a random angle in radians (0 to 2*PI) for the orientation of the line.
                 let angle = random(TWO_PI);
 
+                // Calculates the x-coordinate of the end point of the line using trigonometry (cosine of the angle multiplied by the length).
                 let endX = startX + cos(angle) * length;
+                // Calculates the y-coordinate of the end point of the line using trigonometry (sine of the angle multiplied by the length).
                 let endY = startY + sin(angle) * length;
 
+                // Generates a random line weight (thickness) between 1 and 5 pixels.
                 lineWeight = random(1, 5);
+                // Pushes a new JavaScript object into the 'lines' array for each line, containing its start and end points, a random color with the specified opacity, and its weight.
                 lines.push({
                     startX: startX,
                     startY: startY,
@@ -79,21 +115,33 @@
                     weight: lineWeight
                 });
             }
-            redraw(); // Force a redraw to update the canvas immediately
+            // Forces a redraw of the canvas. Since 'draw' is typically called in a loop, calling 'redraw' here ensures the new lines are drawn immediately after 'generateLines' is executed (especially useful when not animating).
+            redraw();
         }
 
+        // draw function is a p5.js lifecycle function that is called repeatedly in a loop after 'setup' is executed.
+        // It's responsible for rendering each frame of the animation (though in this case, it's mostly static after generation).
         function draw() {
+            // Sets the background color of the canvas to a light gray (RGB value 240 for all components). This clears the previous frame.
             background(240);
+            // Loops through each object in the 'lines' array.
             for (let i = 0; i < lines.length; i++) {
+                // Gets the line data object at the current index.
                 let lineData = lines[i];
+                // Sets the stroke (line) color using the 'color' property of the current line data.
                 stroke(lineData.color);
+                // Sets the thickness of the stroke using the 'weight' property of the current line data.
                 strokeWeight(lineData.weight);
+                // Draws a line between the start and end points specified in the current line data.
                 line(lineData.startX, lineData.startY, lineData.endX, lineData.endY);
             }
         }
 
+        // function to resize the canvas when the browser window is resized
         function windowResized() {
+            // Resizes the p5.js canvas to the new width and height of the browser window, making it responsive.
             resizeCanvas(window.innerWidth, window.innerHeight);
+            // Calls 'generateLines' again to create a new set of random lines that fit the new canvas dimensions.
             generateLines();
         }
     </script>

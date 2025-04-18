@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +8,8 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <nav class="navbar">
-        <a href="#" class="navbar-brand">Conner Batson 4-14-2025</a>
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">Conner Batson 4-16-2025</a>
         <button class="navbar-toggler" id="navbarToggler">
             <i class="fa fa-bars"></i>
         </button>
@@ -26,158 +25,172 @@
         </div>
     </nav>
 
-  <script>
-    //  Navbar Code
-const navbarToggler = document.getElementById('navbarToggler');
-const navbarMenu = document.getElementById('navbarMenu');
-console.log(navbarToggler);
-console.log(navbarMenu);
+    <script>
+        //  Navbar Code
+        // Selects the HTML element with the ID 'navbarToggler' and stores a reference to it in the constant variable 'navbarToggler'.
+        const navbarToggler = document.getElementById('navbarToggler');
+        // Selects the HTML element with the ID 'navbarMenu' and stores a reference to it in the constant variable 'navbarMenu'.
+        const navbarMenu = document.getElementById('navbarMenu');
+        // Logs the 'navbarToggler' element to the browser's console for debugging or inspection.
+        console.log(navbarToggler);
+        // Logs the 'navbarMenu' element to the browser's console for debugging or inspection.
+        console.log(navbarMenu);
 
-navbarToggler.addEventListener('click', () => {
-  console.log("clicked on navbarToggler");
-    if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
-        navbarMenu.style.display = 'block';
-    } else {
-        navbarMenu.style.display = 'none';
-    }
-});
+        // Adds an 'event listener' to the 'navbarToggler' element.
+        // This listener waits for a 'click' event to occur on the button.
+        navbarToggler.addEventListener('click', () => {
+            // This is a callback function that will be executed when the 'click' event is triggered.
+            console.log("clicked on navbarToggler");
+            // Checks if the 'display' style property of the 'navbarMenu' is currently set to 'none' (hidden) or an empty string (its default value).
+            if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
+                // If the menu is hidden, this line sets the 'display' style property to 'block', making the menu visible.
+                navbarMenu.style.display = 'block';
+            } else {
+                // If the menu is currently visible (i.e., 'display' is not 'none' or ''), this line sets the 'display' style property back to 'none', hiding the menu.
+                navbarMenu.style.display = 'none';
+            }
+        });
 
-// P5js code
-// Define the total width of the canvas
-var canvasWidth = 600;
-// Define the number of squares in each row and column
-var squareSize = 20;
-// Calculate the width and height of each individual square
-var squareSide;
-// 2D array to hold the state of each square on the board
-var board = [];
-// Variable to keep track of the currently hovered square's index
-var hoveredRow = -1;
-var hoveredCol = -1;
-// Variable to store the previously hovered square's index
-var previousHoveredRow = -1;
-var previousHoveredCol = -1;
-// Duration of the color transition in milliseconds
-var transitionDuration = 4000;
+        // P5js code
+        // Define the total width of the canvas.
+        var canvasWidth = 600;
+        // Define the number of squares in each row and column of the grid.
+        var squareSize = 20;
+        // Calculate the width and height of each individual square in the grid.
+        var squareSide;
+        // 2D array to hold the state (color information) of each square on the grid.
+        var board = [];
+        // Variable to keep track of the row index of the currently hovered square. Initialized to -1 (no square hovered).
+        var hoveredRow = -1;
+        // Variable to keep track of the column index of the currently hovered square. Initialized to -1 (no square hovered).
+        var hoveredCol = -1;
+        // Variable to store the row index of the previously hovered square. Initialized to -1.
+        var previousHoveredRow = -1;
+        // Variable to store the column index of the previously hovered square. Initialized to -1.
+        var previousHoveredCol = -1;
+        // Duration of the color transition effect in milliseconds.
+        var transitionDuration = 4000;
 
-// This function is called once at the beginning of the program
-function setup() {
-  // Create the canvas with the specified width and height
-  createCanvas(canvasWidth, canvasWidth);
-  // Calculate the side length of each square
-  squareSide = canvasWidth / squareSize;
-  // Set the color mode to RGB for lerpColor to work correctly
-  colorMode(RGB);
+        // This function is called once at the beginning of the program.
+        function setup() {
+            // Create the canvas with the specified width and height.
+            createCanvas(canvasWidth, canvasWidth);
+            // Calculate the side length of each square based on the canvas width and the number of squares.
+            squareSide = canvasWidth / squareSize;
+            // Set the color mode to RGB (Red, Green, Blue) for the 'lerpColor' function to work correctly.
+            colorMode(RGB);
 
-  // Initialize the board array
-  for (var i = 0; i < squareSize; i++) {
-    board[i] = []; // Create a new array for each row
-    for (var j = 0; j < squareSize; j++) {
-      // For each cell in the row, create an object to store its properties
-      board[i][j] = {
-        x: j * squareSide, // Calculate the x-coordinate of the square
-        y: i * squareSide, // Calculate the y-coordinate of the square
-        currentColor: color(255), // Initialize the color to white
-        targetColor: color(255),   // Initially the target is also white
-        transitionStartTime: 0,     // Time when the transition started
-        transitionDuration: transitionDuration, // Duration of the transition
-        startColor: color(255),      // Color at the start of the transition
-      };
-    }
-  }
-}
-
-// This function is called repeatedly to draw on the canvas
-function draw() {
-  // Set the background color
-  background(220);
-
-  // Iterate through each row of the board
-  for (var i = 0; i < squareSize; i++) {
-    // Iterate through each column in the current row
-    for (var j = 0; j < squareSize; j++) {
-      var square = board[i][j];
-      // Calculate the elapsed time
-      var elapsedTime = millis() - square.transitionStartTime;
-      // Calculate the progress (0 to 1)
-      var progress = Math.min(1, Math.max(0, elapsedTime / square.transitionDuration));
-
-      // Interpolate the color if a transition is in progress
-      if (square.currentColor.toString() !== square.targetColor.toString()) {
-        square.currentColor = lerpColor(square.startColor, square.targetColor, progress);
-      }
-
-      // Set the fill color to the current color of the square
-      fill(square.currentColor);
-      // Draw a rectangle for the current square
-      rect(square.x, square.y, squareSide, squareSide);
-    }
-  }
-
-  // Calculate the row and column index of the mouse position
-  var currentRow = Math.floor(mouseY / squareSide);
-  var currentCol = Math.floor(mouseX / squareSide);
-
-  // Check if the mouse is within the bounds of the board
-  if (currentRow >= 0 && currentRow < squareSize && currentCol >= 0 && currentCol < squareSize) {
-    // If the mouse is over a new square
-    if (currentRow !== hoveredRow || currentCol !== hoveredCol) {
-      // If there was a previously hovered square
-      if (previousHoveredRow !== -1 && previousHoveredCol !== -1) {
-        var previousSquare = board[previousHoveredRow][previousHoveredCol];
-        // Start the transition back to white if it's not already white
-        if ((previousSquare.currentColor).toString() !== color(255).toString() && (previousSquare.targetColor).toString() !== color(255).toString()) {
-          previousSquare.startColor = previousSquare.currentColor;
-          previousSquare.targetColor = color(255);
-          previousSquare.transitionStartTime = millis();
-          previousSquare.transitionDuration = transitionDuration;
+            // Initialize the 'board' array, which is a 2D array representing the grid of squares.
+            for (var i = 0; i < squareSize; i++) {
+                board[i] = []; // Create a new array for each row.
+                for (var j = 0; j < squareSize; j++) {
+                    // For each cell in the row, create an object to store its properties:
+                    board[i][j] = {
+                        x: j * squareSide, // Calculate the x-coordinate of the top-left corner of the square.
+                        y: i * squareSide, // Calculate the y-coordinate of the top-left corner of the square.
+                        currentColor: color(255), // Initialize the current color of the square to white.
+                        targetColor: color(255),    // Initially, the target color is also white (no transition).
+                        transitionStartTime: 0,      // Time (in milliseconds) when the color transition started.
+                        transitionDuration: transitionDuration, // Duration of the color transition in milliseconds.
+                        startColor: color(255),      // Color of the square at the start of a transition.
+                    };
+                }
+            }
         }
-      }
 
-      var currentSquare = board[currentRow][currentCol];
-      // If the current square is white or transitioning to white
-      var isWhiteOrTransitioningToWhite = (currentSquare.currentColor).toString() === color(255).toString() || (currentSquare.targetColor).toString() === color(255).toString();
-      if (isWhiteOrTransitioningToWhite) {
-        // Generate a random color
-        var randomRed = Math.floor(Math.random() * 256);
-        var randomGreen = Math.floor(Math.random() * 256);
-        var randomBlue = Math.floor(Math.random() * 256);
-        var randomColor = color(randomRed, randomGreen, randomBlue);
-        // Immediately set the current color
-        currentSquare.currentColor = randomColor;
-        // Prepare for the transition back to white on mouse out
-        currentSquare.startColor = randomColor;
-        currentSquare.targetColor = color(255);
-        currentSquare.transitionStartTime = millis();
-        currentSquare.transitionDuration = transitionDuration;
-      }
+        // This function is called repeatedly to draw on the canvas.
+        function draw() {
+            // Set the background color of the canvas to a light gray.
+            background(220);
 
-      // Update the currently hovered square's index
-      hoveredRow = currentRow;
-      hoveredCol = currentCol;
-      // Update the previously hovered square's index
-      previousHoveredRow = currentRow;
-      previousHoveredCol = currentCol;
-    }
-  } else {
-    // If the mouse is not over any square on the board
-    if (previousHoveredRow !== -1 && previousHoveredCol !== -1) {
-      var lastHoveredSquare = board[previousHoveredRow][previousHoveredCol];
-      // Start the transition back to white if it's not already white
-      if ((lastHoveredSquare.currentColor).toString() !== color(255).toString() && (lastHoveredSquare.targetColor).toString() !== color(255).toString()) {
-        lastHoveredSquare.startColor = lastHoveredSquare.currentColor;
-        lastHoveredSquare.targetColor = color(255);
-        lastHoveredSquare.transitionStartTime = millis();
-        lastHoveredSquare.transitionDuration = transitionDuration;
-      }
-      // Reset the hovered square indices
-      hoveredRow = -1;
-      hoveredCol = -1;
-      previousHoveredRow = -1;
-      previousHoveredCol = -1;
-    }
-  }
-}
-  </script>
+            // Iterate through each row of the 'board' array.
+            for (var i = 0; i < squareSize; i++) {
+                // Iterate through each column in the current row.
+                for (var j = 0; j < squareSize; j++) {
+                    var square = board[i][j];
+                    // Calculate the elapsed time since the current color transition started.
+                    var elapsedTime = millis() - square.transitionStartTime;
+                    // Calculate the progress of the transition as a value between 0 and 1.
+                    var progress = Math.min(1, Math.max(0, elapsedTime / square.transitionDuration));
+
+                    // Interpolate the color if the current color is different from the target color.
+                    if (square.currentColor.toString() !== square.targetColor.toString()) {
+                        // Use 'lerpColor' to smoothly transition the color from the 'startColor' to the 'targetColor' based on the 'progress'.
+                        square.currentColor = lerpColor(square.startColor, square.targetColor, progress);
+                    }
+
+                    // Set the fill color for drawing the current square to its 'currentColor'.
+                    fill(square.currentColor);
+                    // Draw a rectangle for the current square at its calculated position with the 'squareSide' dimensions.
+                    rect(square.x, square.y, squareSide, squareSide);
+                }
+            }
+
+            // Calculate the row index of the square under the mouse cursor.
+            var currentRow = Math.floor(mouseY / squareSide);
+            // Calculate the column index of the square under the mouse cursor.
+            var currentCol = Math.floor(mouseX / squareSide);
+
+            // Check if the mouse coordinates are within the bounds of the grid.
+            if (currentRow >= 0 && currentRow < squareSize && currentCol >= 0 && currentCol < squareSize) {
+                // If the mouse is over a new square (different from the previously hovered one).
+                if (currentRow !== hoveredRow || currentCol !== hoveredCol) {
+                    // If there was a previously hovered square.
+                    if (previousHoveredRow !== -1 && previousHoveredCol !== -1) {
+                        var previousSquare = board[previousHoveredRow][previousHoveredCol];
+                        // Start the transition of the previously hovered square back to white if it's not already white and not already transitioning to white.
+                        if ((previousSquare.currentColor).toString() !== color(255).toString() && (previousSquare.targetColor).toString() !== color(255).toString()) {
+                            previousSquare.startColor = previousSquare.currentColor;
+                            previousSquare.targetColor = color(255);
+                            previousSquare.transitionStartTime = millis();
+                            previousSquare.transitionDuration = transitionDuration;
+                        }
+                    }
+
+                    var currentSquare = board[currentRow][currentCol];
+                    // Check if the current square is white or is currently transitioning back to white.
+                    var isWhiteOrTransitioningToWhite = (currentSquare.currentColor).toString() === color(255).toString() || (currentSquare.targetColor).toString() === color(255).toString();
+                    if (isWhiteOrTransitioningToWhite) {
+                        // Generate a random color for the currently hovered square.
+                        var randomRed = Math.floor(Math.random() * 256);
+                        var randomGreen = Math.floor(Math.random() * 256);
+                        var randomBlue = Math.floor(Math.random() * 256);
+                        var randomColor = color(randomRed, randomGreen, randomBlue);
+                        // Immediately set the current color of the square to the random color.
+                        currentSquare.currentColor = randomColor;
+                        // Prepare the square to transition back to white when the mouse moves away.
+                        currentSquare.startColor = randomColor;
+                        currentSquare.targetColor = color(255);
+                        currentSquare.transitionStartTime = millis();
+                        currentSquare.transitionDuration = transitionDuration;
+                    }
+
+                    // Update the indices of the currently hovered square.
+                    hoveredRow = currentRow;
+                    hoveredCol = currentCol;
+                    // Update the indices of the previously hovered square.
+                    previousHoveredRow = currentRow;
+                    previousHoveredCol = currentCol;
+                }
+            } else {
+                // If the mouse is not over any square on the grid.
+                if (previousHoveredRow !== -1 && previousHoveredCol !== -1) {
+                    var lastHoveredSquare = board[previousHoveredRow][previousHoveredCol];
+                    // Start the transition of the last hovered square back to white if it's not already white and not already transitioning to white.
+                    if ((lastHoveredSquare.currentColor).toString() !== color(255).toString() && (lastHoveredSquare.targetColor).toString() !== color(255).toString()) {
+                        lastHoveredSquare.startColor = lastHoveredSquare.currentColor;
+                        lastHoveredSquare.targetColor = color(255);
+                        lastHoveredSquare.transitionStartTime = millis();
+                        lastHoveredSquare.transitionDuration = transitionDuration;
+                    }
+                    // Reset the hovered square indices.
+                    hoveredRow = -1;
+                    hoveredCol = -1;
+                    previousHoveredRow = -1;
+                    previousHoveredCol = -1;
+                }
+            }
+        }
+    </script>
 </body>
 </html>

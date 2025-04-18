@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <nav class="navbar">
-        <a href="#" class="navbar-brand">Conner Batson 4-14-2025</a>
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">Conner Batson 4-16-2025</a>
         <button class="navbar-toggler" id="navbarToggler">
             <i class="fa fa-bars"></i>
         </button>
@@ -25,68 +25,109 @@
         </div>
     </nav>
 
-  <script>
-    //  Navbar Code
-const navbarToggler = document.getElementById('navbarToggler');
-const navbarMenu = document.getElementById('navbarMenu');
-console.log(navbarToggler);
-console.log(navbarMenu);
+    <script>
+        //  Navbar Code
+        // Selects the HTML element with the ID 'navbarToggler' and stores a reference to it in the constant variable 'navbarToggler'.
+        const navbarToggler = document.getElementById('navbarToggler');
+        // Selects the HTML element with the ID 'navbarMenu' and stores a reference to it in the constant variable 'navbarMenu'.
+        const navbarMenu = document.getElementById('navbarMenu');
+        // Logs the 'navbarToggler' element to the browser's console for debugging or inspection.
+        console.log(navbarToggler);
+        // Logs the 'navbarMenu' element to the browser's console for debugging or inspection.
+        console.log(navbarMenu);
 
-navbarToggler.addEventListener('click', () => {
-  console.log("clicked on navbarToggler");
-    if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
-        navbarMenu.style.display = 'block';
-    } else {
-        navbarMenu.style.display = 'none';
-    }
-});
+        // Adds an 'event listener' to the 'navbarToggler' element.
+        // This listener waits for a 'click' event to occur on the button.
+        navbarToggler.addEventListener('click', () => {
+            // This is a callback function that will be executed when the 'click' event is triggered.
+            console.log("clicked on navbarToggler");
+            // Checks if the 'display' style property of the 'navbarMenu' is currently set to 'none' (hidden) or an empty string (its default value).
+            if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
+                // If the menu is hidden, this line sets the 'display' style property to 'block', making the menu visible.
+                navbarMenu.style.display = 'block';
+            } else {
+                // If the menu is currently visible (i.e., 'display' is not 'none' or ''), this line sets the 'display' style property back to 'none', hiding the menu.
+                navbarMenu.style.display = 'none';
+            }
+        });
 
-// P5js code
-let circles = [];
-let spawnInterval = 100; // Spawn a new circle every 0.1 seconds (adjust as needed)
-let lastSpawnTime = 0;
-let circleLifespan = 5000; // Circles disappear after 5 seconds
-let radiusMin = 10; // min radius
-let radiusMax = 20; // max radius
+        // P5js code
+        // Declares an empty array named 'circles'. This array will store objects, each representing a circle.
+        let circles = [];
+        // Declares a variable 'spawnInterval' and initializes it to 100. This variable controls how often (in milliseconds) a new circle is created.
+        let spawnInterval = 100; // Spawn a new circle every 0.1 seconds (adjust as needed)
+        // Declares a variable 'lastSpawnTime' to keep track of the last time a new circle was spawned. It will be initialized in the 'setup' function.
+        let lastSpawnTime = 0;
+        // Declares a variable 'circleLifespan' and initializes it to 5000. This variable determines how long (in milliseconds) a circle will exist before it disappears.
+        let circleLifespan = 5000; // Circles disappear after 5 seconds
+        // Declares a variable 'radiusMin' and initializes it to 10. This sets the minimum possible radius for a newly created circle.
+        let radiusMin = 10; // min radius
+        // Declares a variable 'radiusMax' and initializes it to 20. This sets the maximum possible radius for a newly created circle.
+        let radiusMax = 20; // max radius
 
-function setup() {
-  createCanvas(600, 400);
-  lastSpawnTime = millis();
-}
+        // setup function is a p5.js lifecycle function that is called once when the script starts.
+        function setup() {
+            // Creates a p5.js canvas with a width of 600 pixels and a height of 400 pixels. This is where the circles will be drawn.
+            createCanvas(600, 400);
+            // Initializes 'lastSpawnTime' to the current time (in milliseconds since the program started). This ensures that a new circle might be created on the first frame if the condition in 'draw' is met.
+            lastSpawnTime = millis();
+        }
 
-function draw() {
-  background(220);
+        // draw function is a p5.js lifecycle function that is called repeatedly in a loop after 'setup' is executed.
+        // It's responsible for rendering each frame of the animation.
+        function draw() {
+            // Sets the background color of the canvas to a light gray (RGB value 220 for all components). This clears the previous frame.
+            background(220);
 
-  // Spawn a new circle randomly every spawnInterval
-  let currTime = millis();
-  if (currTime - lastSpawnTime > spawnInterval) {
-    let newCircle = {
-      x: random(width),
-      y: random(height),
-      radius: random(radiusMin, radiusMax),
-      color: color(random(255), random(255), random(255), 100), // Translucent random color
-      startTime: currTime
-    };
-    circles.push(newCircle);
-    lastSpawnTime = currTime;
-  }
+            // Spawn a new circle randomly every spawnInterval
+            // Gets the current time (in milliseconds since the program started).
+            let currTime = millis();
+            // Checks if the time elapsed since the last circle was spawned ('lastSpawnTime') is greater than the specified 'spawnInterval'.
+            if (currTime - lastSpawnTime > spawnInterval) {
+                // Creates a new JavaScript object representing a circle with the following properties:
+                let newCircle = {
+                    // 'x': A random horizontal position within the width of the canvas.
+                    x: random(width),
+                    // 'y': A random vertical position within the height of the canvas.
+                    y: random(height),
+                    // 'radius': A random radius between 'radiusMin' and 'radiusMax'.
+                    radius: random(radiusMin, radiusMax),
+                    // 'color': A random RGB color with an alpha (transparency) value of 100 (out of 255).
+                    color: color(random(255), random(255), random(255), 100), // Translucent random color
+                    // 'startTime': The time at which this circle was created. This is used to track its lifespan.
+                    startTime: currTime
+                };
+                // Adds the newly created 'newCircle' object to the end of the 'circles' array.
+                circles.push(newCircle);
+                // Updates 'lastSpawnTime' to the current time, so the next circle will be spawned after another 'spawnInterval' has passed.
+                lastSpawnTime = currTime;
+            }
 
-  // Draw and update existing circles
-  for (let i = circles.length - 1; i >= 0; i--) {
-    let circle = circles[i];
-    let age = currTime - circle.startTime;
+            // Draw and update existing circles
+            // Loops through the 'circles' array in reverse order. This is important when removing elements from an array while iterating.
+            for (let i = circles.length - 1; i >= 0; i--) {
+                // Gets a reference to the current circle object in the array.
+                let circle = circles[i];
+                // Calculates the age of the current circle by subtracting its 'startTime' from the current time.
+                let age = currTime - circle.startTime;
 
-    // Draw the circle
-    noStroke();
-    fill(circle.color);
-    ellipse(circle.x, circle.y, circle.radius * 2, circle.radius * 2);
+                // Draw the circle
+                // Disables the stroke (border) of the shape.
+                noStroke();
+                // Sets the fill color of the shape to the circle's 'color'.
+                fill(circle.color);
+                // Draws an ellipse (circle) at the circle's 'x' and 'y' coordinates with a diameter of 'circle.radius * 2'.
+                ellipse(circle.x, circle.y, circle.radius * 2, circle.radius * 2);
 
-    // Remove circles that have lived longer than the lifespan
-    if (age > circleLifespan) {
-      circles.splice(i, 1);
-    }
-  }
-}
-  </script>
+                // Remove circles that have lived longer than the lifespan
+                // Checks if the 'age' of the current circle is greater than the 'circleLifespan'.
+                if (age > circleLifespan) {
+                    // If the circle has lived longer than its lifespan, removes it from the 'circles' array using the 'splice' method.
+                    // 'i' is the index of the element to remove, and '1' indicates that only one element should be removed.
+                    circles.splice(i, 1);
+                }
+            }
+        }
+    </script>
 </body>
 </html>

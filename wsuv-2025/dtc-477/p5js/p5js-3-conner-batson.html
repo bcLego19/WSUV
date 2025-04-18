@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <nav class="navbar">
+    <nav class="navbar">
         <a href="#" class="navbar-brand">Conner Batson 4-14-2025</a>
         <button class="navbar-toggler" id="navbarToggler">
             <i class="fa fa-bars"></i>
@@ -25,173 +25,264 @@
         </div>
     </nav>
 
-  <script>
-    //  Navbar Code
-const navbarToggler = document.getElementById('navbarToggler');
-const navbarMenu = document.getElementById('navbarMenu');
-console.log(navbarToggler);
-console.log(navbarMenu);
+    <script>
+        //  Navbar Code
+        // Selects the HTML element with the ID 'navbarToggler' and stores a reference to it in the constant variable 'navbarToggler'.
+        const navbarToggler = document.getElementById('navbarToggler');
+        // Selects the HTML element with the ID 'navbarMenu' and stores a reference to it in the constant variable 'navbarMenu'.
+        const navbarMenu = document.getElementById('navbarMenu');
+        // Logs the 'navbarToggler' element to the browser's console for debugging or inspection.
+        console.log(navbarToggler);
+        // Logs the 'navbarMenu' element to the browser's console for debugging or inspection.
+        console.log(navbarMenu);
 
-navbarToggler.addEventListener('click', () => {
-  console.log("clicked on navbarToggler");
-    if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
-        navbarMenu.style.display = 'block';
-    } else {
-        navbarMenu.style.display = 'none';
-    }
-});
+        // Adds an 'event listener' to the 'navbarToggler' element.
+        // This listener waits for a 'click' event to occur on the button.
+        navbarToggler.addEventListener('click', () => {
+            // This is a callback function that will be executed when the 'click' event is triggered.
+            console.log("clicked on navbarToggler");
+            // Checks if the 'display' style property of the 'navbarMenu' is currently set to 'none' (hidden) or an empty string (its default value).
+            if (navbarMenu.style.display === 'none' || navbarMenu.style.display === '') {
+                // If the menu is hidden, this line sets the 'display' style property to 'block', making the menu visible.
+                navbarMenu.style.display = 'block';
+            } else {
+                // If the menu is currently visible (i.e., 'display' is not 'none' or ''), this line sets the 'display' style property back to 'none', hiding the menu.
+                navbarMenu.style.display = 'none';
+            }
+        });
 
-// P5js code
-const canvasWidth = 600;
-const hexRadius = 30; // Radius of the circumscribed circle
-let hexGrid = [];
-let cols, rows;
-const transitionDuration = 4000;
-const triggerInterval = 1000;
-let lastTriggerTime = 0;
-let isTriggering = false;
-const neighborActivationDelay = 500;
+        // P5js code
+        // Defines a constant for the width of the p5.js canvas.
+        const canvasWidth = 600;
+        // Defines a constant for the radius of the circumscribed circle of each hexagon.
+        const hexRadius = 30;
+        // Declares an empty array 'hexGrid' which will store objects representing each hexagon in the grid.
+        let hexGrid = [];
+        // Declares variables 'cols' and 'rows' to store the number of columns and rows in the hexagon grid.
+        let cols, rows;
+        // Defines a constant for the duration of the color transition effect in milliseconds.
+        const transitionDuration = 4000;
+        // Defines a constant for the interval at which a new random hexagon is triggered to start the color spread.
+        const triggerInterval = 1000;
+        // Declares a variable 'lastTriggerTime' to keep track of the last time a hexagon was triggered.
+        let lastTriggerTime = 0;
+        // Declares a boolean variable 'isTriggering' to prevent multiple triggers from happening too quickly.
+        let isTriggering = false;
+        // Defines a constant for the delay in milliseconds before a hexagon's neighbors are activated after it changes color.
+        const neighborActivationDelay = 500;
 
-function setup() {
-  createCanvas(canvasWidth, canvasWidth);
-  colorMode(RGB);
+        // setup function is a p5.js lifecycle function that is called once when the script starts.
+        function setup() {
+            // Creates a p5.js canvas with the width and height set to 'canvasWidth'.
+            createCanvas(canvasWidth, canvasWidth);
+            // Sets the color mode for p5.js to RGB (Red, Green, Blue).
+            colorMode(RGB);
 
-  const hexRadius = 30; // Radius of the circumscribed circle
-  const hexHeight = hexRadius * Math.sqrt(3);
-  const horizontalSpacing = hexRadius * Math.sqrt(3) / 2 * 2; // Corrected horizontal spacing
-  const verticalSpacing = hexHeight * 0.75; // Corrected vertical spacing for tighter packing
+            // Redefines 'hexRadius' within the scope of the setup function (it's already defined globally, this could be redundant).
+            const hexRadius = 30;
+            // Calculates the height of a regular hexagon based on its radius.
+            const hexHeight = hexRadius * Math.sqrt(3);
+            // Calculates the horizontal spacing between the centers of adjacent hexagons in the same row for a staggered grid.
+            const horizontalSpacing = hexRadius * Math.sqrt(3);
+            // Calculates the vertical spacing between the centers of adjacent hexagons in different rows for a staggered grid.
+            const verticalSpacing = hexHeight * 0.75;
 
-  cols = Math.floor(width / (hexRadius * Math.sqrt(3))) + 1;
-  rows = Math.floor(height / (hexHeight * 0.75)) + 1;
+            // Calculates the number of columns in the grid based on the canvas width and the horizontal spacing of the hexagons.
+            cols = Math.floor(width / horizontalSpacing) + 1;
+            // Calculates the number of rows in the grid based on the canvas height and the vertical spacing of the hexagons.
+            rows = Math.floor(height / verticalSpacing) + 1;
 
-  for (let i = 0; i < rows; i++) {
-    hexGrid[i] = [];
-    for (let j = 0; j < cols; j++) {
-      let x = j * horizontalSpacing;
-      let y = i * verticalSpacing;
-      if (j % 2 === 1) {
-        y += hexHeight * 0.375; // Shift odd columns down
-      }
-      hexGrid[i][j] = {
-        x: x + hexRadius * Math.sqrt(3) / 2, // Center the hexagon horizontally
-        y: y + hexHeight / 2, // Center the hexagon vertically
-        radius: hexRadius,
-        color: color(255),
-        targetColor: color(255),
-        transitionStartTime: 0,
-        transitionDuration: transitionDuration,
-        startColor: color(255),
-        isActivated: false,
-      };
-    }
-  }
-  lastTriggerTime = millis();
-}
+            // Loops through each row of the grid.
+            for (let i = 0; i < rows; i++) {
+                // Initializes an empty array for the current row in the 'hexGrid'.
+                hexGrid[i] = [];
+                // Loops through each column in the current row.
+                for (let j = 0; j < cols; j++) {
+                    // Calculates the x-coordinate for the center of the current hexagon.
+                    let x = j * horizontalSpacing;
+                    // Calculates the y-coordinate for the center of the current hexagon.
+                    let y = i * verticalSpacing;
+                    // If the current column index 'j' is odd, shift the hexagon down vertically to create the staggered hexagonal grid pattern.
+                    if (j % 2 === 1) {
+                        y += hexHeight * 0.5; // Shift odd columns down by half the hexagon height
+                    }
+                    // Creates an object representing the current hexagon and adds it to the 'hexGrid'.
+                    hexGrid[i][j] = {
+                        x: x + hexRadius, // Center the hexagon horizontally
+                        y: y + hexHeight / 2, // Center the hexagon vertically
+                        radius: hexRadius, // Store the radius of the hexagon.
+                        color: color(255), // Initial color of the hexagon is white.
+                        targetColor: color(255), // Initial target color is also white (no transition initially).
+                        transitionStartTime: 0, // Timestamp when the current color transition started.
+                        transitionDuration: transitionDuration, // Duration of the color transition.
+                        startColor: color(255), // Color at the beginning of the current transition.
+                        isActivated: false, // Flag indicating if the hexagon has been activated to start a color change.
+                    };
+                }
+            }
+            // Records the current time (in milliseconds since the program started) as the last trigger time.
+            lastTriggerTime = millis();
+        }
 
-function drawHexagon(x, y, radius, c) {
-  const angle = TWO_PI / 6;
-  beginShape();
-  fill(c);
-  noStroke();
-  for (let i = 0; i < 6; i++) {
-    const sx = x + cos(angle * i) * radius;
-    const sy = y + sin(angle * i) * radius;
-    vertex(sx, sy);
-  }
-  endShape(CLOSE);
-}
+        // Function to draw a regular hexagon.
+        // Takes the x and y coordinates of the center, the radius of the circumscribed circle, and the fill color as arguments.
+        function drawHexagon(x, y, radius, c) {
+            // Calculates the angle between each vertex of the hexagon (360 degrees / 6 sides).
+            const angle = TWO_PI / 6;
+            // Begins a new shape for drawing.
+            beginShape();
+            // Sets the fill color of the shape.
+            fill(c);
+            // Disables the stroke (border) of the shape.
+            noStroke();
+            // Loops six times to draw each vertex of the hexagon.
+            for (let i = 0; i < 6; i++) {
+                // Calculates the x-coordinate of the current vertex using cosine and the radius.
+                const sx = x + cos(angle * i) * radius;
+                // Calculates the y-coordinate of the current vertex using sine and the radius.
+                const sy = y + sin(angle * i) * radius;
+                // Adds the current vertex to the shape.
+                vertex(sx, sy);
+            }
+            // Ends the shape and closes it by connecting the last vertex to the first.
+            endShape(CLOSE);
+        }
 
-function activateHex(row, col) {
-  if (row >= 0 && row < rows && col >= 0 && col < cols && !hexGrid[row][col].isActivated) {
-    const hex = hexGrid[row][col];
-    hex.isActivated = true;
+        // Function to activate a hexagon at a given row and column.
+        function activateHex(row, col) {
+            // Checks if the given row and column are within the bounds of the 'hexGrid' and if the hexagon is not already activated.
+            if (row >= 0 && row < rows && col >= 0 && col < cols && !hexGrid[row][col].isActivated) {
+                // Gets a reference to the hexagon object at the given row and column.
+                const hex = hexGrid[row][col];
+                // Sets the 'isActivated' flag of the hexagon to true.
 
-    const isWhiteOrTransitioningToWhite =
-      hex.color.toString() === color(255).toString() ||
-      hex.targetColor.toString() === color(255).toString();
+                const isWhiteOrTransitioningToWhite =
+                    hex.color.toString() === color(255).toString() ||
+                    hex.targetColor.toString() === color(255).toString();
 
-    if (isWhiteOrTransitioningToWhite) {
-      const randomColor = color(random(255), random(255), random(255));
-      hex.color = randomColor;
-      hex.startColor = randomColor;
-      hex.targetColor = color(255);
-      hex.transitionStartTime = millis();
-      hex.transitionDuration = transitionDuration;
+                if (isWhiteOrTransitioningToWhite) {
+                    hex.isActivated = true;
+                    // Generates a random RGB color.
+                    const randomColor = color(random(255), random(255), random(255));
+                    // Sets the current color of the hexagon to the random color.
+                    hex.color = randomColor;
+                    // Sets the starting color of the transition to the random color.
+                    hex.startColor = randomColor;
+                    // Sets the target color of the transition to white.
+                    hex.targetColor = color(255);
+                    // Records the current time as the start time of the color transition.
+                    hex.transitionStartTime = millis();
+                    // Sets the duration of the color transition.
+                    hex.transitionDuration = transitionDuration;
 
-      setTimeout(() => {
-        activateNeighborsHex(row, col);
-      }, neighborActivationDelay);
-    }
-  }
-}
+                    // Uses 'setTimeout' to call the 'activateNeighborsHex' function after a delay.
+                    // This creates a spreading effect where neighbors are activated after a short pause.
+                    setTimeout(() => {
+                        activateNeighborsHex(row, col);
+                    }, neighborActivationDelay);
+                }
+            }
+        }
 
-function activateNeighborsHex(row, col) {
-  const neighbors = getNeighborsHex(row, col);
-  neighbors.forEach(n => activateHex(n[0], n[1]));
-}
+        // Function to activate the neighboring hexagons of a given hexagon.
+        function activateNeighborsHex(row, col) {
+            // Gets an array of the coordinates of the neighbors of the hexagon at the given row and column.
+            const neighbors = getNeighborsHex(row, col);
+            // Iterates through the array of neighbors and calls 'activateHex' for each neighbor.
+            neighbors.forEach(n => activateHex(n[0], n[1]));
+        }
 
-function getNeighborsHex(row, col) {
-  const neighbors = [];
-  const parity = row % 2;
+        // Function to get the coordinates of the neighbors of a hexagon in the grid.
+        // Takes the row and column of the hexagon as input.
+        function getNeighborsHex(row, col) {
+            // Initializes an empty array to store the coordinates of the neighbors.
+            const neighbors = [];
+            // Determines the parity (even or odd) of the current row. This is important for the hexagonal grid structure.
+            const parity = row % 2;
 
-  if (parity === 0) { // Even rows
-    neighbors.push([row - 1, col]);
-    neighbors.push([row - 1, col + 1]);
-    neighbors.push([row, col - 1]);
-    neighbors.push([row, col + 1]);
-    neighbors.push([row + 1, col]);
-    neighbors.push([row + 1, col + 1]);
-  } else { // Odd rows
-    neighbors.push([row - 1, col - 1]);
-    neighbors.push([row - 1, col]);
-    neighbors.push([row, col - 1]);
-    neighbors.push([row, col + 1]);
-    neighbors.push([row + 1, col - 1]);
-    neighbors.push([row + 1, col]);
-  }
+            // Logic to determine the neighbors based on the row parity.
+            if (parity === 0) { // Even rows
+                neighbors.push([row - 1, col]);     // Top-middle
+                neighbors.push([row - 1, col + 1]); // Top-right
+                neighbors.push([row, col - 1]);     // Left
+                neighbors.push([row, col + 1]);     // Right
+                neighbors.push([row + 1, col]);     // Bottom-middle
+                neighbors.push([row + 1, col + 1]); // Bottom-right
+            } else { // Odd rows
+                neighbors.push([row - 1, col - 1]); // Top-left
+                neighbors.push([row - 1, col]);     // Top-middle
+                neighbors.push([row, col - 1]);     // Left
+                neighbors.push([row, col + 1]);     // Right
+                neighbors.push([row + 1, col - 1]); // Bottom-left
+                neighbors.push([row + 1, col]);     // Bottom-middle
+            }
 
-  return neighbors.filter(n => n[0] >= 0 && n[0] < rows && n[1] >= 0 && n[1] < cols);
-}
+            // Filters the 'neighbors' array to only include coordinates that are within the bounds of the 'hexGrid'.
+            return neighbors.filter(n => n[0] >= 0 && n[0] < rows && n[1] >= 0 && n[1] < cols);
+        }
 
-function triggerRandomHex() {
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      hexGrid[i][j].isActivated = false;
-    }
-  }
-  const randomRow = Math.floor(random(rows));
-  const randomCol = Math.floor(random(cols));
-  activateHex(randomRow, randomCol);
-}
+        // Function to trigger the activation of a random hexagon in the grid.
+        function triggerRandomHex() {
+            // Loops through all hexagons in the grid and resets their 'isActivated' status to false.
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    hexGrid[i][j].isActivated = false;
+                }
+            }
+            // Generates a random row index within the bounds of the grid.
+            const randomRow = Math.floor(random(rows));
+            // Generates a random column index within the bounds of the grid.
+            const randomCol = Math.floor(random(cols));
+            // Calls the 'activateHex' function to start the color change and spread from the randomly selected hexagon.
+            activateHex(randomRow, randomCol);
+        }
 
-function draw() {
-  background(220);
+        // draw function is a p5.js lifecycle function that is called repeatedly in a loop after 'setup' is executed.
+        // It's responsible for rendering each frame of the animation.
+        function draw() {
+            // Sets the background color of the canvas to a light gray.
+            background(220);
 
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      const hex = hexGrid[i][j];
-      const elapsedTime = millis() - hex.transitionStartTime;
-      const progress = Math.min(1, Math.max(0, elapsedTime / hex.transitionDuration));
+            // Loops through each row of the 'hexGrid'.
+            for (let i = 0; i < rows; i++) {
+                // Loops through each column in the current row.
+                for (let j = 0; j < cols; j++) {
+                    // Gets a reference to the current hexagon object.
+                    const hex = hexGrid[i][j];
+                    // Calculates the elapsed time since the current color transition started.
+                    const elapsedTime = millis() - hex.transitionStartTime;
+                    // Calculates the progress of the transition as a value between 0 and 1.
+                    const progress = Math.min(1, Math.max(0, elapsedTime / hex.transitionDuration));
 
-      if (hex.color.toString() !== hex.targetColor.toString()) {
-        hex.color = lerpColor(hex.startColor, hex.targetColor, progress);
-      }
-      drawHexagon(hex.x, hex.y, hex.radius, hex.color);
-    }
-  }
+                    // Checks if the current color of the hexagon is different from its target color.
+                    if (hex.color.toString() !== hex.targetColor.toString()) {
+                        // If the colors are different, use the 'lerpColor' function to smoothly interpolate between the 'startColor' and the 'targetColor' based on the 'progress'.
+                        hex.color = lerpColor(hex.startColor, hex.targetColor, progress);
+                    }
+                    // Calls the 'drawHexagon' function to draw the current hexagon with its calculated position, radius, and current color.
+                    drawHexagon(hex.x, hex.y, hex.radius, hex.color);
+                }
+            }
 
-  const currentTime = millis();
-  if (currentTime - lastTriggerTime > triggerInterval && !isTriggering) {
-    isTriggering = true;
-    triggerRandomHex();
-    lastTriggerTime = currentTime;
-    setTimeout(() => {
-      isTriggering = false;
-    }, 100);
-  } else if (currentTime - lastTriggerTime <= triggerInterval) {
-    isTriggering = false;
-  }
-}
-  </script>
+            // Gets the current time in milliseconds.
+            const currentTime = millis();
+            // Checks if the time elapsed since the last trigger is greater than the 'triggerInterval' and if a trigger is not already in progress.
+            if (currentTime - lastTriggerTime > triggerInterval && !isTriggering) {
+                // Sets the 'isTriggering' flag to true to prevent immediate subsequent triggers.
+                isTriggering = true;
+                // Calls the 'triggerRandomHex' function to start the color spread from a new random hexagon.
+                triggerRandomHex();
+                // Updates the 'lastTriggerTime' to the current time.
+                lastTriggerTime = currentTime;
+                // Uses 'setTimeout' to reset the 'isTriggering' flag after a short delay.
+                setTimeout(() => {
+                    isTriggering = false;
+                }, 100);
+            } else if (currentTime - lastTriggerTime <= triggerInterval) {
+                // If the time since the last trigger is within the interval, ensure 'isTriggering' is false.
+                isTriggering = false;
+            }
+        }
+    </script>
 </body>
 </html>
