@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Conner Batson - History of Rail Transport</title>
+	<!-- Imports -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="./styles.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+	<!-- DISCLAIMER ABOUT AI USE:
+	The author, by admission, has collaborated with generative AI in the following ways:
+	>> Generate HTML, CSS, and Javascript involving p5js animations.
+	>> Identify and fix bugs in your JavaScript and CSS.
+	>> Develop new features and functionalities for this project.
+	>> Gain a better understanding of web development concepts.
+	>> Receive guidance and suggestions on how to approach programming challenges.
+	>> Refinement of code through multiple iterations.
+	>> Explain and document code functionality throughout the project.
+	-->
+</head>
+<body>
+  <div id="wrapper">
+    <header>
+      <div id="logo"></div>
+
+      <h1>History of Rail Transport</h1>
+      
+      <div id="hamburger" class="fa fa-bars">
+      </div>
+    </header>
+
+    <div id="hamburger-menu" class="position-right position-top-50" style="display: none;">
+      <div class="hamburger-item" data-target="event1">
+        Early Rutways
+      </div>
+      <div class="hamburger-item" data-target="event2">
+        Hand-propelled cars
+      </div>
+      <div class="hamburger-item" data-target="event3">
+        Wollaton Wagonway
+      </div>
+      <div class="hamburger-item" data-target="event4">
+        Stationary Steam Engine
+      </div>
+      <div class="hamburger-item" data-target="event5">
+        Wagons with Flanged Wheels
+      </div>
+      <div class="hamburger-item" data-target="event6">
+        First Steam Locomotive
+      </div>
+      <div class="hamburger-item" data-target="event7">
+        First Paying Passengers
+      </div>
+      <div class="hamburger-item" data-target="event8">
+        First Commercial Steam Locomotive
+      </div>
+      <div class="hamburger-item" data-target="event9">
+        Stockton and Darlington Railway
+      </div>
+      <div class="hamburger-item" data-target="event10">
+        Stephenson's "Rocket"
+      </div>
+      <div class="hamburger-item" data-target="event11">
+        Liverpool and Manchester Railway
+      </div>
+      <div class="hamburger-item" data-target="event12">
+        American Steam Locomotives
+      </div>
+      <div class="hamburger-item" data-target="event13">
+        Panama Railway
+      </div>
+      <div class="hamburger-item" data-target="event14">
+        London Underground
+      </div>
+      <div class="hamburger-item" data-target="event15">
+        Transcontinental Railroad
+      </div>
+      <div class="hamburger-item" data-target="event16">
+        Automatic Air Brake
+      </div>
+      <div class="hamburger-item" data-target="event17">
+        First Public Electric Tram
+      </div>
+      <div class="hamburger-item" data-target="event18">
+        First Successful Electric Streetcar System
+      </div>
+      <div class="hamburger-item" data-target="event19">
+        First Electrification of major trunk line
+      </div>
+      <div class="hamburger-item" data-target="event20">
+        Tōkaidō Shinkansen
+      </div>
+      <div class="hamburger-item" data-target="event21">
+        Creation of Amtrak
+      </div>
+      <div class="hamburger-item" data-target="event22">
+        Introduction of the TGV
+      </div>
+      <div class="hamburger-item" data-target="event23">
+        High-speed Rail Networks
+      </div>
+      <div class="hamburger-item" data-target="event24">
+        Channel Tunnel Rail Link
+      </div>
+      <div class="hamburger-item" data-target="event25">
+        Magnetic Levitation Technology
+      </div>
+      <div class="hamburger-item" data-target="event26">
+        About
+      </div>
+    </div>
+
+    <div id="timeline">
+      <div id="canvas"></div>
+      <div id="content">
+        <section id="event1" class="content-event">
+          <div class="event-title visible">
+            <h2>6th Century BC: Early Rutways in Ancient Greece.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc active">
+            These early tracks represent the earliest known form of guided transportation, demonstrating the fundamental concept of using tracks to facilitate movement of vehicles.
+          </div>
+        </section>
+        <section id="event2" class="content-event">
+          <div class="event-title">
+            <h2>1500s: Hand-propelled cars ("Hunds") in German mines.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            Showed the early use of rails in an industrial setting, specifically for moving heavy materials, and the evolution of mining technology.
+          </div>
+        </section>
+        <section id="event3" class="content-event">
+          <div class="event-title">
+            <h2>1604: Wollaton Wagonway completed in England.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            One of the earliest examples of a more developed wagonway, highlighting the increasing importance of railways for transporting resources, particularly coal.
+          </div>
+        </section>
+        <section id="event4" class="content-event">
+          <div class="event-title">
+            <h2>1769-74: James Watt develops the stationary steam engine.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            While not a train itself, Watt's steam engine was crucial. It provided the power source that would later revolutionize rail transport, moving it beyond horse-drawn carts.
+          </div>
+        </section>
+        <section id="event5" class="content-event">
+          <div class="event-title">
+            <h2>1789: William Jessop designs wagons with flanged wheels.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            A key innovation in railway technology. Flanged wheels allowed trains to stay on the track more effectively, making rail transport safer and more practical.
+          </div>
+        </section>
+        <section id="event6" class="content-event">
+          <div class="event-title">
+            <h2>1804: Richard Trevithick's first steam locomotive.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            The first demonstration of a steam-powered locomotive, a pivotal moment that proved the feasibility of using steam engines to move vehicles on rails.
+          </div>
+        </section>
+        <section id="event7" class="content-event">
+          <div class="event-title">
+            <h2>1807: First paying passengers on the Swansea and Mumbles Railway.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            Marked the beginning of passenger rail service, indicating the potential of railways to transport people, not just goods.
+          </div>
+        </section>
+        <section id="event8" class="content-event">
+          <div class="event-title">
+            <h2>1812: First commercial steam locomotive on the Middleton Railway.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            Showed the practical application of steam locomotives in a commercial setting, further solidifying their role in the future of transportation.
+          </div>
+        </section>
+        <section id="event9" class="content-event">
+          <div class="event-title">
+            <h2>1825: Opening of the Stockton and Darlington Railway.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            Often considered the birth of modern railways. It was one of the first public railways to use steam locomotives for both passengers and freight.
+          </div>
+        </section>
+        <section id="event10" class="content-event">
+          <div class="event-title">
+            <h2>1829: Stephenson's "Rocket" wins the Rainhill Trials.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            This event showcased the superiority of George Stephenson's locomotive design and was a major advancement in steam engine technology, paving the way for more efficient and faster trains.
+          </div>
+        </section>
+        <section id="event11" class="content-event">
+          <div class="event-title">
+            <h2>1830: Opening of the Liverpool and Manchester Railway.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            The first fully developed, modern railway, designed from the start to carry both passengers and freight with steam power, marking a new era in transportation.
+          </div>
+        </section>
+        <section id="event12" class="content-event">
+          <div class="event-title">
+            <h2>1830s: Development of American steam locomotives.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            The rapid adoption of steam locomotive technology in the United States, which was crucial for the country's westward expansion and economic development.
+          </div>
+        </section>
+        <section id="event13" class="content-event">
+          <div class="event-title">
+            <h2>1855: Completion of the Panama Railway.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            A monumental engineering feat that connected the Atlantic and Pacific Oceans, facilitating trade and travel and demonstrating the global impact of railway construction.
+          </div>
+        </section>
+        <section id="event14" class="content-event">
+          <div class="event-title">
+            <h2>1863: Opening of the London Underground.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            The world's first underground railway, a groundbreaking solution to urban transportation challenges, paving the way for modern subway systems.
+          </div>
+        </section>
+        <section id="event15" class="content-event">
+          <div class="event-title">
+            <h2>1869: Completion of the First Transcontinental Railroad in North America.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            A landmark achievement that connected the eastern and western United States, revolutionizing transportation, trade, and settlement of the American West.
+          </div>
+        </section>
+        <section id="event16" class="content-event">
+          <div class="event-title">
+            <h2>1872: George Westinghouse patents the automatic air brake.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            A crucial safety innovation that allowed trains to stop more reliably and efficiently, especially longer trains, making railway travel much safer.
+          </div>
+        </section>
+        <section id="event17" class="content-event">
+          <div class="event-title">
+            <h2>1881: First public electric tram line opened in Berlin.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            Marked the beginning of electric rail transport, which would become increasingly important in urban areas due to its cleanliness and efficiency.
+          </div>
+        </section>
+        <section id="event18" class="content-event">
+          <div class="event-title">
+            <h2>1888: First successful electric streetcar system in Richmond, Virginia.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            The widespread adoption of electric streetcar systems in American cities, which transformed urban transportation and contributed to the growth of suburbs.
+          </div>
+        </section>
+        <section id="event19" class="content-event">
+          <div class="event-title">
+            <h2>1895: First electrification of a major trunk line (Baltimore Belt Line of the B&O).</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            Demonstrated the feasibility of electrifying even large-scale railway operations, leading to faster, cleaner, and more efficient long-distance rail travel.
+          </div>
+        </section>
+        <section id="event20" class="content-event">
+          <div class="event-title">
+            <h2>1964: Inauguration of the Tōkaidō Shinkansen (Japan's bullet train).</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            Revolutionized high-speed rail travel, showcasing the potential for ultra-fast and efficient passenger transport and inspiring the development of high-speed rail around the world.
+          </div>
+        </section>
+        <section id="event21" class="content-event">
+          <div class="event-title">
+            <h2>1970: Creation of Amtrak in the United States.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            The establishment of a national passenger rail service in the United States, ensuring the continuation of intercity rail travel despite the rise of air and automobile transportation.
+          </div>
+        </section>
+        <section id="event22" class="content-event">
+          <div class="event-title">
+            <h2>1981: Introduction of the TGV high-speed rail in France.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            Further advanced high-speed rail technology in Europe, demonstrating its efficiency and popularity and leading to the development of extensive high-speed networks across the continent.
+          </div>
+        </section>
+        <section id="event23" class="content-event">
+          <div class="event-title">
+            <h2>2000s: Increased development and expansion of high-speed rail networks globally.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            The continued investment in and construction of high-speed rail lines across the world, driven by the demand for faster, more efficient, and more sustainable transportation.
+          </div>
+        </section>
+        <section id="event24" class="content-event">
+          <div class="event-title">
+            <h2>2015: Completion of the Channel Tunnel Rail Link (High Speed 1) in the UK.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            A major project that improved connectivity between the UK and mainland Europe, boosting trade and travel and highlighting the importance of international rail connections.
+          </div>
+        </section>
+        <section id="event25" class="content-event">
+          <div class="event-title">
+            <h2>Ongoing: Development of maglev (magnetic levitation) train technology.</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            Represents the cutting edge of rail transport technology, with the potential to achieve even higher speeds and greater efficiency, promising to transform the future of train travel.
+          </div>
+        </section>
+        <section id="event26" class="content-event">
+          <div class="event-title">
+            <h2>About</h2>
+            <canvas class="event-toggle" width="50" height="50"></canvas>
+          </div>
+          <div class="event-desc">
+            <h3>Author Statement</h3>
+            <p>This project was developed by Conner Batson, a Computer Science major returning for certification. The author built this project with support from artificial intelligence (AI) platform Google Gemini. The author, by admission, has collaborated with generative AI in the following ways:</p>
+            <ul>
+              <li>Generate HTML, CSS, and Javascript involving p5js animations.</li>
+              <li>Identify and fix bugs in your JavaScript and CSS.</li>
+              <li>Develop new features and functionalities for this project.</li>
+              <li>Gain a better understanding of web development concepts.</li>
+              <li>Receive guidance and suggestions on how to approach programming challenges.</li>
+              <li>Refinement of code through multiple iterations.</li>
+              <li>Explain and document code functionality throughout the project.</li>
+            </ul>
+            <h3>References</h3>
+            <ul>
+              <li><a href="https://en.wikipedia.org/wiki/History_of_rail_transport">Wikipedia - History of Rail Transport</a></li>
+              <li><a href="https://www.britannica.com/technology/railroad/Railroad-history">Britannica - Railroad History</a></li>
+              <li><a href="https://www.thoughtco.com/history-of-railroad-4059935">ThoughtCo - The History of Railroad Technology</a></li>
+              <li><a href="https://www.ebsco.com/research-starters/history/rail-transport">EBSCO - Rail Transport</a></li>
+              <li><a href="https://www.intrans.iastate.edu/news/trains-a-history/">Iowa State University - Trains: A History</a></li>
+              <li><a href="https://historycooperative.org/who-invented-the-railroad/">History Cooperative - Who Invented the Railroad</a></li>
+              <li><a href="https://www.trainhistory.net/railway-history/railroad-history/">Train History - History of Rail Transport</a></li>
+              <li><a href="http://www.globalrailwayday.com/en/rail-transport-history-train-invention-railway-timeline/">Global Railway Day - Rail Transport History</a></li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer>
+      <div>Conner Batson</div>
+      <div>April 14th, 2025</div>
+    </footer>
+
+    <script type="text/javascript" src="./script.js"></script>
+
+  </div>
+</body>
+</html>

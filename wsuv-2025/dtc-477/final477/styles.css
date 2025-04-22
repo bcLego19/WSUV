@@ -1,0 +1,345 @@
+/* Josh Comeau Reset */
+/* 1. Use a more-intuitive box-sizing model */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+* {
+  margin: 0;
+}
+
+/* 3. Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  /* 4. Add accessible line-height */
+  line-height: 1.5;
+  /* 5. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 6. Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 7. Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 8. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* 9. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/*
+  10. Create a root stacking context
+*/
+#root, #__next {
+  isolation: isolate;
+}
+
+/* END OF RESET */
+
+/* Mobile CSS Styling */
+/* general styles */
+
+body {
+  background-color: #FAEB69;
+  color: black;
+  overflow: hidden;
+  display: grid;
+}
+
+header, footer {
+  background-color: #4C547A;
+  color: whitesmoke;
+  position: fixed;
+}
+
+header {
+  align-content: center;
+  justify-items: center;
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  width: 100%;
+  height: 50px;
+}
+
+footer {
+  font-size: 1.5em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+}
+
+footer div {
+  padding: 5px 10px;
+}
+
+footer div:nth-child(even) {
+  text-align: right;
+}
+
+/* class styles */
+.content-event {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.event-toggle {
+  cursor: pointer;
+}
+
+.event-title h2 {
+  margin: 0;
+  font-size: 1.2em;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.event-title.visible h2 {
+  opacity: 1;
+}
+
+.event-desc {
+  /* No background color */
+  padding: 10px;
+  opacity: 0%;
+  transition: opacity 0.3s ease-in-out;
+}
+.event-desc.active {
+  opacity: 100%;
+}
+
+.position-right {
+  right: 0;
+}
+
+.position-top-50 {
+  top: 50px;
+}
+
+.hamburger-item {
+  cursor: pointer;
+  padding: 5px;
+  margin: 0px;
+  transition: padding 0.3s ease-in-out;
+}
+
+.hamburger-item:hover {
+  background-color: #1E44FA;
+  color: white;
+  padding-left: 10px;
+  margin: 0px;
+}
+
+/* id styles */
+#hamburger, #logo {
+  width: 50px;
+  height: 50px;
+}
+
+#hamburger {
+  padding: 5px 10px;
+  margin-right: 5px;
+  font-size: 40px;
+}
+
+#hamburger:hover {
+  background-color: #1E44FA;
+  color: white;
+}
+
+#hamburger-menu {
+  /* Existing styles */
+  position: fixed; /* Change to fixed positioning */
+  top: 50px; /* Adjust as needed to position it below the header */
+  right: 0; /* Keep it on the right */
+  z-index: 1000; /* Ensure it's on top of other elements */
+  overflow: auto; /* Keep the scroll if the menu items exceed the height */
+  background-color: #4C547A;
+  color: whitesmoke;
+  height: clamp(150px, 40%, 300px);
+  width: 200px;
+  display: none; /* Initially hidden */
+  /* Remove any top or right positioning that might be relative to the timeline */
+}
+
+#timeline {
+  /* Ensure timeline doesn't interfere with fixed elements */
+  position: relative; /* Or static, depending on your layout needs */
+  z-index: 1; /* Ensure it's below the hamburger menu */
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 49px 0;
+  height: 278px;
+}
+
+#canvas, #content {
+  height: 100%;
+}
+
+#canvas {
+  /* Canvas will be positioned absolutely */
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allows clicks to go through to content */
+}
+
+#content {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+#wrapper {
+  /* You might have a wrapper. Ensure it's positioned if #hamburger-menu was relying on it. */
+  position: relative; /* Or another positioning context if needed for other elements */
+}
+
+/* Web CSS Styling */
+@media screen and (min-width: 600px) {
+  body {
+    background-color: #FAEB69;
+    color: black;
+    overflow: hidden;
+    display: grid;
+  }
+
+  header, footer {
+    position: fixed;
+  }
+
+  header {
+    align-content: center;
+    justify-items: center;
+    display: grid;
+    width: 100%;
+    height: 50px;
+  }
+
+  footer {
+    font-size: 1.5em;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    bottom: 0;
+    margin-top: 50px;
+    width: 100%;
+    height: 50px;
+  }
+
+  footer div {
+    padding: 5px 10px;
+  }
+
+  footer div:nth-child(even) {
+    text-align: right;
+  }
+
+  /* class styles */
+  .content-event {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+  }
+
+  .event-title h2 {
+    margin: 0;
+    font-size: 1.2em;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .event-title.visible h2 {
+    opacity: 1;
+  }
+
+  .event-desc {
+    /* No background color */
+    padding: 10px;
+    opacity: 0%;
+    transition: opacity 0.3s ease-in-out;
+  }
+  .event-desc.active {
+    opacity: 100%;
+  }
+
+  .position-right {
+    right: 0;
+  }
+
+  .position-top-50 {
+    top: 50px;
+  }
+
+  /* id styles */
+  #hamburger, #logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  #hamburger {
+    padding: 5px 10px;
+    margin-right: 5px;
+    font-size: 40px;
+    transition: background-color 0.3s ease-in-out;
+  }
+
+  #hamburger:hover {
+    background-color: #1E44FA;
+    color: white;
+  }
+
+  #hamburger-menu {
+    display: grid;
+    overflow: auto;
+    position: absolute;
+    height: clamp(150px, 40%, 300px);
+    width: 300px;
+  }
+
+  #timeline {
+    overflow: auto;
+    display: grid;
+    margin-bottom: 50px;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 50px 60vh 50px;
+    height: auto;
+  }
+
+  #canvas {
+    align-content: center;
+    justify-items: center;
+    /* Canvas will be positioned absolutely */
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allows clicks to go through to content */
+  }
+
+  #content {
+    height: 3550px;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  
+  #wrapper {
+    height: 100vh;
+  }
+}
