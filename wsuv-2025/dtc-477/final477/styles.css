@@ -1,19 +1,12 @@
 /* Josh Comeau Reset */
 /* 1. Use a more-intuitive box-sizing model */
-*, *::before, *::after {
+*, *:before, *:after {
   box-sizing: border-box;
 }
 
 /* 2. Remove default margin */
 * {
   margin: 0;
-}
-
-/* 3. Enable keyword animations */
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    interpolate-size: allow-keywords;
-  }
 }
 
 body {
@@ -56,14 +49,25 @@ h1, h2, h3, h4, h5, h6 {
 
 /* END OF RESET */
 
+/* Font Family Import from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Merriweather:wght@400&family=Roboto+Mono&display=swap');
+
 /* Mobile CSS Styling */
 /* general styles */
 
 body {
   background-color: #FAEB69;
   color: black;
-  overflow: hidden;
   display: grid;
+  min-height: 100vh; /* Ensure body takes at least the full viewport height */
+  font-family: 'Merriweather', Georgia, serif; /* Regular text */
+  line-height: 1.5; /* Good for readability */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: 1.5em;
+  font-family: 'Bebas Neue', 'Arial Black', sans-serif; /* Headings */
+  letter-spacing: 0.05em; /* Optional: Adjust letter spacing for headings */
 }
 
 header, footer {
@@ -73,6 +77,7 @@ header, footer {
 }
 
 header {
+  z-index: 2;
   align-content: center;
   justify-items: center;
   display: grid;
@@ -129,6 +134,18 @@ footer div:nth-child(even) {
   opacity: 100%;
 }
 
+.highlight {
+  font-size: 0.8em;
+  font-family: 'Roboto Mono', 'Courier New', monospace; /* Highlight text */
+  font-weight: bold;
+}
+
+/* You might also want to style specific elements with the highlight font */
+.date, .term {
+  font-size: 0.8em;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+}
+
 .position-right {
   right: 0;
 }
@@ -142,6 +159,7 @@ footer div:nth-child(even) {
   padding: 5px;
   margin: 0px;
   transition: padding 0.3s ease-in-out;
+  min-height: 50px;
 }
 
 .hamburger-item:hover {
@@ -184,14 +202,12 @@ footer div:nth-child(even) {
 }
 
 #timeline {
-  /* Ensure timeline doesn't interfere with fixed elements */
-  position: relative; /* Or static, depending on your layout needs */
-  z-index: 1; /* Ensure it's below the hamburger menu */
   overflow: auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin: 49px 0;
-  height: 278px;
+  margin-top: 50px; /* Keep top margin to align below header */
+  margin-bottom: 50px; /* Keep bottom margin to align above footer */
+  min-height: calc(100vh - 50px - 50px); /* Minimum height */
 }
 
 #canvas, #content {
@@ -206,6 +222,7 @@ footer div:nth-child(even) {
 }
 
 #content {
+  height: 3550px;
   display: grid;
   grid-template-columns: 1fr;
 }
@@ -213,6 +230,39 @@ footer div:nth-child(even) {
 #wrapper {
   /* You might have a wrapper. Ensure it's positioned if #hamburger-menu was relying on it. */
   position: relative; /* Or another positioning context if needed for other elements */
+  overflow: none;
+}
+
+#references {
+  text-decoration-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#references li {
+  list-style-type: none;
+  text-decoration-style: none;
+  text-decoration: none;
+}
+
+#references a {
+  text-decoration-style: none;
+  text-decoration: none;
+  background-color: #FAEB69;
+  color: #1E44FA;
+  transition: background-color 0.3s ease-in-out, padding 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+#references a:visited {
+  background-color: #FAEB69;
+  color: forestgreen;
+}
+
+#references a:hover {
+  background-color: #1E44FA;
+  color: #FAEB69;
+  padding: 0 15px;
+  text-decoration-style: none;
 }
 
 /* Web CSS Styling */
@@ -220,8 +270,14 @@ footer div:nth-child(even) {
   body {
     background-color: #FAEB69;
     color: black;
-    overflow: hidden;
     display: grid;
+    min-height: 100vh; /* Ensure body takes at least the full viewport height */
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 2.0em;
+    font-family: 'Bebas Neue', 'Arial Black', sans-serif; /* Headings */
+    letter-spacing: 0.05em; /* Optional: Adjust letter spacing for headings */
   }
 
   header, footer {
@@ -241,7 +297,6 @@ footer div:nth-child(even) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     bottom: 0;
-    margin-top: 50px;
     width: 100%;
     height: 50px;
   }
@@ -288,6 +343,18 @@ footer div:nth-child(even) {
   .position-top-50 {
     top: 50px;
   }
+  
+  .highlight, .date, .term {
+    font-size: 1.2em;
+  }
+  
+  .hamburger-item {
+    cursor: pointer;
+    padding: 5px;
+    margin: 0px;
+    transition: padding 0.3s ease-in-out;
+    min-height: 30px;
+  }
 
   /* id styles */
   #hamburger, #logo {
@@ -311,7 +378,7 @@ footer div:nth-child(even) {
     display: grid;
     overflow: auto;
     position: absolute;
-    height: clamp(150px, 40%, 300px);
+    height: 300px;
     width: 300px;
   }
 
@@ -320,8 +387,9 @@ footer div:nth-child(even) {
     display: grid;
     margin-bottom: 50px;
     grid-template-columns: 1fr 3fr;
-    grid-template-rows: 50px 60vh 50px;
-    height: auto;
+    /* height: 80%; Remove or override this */
+    margin-top: 50px; /* Keep top margin */
+    min-height: calc(100vh - 50px - 50px); /* Minimum height */
   }
 
   #canvas {
@@ -329,17 +397,17 @@ footer div:nth-child(even) {
     justify-items: center;
     /* Canvas will be positioned absolutely */
     width: 100%;
-    height: 100%;
+    height: auto;
     pointer-events: none; /* Allows clicks to go through to content */
   }
 
   #content {
-    height: 3550px;
+    height: auto;
     display: grid;
     grid-template-columns: 1fr;
   }
   
   #wrapper {
-    height: 100vh;
+    height: auto;
   }
 }

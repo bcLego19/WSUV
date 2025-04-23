@@ -14,6 +14,7 @@ let hamburgerHolder = {
   "icon": null,
   "menu": null,
 };
+let isScrollingFromMenu = false;
 
 /* Setup Code */
 
@@ -22,47 +23,56 @@ for (let i = 0; i < hamburgerMenu.length; i++) {
     let items = hamburgerMenu[i].querySelectorAll(".hamburger-item");
 
     for (let j = 0; j < items.length; j++) {
-        items[j].addEventListener('click', (e) => {
-            hamburgerToggle(i); // Close the menu after clicking an item.
-            const targetId = items[j].getAttribute('data-target'); // Get the ID of the target content section.
-            if (targetId) {
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    const targetScrollY = targetElement.offsetTop - 50;
-                    const scrollDuration = 1500;
-                    smoothScrollTo(timelineElement, targetScrollY, scrollDuration);
+      const scrollDuration = 1500; // Set your desired duration in milliseconds (e.g., 1000ms = 1 second)
+      items[j].addEventListener('click', (e) => {
+        isScrollingFromMenu = true; // Set the flag
+        hamburgerToggle(i);
+        const targetId = items[j].getAttribute('data-target');
+        const targetSection = document.getElementById(targetId); // Get the content section
 
-                    const allDescriptions = document.querySelectorAll('.event-desc');
-                    for (let k = 0; k < allDescriptions.length; k++) {
-                        allDescriptions[k].classList.remove('active');
-                    }
-                    const correspondingDesc = targetElement.querySelector('.event-desc');
-                    if (correspondingDesc) {
-                        correspondingDesc.classList.add('active');
-                    }
-                    updateScrollRelatedData();
+        console.log('Target ID:', targetId);
+        const targetElement = document.getElementById(targetId);
+        console.log('Target Element:', targetElement);
 
-                    // --- Trigger Click on the Related Toggle ---
-                    const index = Array.from(contentElement.children).findIndex(child => child.id === targetId);
-                    if (index !== -1 && elements[index] && elements[index].toggle) {
-                        elements[index].toggle.click(); // Programmatically trigger the click event
-                    }
-                    // --- End Trigger Toggle Click ---
-
-                    // Trigger train movement
-                    if (index !== -1 && stationPositions.length > index) {
-                        if (debug) console.log(`Menu item clicked, moving train to index ${index}`);
-                        targetStationX = trackXCenter - trainWidth / 2;
-                        targetStationY = stationPositions[index].y;
-                        initialTrainY = trainY + trainHeight / 2;
-                        trainSpeed = originalTrainSpeed;
-                        isMoving = true;
-                    }
-                }
+        if (targetSection) {
+            let scrollToY = targetSection.offsetTop;
+            const fixedHeader = document.querySelector('header'); // Make sure this selector is correct
+            if (fixedHeader) {
+                scrollToY -= fixedHeader.offsetHeight;
             }
-        });
-    }
+            smoothScrollWindow(scrollToY, scrollDuration);
+
+            const allDescriptions = document.querySelectorAll('.event-desc');
+            for (let k = 0; k < allDescriptions.length; k++) {
+                allDescriptions[k].classList.remove('active');
+            }
+            const correspondingDesc = targetElement.querySelector('.event-desc');
+            if (correspondingDesc) {
+                correspondingDesc.classList.add('active');
+            }
+            updateScrollRelatedData();
+
+            const index = Array.from(contentElement.children).findIndex(child => child.id === targetId);
+            if (index !== -1 && elements[index] && elements[index].toggle) {
+                elements[index].toggle.click();
+            }
+
+            if (index !== -1 && stationPositions.length > index) {
+                if (debug) console.log(`Menu item clicked, moving train to index ${index}`);
+                targetStationX = trackXCenter - trainWidth / 2;
+                targetStationY = stationPositions[index].y;
+                initialTrainY = trainY + trainHeight / 2;
+                trainSpeed = originalTrainSpeed;
+                isMoving = true;
+            }
+        }
+        // Optionally reset the flag after a short delay or when scrolling completes
+        setTimeout(() => {
+            isScrollingFromMenu = false;
+        }, scrollDuration); // Match your scroll duration
+    });
     isHamburgerActive.push(false);
+  }
 }
 
 /* event listener code */
@@ -79,11 +89,10 @@ if (hamburger != null && hamburgerMenu != null && hamburger.length == hamburgerM
 /* function definitions */
 // function to handle toggling hamburger menu
 function hamburgerToggle(index) {
-  // get menu's icon, menu, and isActive state
   hamburgerHolder.icon = hamburger[index];
   hamburgerHolder.menu = hamburgerMenu[index];
   let isActive = isHamburgerActive[index];
-  isActive = !isActive; // flip isActive state
+  isActive = !isActive;
   if (isActive) { // if active, display the menu and change the icon to exit
     hamburgerHolder["menu"].style.display = "block";
     hamburgerHolder["icon"].classList.add("fa-times-circle-o");
@@ -98,50 +107,50 @@ function hamburgerToggle(index) {
 
 // Function to draw the train signal on the canvas
 function drawSignal(canvas, isToggled, transitionProgress = 0) {
-  const ctx = canvas.getContext('2d');
-  const width = canvas.width;
-  const height = canvas.height;
-  const bottomY = height * 0.7;
-  const topY = height * 0.3;
-  const radius = Math.min(width, height * 0.3) / 2;
-  const centerX = width / 2;
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    const bottomY = height * 0.7;
+    const topY = height * 0.3;
+    const radius = Math.min(width, height * 0.3) / 2;
+    const centerX = width / 2;
 
-  ctx.clearRect(0, 0, width, height); // Clear the canvas
+    ctx.clearRect(0, 0, width, height); // Clear the canvas
 
-  // --- Draw Black Oval Background ---
-  ctx.beginPath();
-  const ovalWidth = radius * 2 * 0.8; // Adjust for desired oval width
-  const ovalHeight = (bottomY - topY + 2 * radius) * 0.6; // Adjust for desired oval height
-  ctx.ellipse(centerX, height / 2, ovalWidth, ovalHeight, 0, 0, 2 * Math.PI);
-  ctx.fillStyle = 'black';
-  ctx.fill();
+    // --- Draw Black Oval Background ---
+    ctx.beginPath();
+    const ovalWidth = radius * 2 * 0.8; // Adjust for desired oval width
+    const ovalHeight = (bottomY - topY + 2 * radius) * 0.6; // Adjust for desired oval height
+    ctx.ellipse(centerX, height / 2, ovalWidth, ovalHeight, 0, 0, 2 * Math.PI);
+    ctx.fillStyle = 'black';
+    ctx.fill();
 
-  let bottomColor = isToggled ? 'grey' : 'green';
-  let topColor = isToggled ? 'red' : 'grey';
+    let bottomColor = isToggled ? 'grey' : 'green';
+    let topColor = isToggled ? 'red' : 'grey';
 
-  if (transitionProgress > 0 && transitionProgress < 1) {
-    const greenToGrey = `rgba(128, 128, 128, ${1 - transitionProgress})`;
-    const greyToGreen = `rgba(0, 128, 0, ${transitionProgress})`;
-    const redToGrey = `rgba(128, 128, 128, ${1 - transitionProgress})`;
-    const greyToRed = `rgba(255, 0, 0, ${transitionProgress})`;
+    if (transitionProgress > 0 && transitionProgress < 1) {
+        const greenToGrey = `rgba(128, 128, 128, ${1 - transitionProgress})`;
+        const greyToGreen = `rgba(0, 128, 0, ${transitionProgress})`;
+        const redToGrey = `rgba(128, 128, 128, ${1 - transitionProgress})`;
+        const greyToRed = `rgba(255, 0, 0, ${transitionProgress})`;
 
-    bottomColor = isToggled ? greyToRed : greenToGrey;
-    topColor = isToggled ? redToGrey : greyToGreen;
-  }
+        bottomColor = isToggled ? greyToRed : greenToGrey;
+        topColor = isToggled ? redToGrey : greyToGreen;
+    }
 
-  // Draw bottom circle
-  ctx.beginPath();
-  ctx.arc(centerX, bottomY, radius, 0, 2 * Math.PI);
-  ctx.fillStyle = bottomColor;
-  ctx.fill();
-  ctx.stroke(); // Optional: add a stroke for better definition
+    // Draw bottom circle
+    ctx.beginPath();
+    ctx.arc(centerX, bottomY, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = bottomColor;
+    ctx.fill();
+    ctx.stroke(); // Optional: add a stroke for better definition
 
-  // Draw top circle
-  ctx.beginPath();
-  ctx.arc(centerX, topY, radius, 0, 2 * Math.PI);
-  ctx.fillStyle = topColor;
-  ctx.fill();
-  ctx.stroke(); // Optional: add a stroke
+    // Draw top circle
+    ctx.beginPath();
+    ctx.arc(centerX, topY, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = topColor;
+    ctx.fill();
+    ctx.stroke(); // Optional: add a stroke
 }
 
 // --- P5.js Setup ---
@@ -195,33 +204,31 @@ const maxTrainSpeed = originalTrainSpeed * 2.0;
 
 // function to determine the height of each content section.
 function calculateSectionHeights() {
-  sectionHeights = []; // set section heights to empty array
-  // get content event elements from document
+  sectionHeights = [];
   const contentEvents = document.querySelectorAll('.content-event');
-  for (let i = 0; i < contentEvents.length; i++) { // cycle through elements
-    // add each content event offset height to section heights array
+  for (let i = 0; i < contentEvents.length; i++) {
     sectionHeights.push(contentEvents[i].offsetHeight);
   }
 }
 
 // function to calculate initial station positioning
 function calculateInitialStationPositions() {
-  stationPositions = []; // set station positions array to empty
-  const stationVerticalOffset = stationHeight; // Offset to the vertical center.
-  for (let i = 0; i < elements.length; i++) { // loop through elements array
-    const element = elements[i]; // get current element
-    if (typeof element.initialTitleOffsetTopTimeline === 'number') { // make sure initial title offset top is type number
-      const stationY = element.initialTitleOffsetTopTimeline + stationVerticalOffset;
-      let stationX; // declare station x position
-      if (i % 2 === 0) { // if even, then station left of track; else right of track
-        stationX = trackXCenter - stationOffset - stationWidth; // Left side.
-      } else {
-        stationX = trackXCenter + stationOffset; // Right side.
-      }
-      stationPositions.push({ x: stationX, y: stationY }); // Store station center Y.
-    }
-  }
-  if (debug) console.log(`calculateInitialStationPositions() - stationPositions:`, stationPositions);
+  stationPositions = [];
+  const stationVerticalOffset = stationHeight; // Offset to the vertical center.
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    if (typeof element.initialTitleOffsetTopTimeline === 'number') {
+      const stationY = element.initialTitleOffsetTopTimeline + stationVerticalOffset;
+      let stationX;
+      if (i % 2 === 0) {
+        stationX = trackXCenter - stationOffset - stationWidth; // Left side.
+      } else {
+        stationX = trackXCenter + stationOffset; // Right side.
+      }
+      stationPositions.push({ x: stationX, y: stationY }); // Store station center Y.
+    }
+  }
+  if (debug) console.log(`calculateInitialStationPositions() - stationPositions:`, stationPositions);
 }
 
 // --- p5.js Lifecycle Functions ---
@@ -254,7 +261,7 @@ function setup() {
     trainX = trackXCenter - trainWidth / 2;
     trainY = barrierOffset + trainHeight / 2;
     calculateInitialStationPositions(); // Call this new function
-    loop();
+    loop();
   }
 
   // add event listener for resize events
@@ -292,10 +299,25 @@ function setup() {
 
 // Draw function runs repeatedly during the p5.js loop.
 function draw() {
-  if (elements.length < 2) { return; } // Exit if not enough content.
-  background(240); // Set light gray background.
+  if (debug) {
+    console.log("draw() called");
+    console.log(`canvas dim (width, height): (${width}, ${height})`);
+    console.log("elements.length:", elements.length);
+  }
+  
+  if (elements.length < 2) {
+    console.log("Exiting draw() because elements.length < 2");
+    return;
+  }
+  // 1. Draw the gentle green background
+  background('#bEfEd4');
+  noStroke();
 
-  // --- Draw Track ---
+  // 2. Draw the brown rectangle
+  fill('#e47430'); // Use a very obvious color for debugging
+  rect(width/2 - 25, 0, 50, height);
+
+  // 3. Draw the track and other elements (Keep for now)
   stroke(trackColor);
   strokeWeight(trackThickness);
   line(trackXCenter - trackSpacing / 2, barrierOffset, trackXCenter - trackSpacing / 2, canvasHeight - barrierOffset); // Left rail.
@@ -312,15 +334,15 @@ function draw() {
   }
 
   // --- Draw Stations (Using initial fixed offsetTop relative to #timeline) ---
-  fill(stationColor);
-  for (let i = 0; i < elements.length; i++) {
-    const element = elements[i];
-    if (typeof element.initialTitleOffsetTopTimeline === 'number' && stationPositions[i]) { // Ensure stationPositions has the element
-      const stationX = stationPositions[i].x;
-      const stationY = stationPositions[i].y;
-      rect(stationX, stationY - stationHeight / 2, stationWidth, stationHeight); // Draw centered.
-    }
-  }
+  fill(stationColor);
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    if (typeof element.initialTitleOffsetTopTimeline === 'number' && stationPositions[i]) { // Ensure stationPositions has the element
+      const stationX = stationPositions[i].x;
+      const stationY = stationPositions[i].y;
+      rect(stationX, stationY - stationHeight / 2, stationWidth, stationHeight); // Draw centered.
+    }
+  }
   if (debug) console.log(`draw() - stationPositions:`, stationPositions);
 
   // --- Draw Barriers ---
@@ -341,19 +363,18 @@ function draw() {
     const currentDistance = (trainY + trainHeight / 2) - initialTrainY; // Current distance traveled.
     const ratio = Math.abs(dy) > 0 ? Math.abs(currentDistance / dy) : 0;
     const distanceToStart = Math.abs((trainY + trainHeight / 2) - initialTrainY);
-    const distanceToEnd = Math.abs((trainY + trainHeight / 2) - targetStationY);
-    const threshold = 50; // Define your distance threshold in pixels
+    const distanceToEnd = Math.abs((trainY + trainHeight / 2) - targetStationY);
+    const threshold = 50; // Define your distance threshold in pixels
 
-    // function to determine train speed for more organic animation
     if (distanceToStart <= threshold || distanceToEnd <= threshold) {
-      trainSpeed = originalTrainSpeed * 0.5; // Use half original speed near start or end
-    } else if (distanceToStart <= (threshold * 2) || distanceToEnd <= (threshold * 2)) {
-      trainSpeed = originalTrainSpeed; // Use original speed near start or end
-    } else if (distanceToStart <= (threshold * 3) || distanceToEnd <= (threshold * 3)) {
-      trainSpeed = fasterTrainSpeed; // Use original speed near start or end
-    } else {
-      trainSpeed = maxTrainSpeed; // Use maximum speed when far from start and end
-    }
+      trainSpeed = originalTrainSpeed * 0.5; // Use half original speed near start or end
+    } else if (distanceToStart <= (threshold * 2) || distanceToEnd <= (threshold * 2)) {
+      trainSpeed = originalTrainSpeed; // Use original speed near start or end
+    } else if (distanceToStart <= (threshold * 3) || distanceToEnd <= (threshold * 3)) {
+      trainSpeed = fasterTrainSpeed; // Use original speed near start or end
+    } else {
+      trainSpeed = maxTrainSpeed; // Use maximum speed when far from start and end
+    }
 
     trainY += Math.sign(dy) * trainSpeed; // Update train Y position.
 
@@ -372,17 +393,15 @@ function updateElementData() {
   elements = [];
   const containerChildren = contentElement.children;
   const timelineRectTopInitial = timelineElement.getBoundingClientRect().top + window.scrollY;
-  // cycle through all children of container
   for (let i = 0; i < containerChildren.length; i++) {
     const child = containerChildren[i];
     const height = parseInt(child.offsetHeight);
     const titleElement = child.querySelector('.event-title h2');
     let initialTitleOffsetTopTimeline = null;
-    if (titleElement) { // if title element exists, get the initial title offset top timeline 
+    if (titleElement) {
       const titleRectTopInitial = titleElement.getBoundingClientRect().top + window.scrollY;
       initialTitleOffsetTopTimeline = titleRectTopInitial - timelineRectTopInitial;
     }
-    // add object describing element to elements array
     elements.push({ element: child, height: height, toggle: child.querySelector('.event-toggle'), desc: child.querySelector('.event-desc'), yPosition: child.offsetTop, initialTitleOffsetTopTimeline: initialTitleOffsetTopTimeline });
   }
   if (elements.length < 2) { if (canvas) { noLoop(); canvas = null; } }
@@ -399,25 +418,26 @@ function updateScrollRelatedData() {
 }
 
 // Function for smooth scrolling animation.
-function smoothScrollTo(element, targetY, duration) {
-  // get element top and current time
-  const startY = element.scrollTop;
+function smoothScrollWindow(targetY, duration) {
+  const startY = window.scrollY || window.pageYOffset;
   const startTime = performance.now();
-  // function to handle smooth scroll per time step
+
   function scrollStep(timestamp) {
-    // get current time (timestamp - start time)
     const currentTime = timestamp - startTime;
-    // if current time over duration, set element scroll top to target y and exit
-    if (currentTime >= duration) { element.scrollTop = targetY; return; }
-    // otherwise, move viewport by scroll amount using ease function
-    // ease takes in time and checks if t < 0.5 through shorthand if statement
-    // if true, result is 4*(t^3),
-    // otherwise result is (t-1) * 2(t-2) * 2(t-2) + 1
+    if (currentTime >= duration) {
+      window.scrollTo(0, targetY);
+      return;
+    }
+
+    // function ease takes in number t and returns specific value after comparison check
+    // if t < 0.5, return 4 times t cubed, else return
+    // (t - 1) * (2 * t - 2)^2 + 1
     const ease = (t) => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
     const scrollAmount = startY + (targetY - startY) * ease(currentTime / duration);
-    element.scrollTop = scrollAmount;
+    window.scrollTo(0, scrollAmount);
     requestAnimationFrame(scrollStep);
   }
+
   requestAnimationFrame(scrollStep);
 }
 
@@ -440,25 +460,22 @@ function attachStationClickHandlers() {
             drawSignal(toggleCanvas, toggleStates[i]);
 
             const listener = function() {
-                console.log('Toggle clicked for element at index:', i); // Debugging line
+                if(debug) console.log('Toggle clicked for element at index:', i); // Debugging line
 
                 // --- Close Hamburger Menu if Open ---
                 for (let j = 0; j < isHamburgerActive.length; j++) {
                     if (isHamburgerActive[j]) {
-                        hamburgerToggle(j); // Call hamburgerToggle to close the menu
+                        hamburgerToggle(j);
                     }
                 }
                 // --- End Close Hamburger Menu ---
 
-                // Reset all toggle states to false
                 toggleStates.fill(false);
-                // Set the current toggle state to true
                 toggleStates[i] = true;
 
-                // --- Transition Animation for ALL toggles ---
-                const animationDuration = 300; // Duration of the color transition in milliseconds
+                const animationDuration = 300;
                 let startTime;
-                const allToggles = document.querySelectorAll('.event-toggle'); // Get all toggle canvases
+                const allToggles = document.querySelectorAll('.event-toggle');
 
                 function animateTransition(timestamp) {
                     if (!startTime) startTime = timestamp;
@@ -477,27 +494,25 @@ function attachStationClickHandlers() {
                             drawSignal(allToggles[j], toggleStates[j]);
                         }
 
-                        const targetScrollY = element.yPosition + scrollOffsetAdjustment;
-                        const scrollDuration = 1500; // set scroll duration to 1.5s
-
-                        // set timeout that scrolls to the element at specific time
-                        setTimeout(smoothScrollTo(timelineElement, targetScrollY, scrollDuration), 1000);
+                        // --- Conditional Scrolling ---
+                        if (!isScrollingFromMenu) {
+                            const targetScrollY = element.element.offsetTop + scrollOffsetAdjustment; // Use element.element.offsetTop
+                            const scrollDuration = 1500;
+                            setTimeout(smoothScrollWindow(targetScrollY, scrollDuration), scrollDuration);
+                        }
 
                         if (element.desc) {
                             const allDescriptions = document.querySelectorAll('.event-desc');
                             for (let j = 0; j < allDescriptions.length; j++) {
-                                // remove active class from descriptions
                                 allDescriptions[j].classList.remove('active');
                             }
-                            // toggle current element's active class
                             element.desc.classList.toggle('active');
                         }
 
                         updateScrollRelatedData();
                         if (debug) console.log(`  After scroll data update - Element ${i}: yPosition = ${element.yPosition}`);
 
-                        // ... (rest of your canvas/train logic from the original listener) ...
-                        // block to handle animating canvas if more than two elements exist
+                        // ... (rest of your canvas/train logic) ...
                         if (elements.length >= 2) {
                             canvasHeight = contentElement.scrollHeight;
                             if (!canvas) {
@@ -528,7 +543,7 @@ function attachStationClickHandlers() {
                             initialTrainY = trainY + trainHeight / 2;
                             trainSpeed = originalTrainSpeed;
                             isMoving = true;
-                            console.log('isMoving set to true, targetStationY:', targetStationY, 'initialTrainY:', initialTrainY, 'trainSpeed:', trainSpeed);
+                            if(debug) console.log('isMoving set to true, targetStationY:', targetStationY, 'initialTrainY:', initialTrainY, 'trainSpeed:', trainSpeed);
                         } else {
                             if (debug) console.log(`  stationPositions array too short (${stationPositions.length}) for index ${i}`);
                         }
@@ -569,35 +584,40 @@ function drawTrain() {
 
 // Event listener that runs after the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', function() {
-  const eventTitleElements = document.querySelectorAll('.event-title'); // Get all event title elements.
-  const viewportHeight = window.innerHeight; // Get the height of the browser viewport.
+  const eventTitleElements = document.querySelectorAll('.event-title');
+  const timelineElement = document.querySelector("#timeline");
 
-  // Function to check if an event title is within the top 0% to 50% of the viewport.
   function checkVisibility() {
-    if(debug) console.log("checking visibility...");
+    if (debug) console.log("checking visibility...");
+    if (!timelineElement) return;
+
+    const scrollTop = window.scrollY || document.documentElement.scrollTop; // Get body's scroll top
+    const timelineTopViewport = timelineElement.getBoundingClientRect().top;
+    const visibilityThreshold = 300; // Adjust as needed
+
+    if(debug)console.log(`BODY SCROLL TOP: ${scrollTop}`); // Log the body's scroll top
+
     for (let i = 0; i < eventTitleElements.length; i++) {
       const titleElement = eventTitleElements[i];
-      const elementRect = titleElement.getBoundingClientRect(); // Get element's position and size.
-      const elementTop = elementRect.top; // Get the top position relative to the viewport.
-      const elementHeight = elementRect.height; // Get the height of the element.
-      const isVisible = elementTop >= 0 && elementTop < viewportHeight * 0.5; // Check if top is within the range.
-      if(debug) console.log(`is element [${i}] visible: `+isVisible);
+      const titleTopRelativeToTimeline = titleElement.offsetTop; // Relative to #timeline
+
+      // Calculate the title's absolute position relative to the top of the document
+      const titleTopAbsolute = timelineElement.offsetTop + titleTopRelativeToTimeline;
+
+      // Calculate the title's position relative to the *viewport*
+      const titleTopVisible = titleTopAbsolute - scrollTop;
+
+      const isVisible = titleTopVisible >= 100 && titleTopVisible < visibilityThreshold;
+
       if (isVisible) {
-        titleElement.classList.add('visible'); // Add 'visible' class to show the title.
+        titleElement.classList.add('visible');
       } else {
-        titleElement.classList.remove('visible'); // Remove 'visible' class to hide the title.
+        titleElement.classList.remove('visible');
       }
     }
   }
 
-  // Add a scroll event listener to the timeline element.
-  const timelineElement = document.querySelector("#timeline");
-  if(timelineElement) { // check if timeline element exists
-    timelineElement.addEventListener("scroll", (e) => {
-      // debugging line
-      if(debug) console.log("timeline scrolled");
-      checkVisibility(); // Call checkVisibility on scroll.
-    });
-  }
-  checkVisibility(); // Call checkVisibility once on page load.
+  window.addEventListener("scroll", checkVisibility); // Listen to window scroll
+
+  checkVisibility(); // Initial call
 });

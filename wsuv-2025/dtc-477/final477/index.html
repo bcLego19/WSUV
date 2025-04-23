@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Conner Batson - History of Rail Transport</title>
-	<!-- Imports -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="./styles.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
-	<!-- DISCLAIMER ABOUT AI USE:
-	The author, by admission, has collaborated with generative AI in the following ways:
-	>> Generate HTML, CSS, and Javascript involving p5js animations.
-	>> Identify and fix bugs in your JavaScript and CSS.
-	>> Develop new features and functionalities for this project.
-	>> Gain a better understanding of web development concepts.
-	>> Receive guidance and suggestions on how to approach programming challenges.
-	>> Refinement of code through multiple iterations.
-	>> Explain and document code functionality throughout the project.
-	-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conner Batson - History of Rail Transport</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="./styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+  <!-- DISCLAIMER ABOUT AI USE:
+    The author, by admission, has collaborated with generative AI in the following ways:
+    >> Generate HTML, CSS, and Javascript involving p5js animations.
+    >> Identify and fix bugs in your JavaScript and CSS.
+    >> Develop new features and functionalities for this project.
+    >> Gain a better understanding of web development concepts.
+    >> Receive guidance and suggestions on how to approach programming challenges.
+    >> Refinement of code through multiple iterations.
+    >> Explain and document code functionality throughout the project.
+
+    Additional details on AI use found in pdf files in the parent directory.
+   -->
 </head>
 <body>
   <div id="wrapper">
@@ -28,88 +29,87 @@
       
       <div id="hamburger" class="fa fa-bars">
       </div>
+      <div id="hamburger-menu" class="position-right position-top-50 highlight" style="display: none;">
+        <div class="hamburger-item" data-target="event1">
+          Early Rutways
+        </div>
+        <div class="hamburger-item" data-target="event2">
+          Hand-propelled cars
+        </div>
+        <div class="hamburger-item" data-target="event3">
+          Wollaton Wagonway
+        </div>
+        <div class="hamburger-item" data-target="event4">
+          Stationary Steam Engine
+        </div>
+        <div class="hamburger-item" data-target="event5">
+          Wagons with Flanged Wheels
+        </div>
+        <div class="hamburger-item" data-target="event6">
+          First Steam Locomotive
+        </div>
+        <div class="hamburger-item" data-target="event7">
+          First Paying Passengers
+        </div>
+        <div class="hamburger-item" data-target="event8">
+          First Commercial Steam Locomotive
+        </div>
+        <div class="hamburger-item" data-target="event9">
+          Stockton and Darlington Railway
+        </div>
+        <div class="hamburger-item" data-target="event10">
+          Stephenson's "Rocket"
+        </div>
+        <div class="hamburger-item" data-target="event11">
+          Liverpool and Manchester Railway
+        </div>
+        <div class="hamburger-item" data-target="event12">
+          American Steam Locomotives
+        </div>
+        <div class="hamburger-item" data-target="event13">
+          Panama Railway
+        </div>
+        <div class="hamburger-item" data-target="event14">
+          London Underground
+        </div>
+        <div class="hamburger-item" data-target="event15">
+          Transcontinental Railroad
+        </div>
+        <div class="hamburger-item" data-target="event16">
+          Automatic Air Brake
+        </div>
+        <div class="hamburger-item" data-target="event17">
+          First Public Electric Tram
+        </div>
+        <div class="hamburger-item" data-target="event18">
+          First Successful Electric Streetcar System
+        </div>
+        <div class="hamburger-item" data-target="event19">
+          First Electrification of Major Trunk Line
+        </div>
+        <div class="hamburger-item" data-target="event20">
+          Tōkaidō Shinkansen
+        </div>
+        <div class="hamburger-item" data-target="event21">
+          Creation of Amtrak
+        </div>
+        <div class="hamburger-item" data-target="event22">
+          Introduction of the TGV
+        </div>
+        <div class="hamburger-item" data-target="event23">
+          High-speed Rail Networks
+        </div>
+        <div class="hamburger-item" data-target="event24">
+          Channel Tunnel Rail Link
+        </div>
+        <div class="hamburger-item" data-target="event25">
+          Magnetic Levitation Technology
+        </div>
+        <div class="hamburger-item" data-target="event26">
+          About
+        </div>
+      </div>
     </header>
-
-    <div id="hamburger-menu" class="position-right position-top-50" style="display: none;">
-      <div class="hamburger-item" data-target="event1">
-        Early Rutways
-      </div>
-      <div class="hamburger-item" data-target="event2">
-        Hand-propelled cars
-      </div>
-      <div class="hamburger-item" data-target="event3">
-        Wollaton Wagonway
-      </div>
-      <div class="hamburger-item" data-target="event4">
-        Stationary Steam Engine
-      </div>
-      <div class="hamburger-item" data-target="event5">
-        Wagons with Flanged Wheels
-      </div>
-      <div class="hamburger-item" data-target="event6">
-        First Steam Locomotive
-      </div>
-      <div class="hamburger-item" data-target="event7">
-        First Paying Passengers
-      </div>
-      <div class="hamburger-item" data-target="event8">
-        First Commercial Steam Locomotive
-      </div>
-      <div class="hamburger-item" data-target="event9">
-        Stockton and Darlington Railway
-      </div>
-      <div class="hamburger-item" data-target="event10">
-        Stephenson's "Rocket"
-      </div>
-      <div class="hamburger-item" data-target="event11">
-        Liverpool and Manchester Railway
-      </div>
-      <div class="hamburger-item" data-target="event12">
-        American Steam Locomotives
-      </div>
-      <div class="hamburger-item" data-target="event13">
-        Panama Railway
-      </div>
-      <div class="hamburger-item" data-target="event14">
-        London Underground
-      </div>
-      <div class="hamburger-item" data-target="event15">
-        Transcontinental Railroad
-      </div>
-      <div class="hamburger-item" data-target="event16">
-        Automatic Air Brake
-      </div>
-      <div class="hamburger-item" data-target="event17">
-        First Public Electric Tram
-      </div>
-      <div class="hamburger-item" data-target="event18">
-        First Successful Electric Streetcar System
-      </div>
-      <div class="hamburger-item" data-target="event19">
-        First Electrification of major trunk line
-      </div>
-      <div class="hamburger-item" data-target="event20">
-        Tōkaidō Shinkansen
-      </div>
-      <div class="hamburger-item" data-target="event21">
-        Creation of Amtrak
-      </div>
-      <div class="hamburger-item" data-target="event22">
-        Introduction of the TGV
-      </div>
-      <div class="hamburger-item" data-target="event23">
-        High-speed Rail Networks
-      </div>
-      <div class="hamburger-item" data-target="event24">
-        Channel Tunnel Rail Link
-      </div>
-      <div class="hamburger-item" data-target="event25">
-        Magnetic Levitation Technology
-      </div>
-      <div class="hamburger-item" data-target="event26">
-        About
-      </div>
-    </div>
 
     <div id="timeline">
       <div id="canvas"></div>
@@ -278,7 +278,7 @@
         </section>
         <section id="event19" class="content-event">
           <div class="event-title">
-            <h2>1895: First electrification of a major trunk line (Baltimore Belt Line of the B&O).</h2>
+            <h2>1895: First electrification of a Major Trunk Line (Baltimore Belt Line of the B&O).</h2>
             <canvas class="event-toggle" width="50" height="50"></canvas>
           </div>
           <div class="event-desc">
@@ -357,7 +357,7 @@
               <li>Explain and document code functionality throughout the project.</li>
             </ul>
             <h3>References</h3>
-            <ul>
+            <ul id="references" class="highlight">
               <li><a href="https://en.wikipedia.org/wiki/History_of_rail_transport">Wikipedia - History of Rail Transport</a></li>
               <li><a href="https://www.britannica.com/technology/railroad/Railroad-history">Britannica - Railroad History</a></li>
               <li><a href="https://www.thoughtco.com/history-of-railroad-4059935">ThoughtCo - The History of Railroad Technology</a></li>
@@ -373,12 +373,11 @@
     </div>
 
     <footer>
-      <div>Conner Batson</div>
-      <div>April 14th, 2025</div>
+      <div class="term">Conner Batson</div>
+      <div class="date">April 23, 2025</div>
     </footer>
 
-    <script type="text/javascript" src="./script.js"></script>
-
+    <script src="./script.js"></script>
   </div>
 </body>
 </html>
