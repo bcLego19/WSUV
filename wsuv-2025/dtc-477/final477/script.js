@@ -1,3 +1,47 @@
+/*
+PROJECT STATEMENT: History of Rail Transport Timeline
+
+SCRIPTING STEPS:
+1. DOM Manipulation:
+   - Selecting and storing references to key HTML elements: hamburger menu, event toggles, content sections, canvas container, timeline container, title elements, description elements.
+   - Dynamically showing/hiding the hamburger menu on click.
+   - Adding and removing 'active' classes to description elements to control their visibility.
+   - Programmatically triggering click events on event toggles when navigating via the hamburger menu.
+
+2. Data Management:
+   - Storing data about content sections in the 'elements' array (DOM element, height, toggle element, description element, y-position, initial title offset).
+   - Managing the state of the hamburger menu (isOpen array).
+   - Tracking the active state of event toggles (toggleStates array).
+   - Storing and updating station positions for the train animation (stationPositions array).
+   - Managing train animation state (isMoving, target position, speed).
+
+3. Dynamic Interactions:
+   - Implementing smooth scrolling functionality ('smoothScrollWindow' function) for navigation via both the hamburger menu and event toggles.
+   - Controlling the animation of the train (movement along the track, stopping at stations) based on click events.
+   - Dynamically drawing and updating the train signal canvas based on the active state of the event toggle and transition progress.
+   - Updating the visibility of title elements based on the viewport scroll position ('checkVisibility' function).
+   - Handling window resize events to adjust canvas dimensions and element data.
+   - Attaching and removing event listeners for hamburger menu clicks and event toggle clicks.
+
+4. Frameworks and APIs:
+   - p5.js: Used for creating and manipulating the canvas element, drawing the train animation (track, train, stations, signals), and managing the animation loop.
+   - Web APIs:
+     - DOM API: For selecting and manipulating HTML elements.
+     - Event Listeners: For handling user interactions (clicks, scroll, resize).
+     - requestAnimationFrame: For creating smooth animations (train movement, signal transition, scrolling).
+     - setTimeout: Used (and later conditionally controlled) for delaying the scroll initiated by the event toggles.
+     - performance.now(): Used for timing animations.
+     - window.scrollY/pageYOffset and element.getBoundingClientRect()/offsetTop: For getting element positions and scroll offsets.
+     - Canvas API (implicitly through p5.js): For drawing the train signal on the <canvas> element.
+
+NARRATIVE OF AI UTILIZATION (ChatGPT Example):
+During the ideation phase, ChatGPT was used to brainstorm different visual representations for the event toggles, suggesting the train signal metaphor. It also helped in outlining the initial steps for linking the hamburger menu items to specific content sections and triggering a visual change (the train movement).
+
+In the planning phase, ChatGPT assisted in structuring the JavaScript code, suggesting the use of arrays to store element data and state, and outlining the logic for the train movement based on target destinations. It also provided initial code snippets for basic smooth scrolling and canvas drawing, which were then adapted and integrated into the project.
+
+During debugging, when encountering issues with the smooth scrolling and the train animation not synchronizing correctly after hamburger menu clicks, ChatGPT was consulted to understand potential conflicts between different event listeners and the timing of asynchronous operations (like setTimeout). It helped in suggesting the use of a flag ('isScrollingFromMenu') to manage the flow of control and prevent unintended double scrolling. Additionally, when the initial title visibility logic had issues, ChatGPT was used to clarify the calculation of an element's position relative to the viewport considering scroll offsets.
+*/
+
 /* FOR DEBUGGING ONLY */
 const debug = false;
 /* FOR DEBUGGING ONLY */
